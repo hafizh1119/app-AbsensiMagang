@@ -1,0 +1,245 @@
+{{-- resources/views/admin/absensi/hari-ini.blade.php --}}
+@extends('layouts.app')
+
+@section('title', 'Absensi Hari Ini')
+
+@section('content')
+
+<div class="flex">
+
+    {{-- Sidebar tetap di kiri --}}
+    @include('admin.components.sidebar')
+
+    {{-- Kolom kanan: header di atas, konten halaman di bawahnya --}}
+    <div class="flex-1 flex flex-col min-h-screen">
+
+        @include('admin.components.header', ['title' => 'Absensi Hari Ini'])
+
+        <main class="p-6">
+
+            @php
+                // Data contoh, ganti dengan data asli dari controller
+                $tanggal = $tanggal ?? '24 Mei 2025';
+
+                $ringkasan = $ringkasan ?? [
+                    'total'       => 128,
+                    'hadir'       => 96,
+                    'terlambat'   => 16,
+                    'belum_absen' => 12,
+                    'izin'        => 4,
+                ];
+
+                $persenHadir      = round($ringkasan['hadir']       / $ringkasan['total'] * 100, 2);
+                $persenTerlambat  = round($ringkasan['terlambat']   / $ringkasan['total'] * 100, 2);
+                $persenBelumAbsen = round($ringkasan['belum_absen'] / $ringkasan['total'] * 100, 2);
+                $persenIzin       = round($ringkasan['izin']        / $ringkasan['total'] * 100, 2);
+
+                $absensis = $absensis ?? collect([
+                    ['no' => 1, 'nip' => '198701152010011001', 'nama' => 'Budi Santoso',   'unit' => 'Sekretariat',         'masuk' => '07:58', 'pulang' => '-', 'status' => 'Hadir',       'keterangan' => '-'],
+                    ['no' => 2, 'nip' => '198903252015032002', 'nama' => 'Siti Aminah',    'unit' => 'Bidang Koperasi',     'masuk' => '08:05', 'pulang' => '-', 'status' => 'Hadir',       'keterangan' => '-'],
+                    ['no' => 3, 'nip' => '199205102017041003', 'nama' => 'Dwi Prasetyo',   'unit' => 'Bidang UMKM',         'masuk' => '08:15', 'pulang' => '-', 'status' => 'Terlambat',   'keterangan' => 'Terlambat 15 menit'],
+                    ['no' => 4, 'nip' => '199001202016042004', 'nama' => 'Rina Wulandari', 'unit' => 'Bidang Pembiayaan',   'masuk' => '-',     'pulang' => '-', 'status' => 'Belum Absen', 'keterangan' => '-'],
+                    ['no' => 5, 'nip' => '199104182018031005', 'nama' => 'Agus Setiawan',  'unit' => 'Bidang Pengawasan',   'masuk' => '-',     'pulang' => '-', 'status' => 'Izin',        'keterangan' => 'Izin Sakit'],
+                ]);
+
+                $statusStyle = [
+                    'Hadir'       => 'bg-emerald-50 text-emerald-600',
+                    'Terlambat'   => 'bg-amber-50 text-amber-600',
+                    'Belum Absen' => 'bg-purple-50 text-purple-600',
+                    'Izin'        => 'bg-blue-50 text-blue-600',
+                ];
+
+                // Titik potong conic-gradient buat donat chart (kumulatif persen)
+                $c1 = $persenHadir;
+                $c2 = $c1 + $persenTerlambat;
+                $c3 = $c2 + $persenBelumAbsen;
+            @endphp
+
+            {{-- Judul Halaman & Filter Tanggal --}}
+            <div class="flex flex-wrap items-start justify-between gap-4 mb-5">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">Absensi Hari Ini</h1>
+                    <p class="text-sm text-gray-400 mt-0.5">Data absensi pegawai hari ini</p>
+                </div>
+
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1.5">Tanggal</label>
+                    <div class="flex items-center gap-2">
+                        <div class="relative">
+                            <input type="text" value="{{ $tanggal }}" readonly
+                                   class="w-48 border border-gray-200 rounded-lg pl-3 pr-9 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <svg class="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <rect x="3" y="4" width="18" height="18" rx="2"/>
+                                <path stroke-linecap="round" d="M16 2v4M8 2v4M3 10h18"/>
+                            </svg>
+                        </div>
+                        <button type="button" class="w-9 h-9 flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:text-emerald-600 hover:border-emerald-300 transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Kartu Statistik --}}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
+
+                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-400">Total Pegawai</p>
+                        <p class="text-2xl font-extrabold text-gray-800 mt-1">{{ $ringkasan['total'] }}</p>
+                        <p class="text-xs text-gray-400 mt-0.5">Orang</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
+                        <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-400">Hadir</p>
+                        <p class="text-2xl font-extrabold text-gray-800 mt-1">{{ $ringkasan['hadir'] }}</p>
+                        <p class="text-xs text-emerald-500 mt-0.5">{{ number_format($persenHadir, 2) }}%</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
+                        <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-400">Terlambat</p>
+                        <p class="text-2xl font-extrabold text-gray-800 mt-1">{{ $ringkasan['terlambat'] }}</p>
+                        <p class="text-xs text-amber-500 mt-0.5">{{ number_format($persenTerlambat, 2) }}%</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center shrink-0">
+                        <svg class="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-400">Belum Absen</p>
+                        <p class="text-2xl font-extrabold text-gray-800 mt-1">{{ $ringkasan['belum_absen'] }}</p>
+                        <p class="text-xs text-purple-500 mt-0.5">{{ number_format($persenBelumAbsen, 2) }}%</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-full bg-purple-50 flex items-center justify-center shrink-0">
+                        <svg class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h8m6-4v-3m0 0V9m0 3h3m-3 0h-3"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Tabel & Ringkasan Kehadiran --}}
+            <div class="flex flex-col xl:flex-row gap-5 items-start">
+
+                {{-- Tabel --}}
+                <div class="flex-1 w-full bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="bg-gray-50 text-gray-400 text-xs">
+                                    <th class="text-left font-medium px-5 py-3 w-12">No</th>
+                                    <th class="text-left font-medium px-5 py-3">NIP</th>
+                                    <th class="text-left font-medium px-5 py-3">Nama Pegawai</th>
+                                    <th class="text-left font-medium px-5 py-3">Unit / Divisi</th>
+                                    <th class="text-left font-medium px-5 py-3">Jam Masuk</th>
+                                    <th class="text-left font-medium px-5 py-3">Jam Pulang</th>
+                                    <th class="text-left font-medium px-5 py-3">Status</th>
+                                    <th class="text-left font-medium px-5 py-3">Keterangan</th>
+                                    <th class="text-left font-medium px-5 py-3">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                                @foreach($absensis as $row)
+                                    <tr class="hover:bg-gray-50/60 transition-colors">
+                                        <td class="px-5 py-3 text-gray-500">{{ $row['no'] }}</td>
+                                        <td class="px-5 py-3 text-gray-500">{{ $row['nip'] }}</td>
+                                        <td class="px-5 py-3 font-medium text-gray-700">{{ $row['nama'] }}</td>
+                                        <td class="px-5 py-3 text-gray-500">{{ $row['unit'] }}</td>
+                                        <td class="px-5 py-3 text-gray-500">{{ $row['masuk'] }}</td>
+                                        <td class="px-5 py-3 text-gray-500">{{ $row['pulang'] }}</td>
+                                        <td class="px-5 py-3">
+                                            <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full {{ $statusStyle[$row['status']] ?? 'bg-gray-100 text-gray-500' }}">
+                                                {{ $row['status'] }}
+                                            </span>
+                                        </td>
+                                        <td class="px-5 py-3 text-gray-500">{{ $row['keterangan'] }}</td>
+                                        <td class="px-5 py-3">
+                                            <a href="#" class="inline-flex items-center justify-center w-7 h-7 rounded-full text-gray-400 hover:bg-gray-100 hover:text-emerald-600 transition">
+                                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path fill-rule="evenodd" d="M12 2a7 7 0 00-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 00-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z" clip-rule="evenodd"/>
+                                                </svg>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                {{-- Ringkasan Kehadiran (Donut Chart) --}}
+                <div class="w-full xl:w-80 shrink-0 bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+                    <h3 class="text-sm font-bold text-gray-700 mb-5">Ringkasan Kehadiran</h3>
+
+                    <div class="flex items-center justify-center">
+                        <div class="relative w-40 h-40 rounded-full"
+                             style="background: conic-gradient(
+                                #10b981 0% {{ $c1 }}%,
+                                #f59e0b {{ $c1 }}% {{ $c2 }}%,
+                                #a855f7 {{ $c2 }}% {{ $c3 }}%,
+                                #3b82f6 {{ $c3 }}% 100%
+                             );">
+                            <div class="absolute inset-3 bg-white rounded-full flex flex-col items-center justify-center">
+                                <span class="text-xl font-extrabold text-gray-800">{{ $ringkasan['total'] }}</span>
+                                <span class="text-xs text-gray-400">Total</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 space-y-3">
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="flex items-center gap-2 text-gray-600">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Hadir
+                            </span>
+                            <span class="text-gray-500">{{ $ringkasan['hadir'] }} ({{ number_format($persenHadir, 2) }}%)</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="flex items-center gap-2 text-gray-600">
+                                <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Terlambat
+                            </span>
+                            <span class="text-gray-500">{{ $ringkasan['terlambat'] }} ({{ number_format($persenTerlambat, 2) }}%)</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="flex items-center gap-2 text-gray-600">
+                                <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span> Belum Absen
+                            </span>
+                            <span class="text-gray-500">{{ $ringkasan['belum_absen'] }} ({{ number_format($persenBelumAbsen, 2) }}%)</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="flex items-center gap-2 text-gray-600">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> Izin
+                            </span>
+                            <span class="text-gray-500">{{ $ringkasan['izin'] }} ({{ number_format($persenIzin, 2) }}%)</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+</div>
+
+@endsection

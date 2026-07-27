@@ -1,0 +1,95 @@
+@extends('layouts.app')
+
+@section('title', 'Review Pengajuan Izin')
+
+@section('content')
+
+@include('pengguna.components.header', ['title' => 'Review Pengajuan Izin'])
+
+<div class="min-h-screen bg-gray-50 pb-10">
+
+    {{-- Step Indicator --}}
+    <div class="flex items-center justify-center gap-3 px-5 pt-6 pb-5">
+        <div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center text-sm font-semibold">1</div>
+        <div class="w-10 border-t-2 border-dashed border-gray-300"></div>
+        <div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center text-sm font-semibold">2</div>
+        <div class="w-10 border-t-2 border-dashed border-gray-300"></div>
+        <div class="w-8 h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center text-sm font-semibold">3</div>
+    </div>
+
+    <div class="px-5">
+
+    <h2 class="text-xl font-bold text-gray-900 mb-1">Review Pengajuan Izin</h2>
+    <p class="text-sm text-gray-500 mb-5">Periksa kembali detail pengajuan izin Anda</p>
+
+    <div class="bg-white rounded-2xl shadow-sm divide-y divide-gray-100">
+
+        {{-- Jenis Izin --}}
+        <div class="flex items-center gap-3 px-5 py-4">
+            <div class="shrink-0 w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"></path>
+                    <polyline points="7.5 12 10 12 11 10 13 14 14 12 16.5 12"></polyline>
+                </svg>
+            </div>
+            <div>
+                <p class="text-xs text-gray-400 mb-0.5">Jenis Izin</p>
+                <p class="text-gray-900 font-semibold">Izin Sakit</p>
+            </div>
+        </div>
+
+        {{-- Ditujukan Kepada --}}
+        <div class="px-5 py-4">
+            <p class="text-xs text-gray-400 mb-1">Ditujukan Kepada</p>
+            <p class="text-gray-800 font-medium">Siti Aminah <span class="text-gray-400 font-normal">- Kepala Bagian Keuangan</span></p>
+        </div>
+
+        {{-- Tanggal --}}
+        <div class="px-5 py-4">
+            <p class="text-xs text-gray-400 mb-1">Tanggal</p>
+            <p class="text-emerald-600 font-semibold mb-1">Izin</p>
+            <p class="text-gray-800">26 Mei 2025 - 26 Mei 2025</p>
+            <p class="text-gray-400 text-sm">(1 hari)</p>
+        </div>
+
+        {{-- Keterangan --}}
+        <div class="px-5 py-4">
+            <p class="text-xs text-gray-400 mb-1">Keterangan</p>
+            <p class="text-gray-800 leading-relaxed">Demam dan flu, tidak memungkinkan untuk bekerja.</p>
+        </div>
+
+        {{-- Lampiran --}}
+        <div class="px-5 py-4">
+            <p class="text-xs text-gray-400 mb-1">Lampiran</p>
+            <p class="text-gray-800 font-medium">surat_dokter.pdf</p>
+            <p class="text-gray-400 text-sm">450 KB</p>
+        </div>
+
+        {{-- Catatan Tambahan --}}
+        <div class="px-5 py-4">
+            <p class="text-xs text-gray-400 mb-1">Catatan Tambahan</p>
+            <p class="text-gray-400">-</p>
+        </div>
+
+    </div>
+
+    </div>
+
+    {{-- Tombol Aksi --}}
+    <div class="px-5 mt-5 mb-20">
+        <div class="flex items-center gap-3">
+            <a href="{{ url()->previous() }}"
+               class="flex-1 text-center border-2 border-emerald-600 text-emerald-600 font-semibold rounded-2xl py-3.5">
+                Kembali
+            </a>
+            <div class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-2xl py-3.5 shadow-sm">
+                <a href="{{ route('pengguna.izin.akhir') }}" class="block w-full text-center">
+                    Kirim Pengajuan
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+@include('pengguna.components.menu')
+@endsection
