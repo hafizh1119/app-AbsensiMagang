@@ -5,13 +5,13 @@
 
 @section('content')
 
-<div class="flex">
+<div class="flex h-screen overflow-hidden">
 
-    {{-- Sidebar tetap di kiri --}}
+    {{-- Sidebar tetap di kiri, tidak ikut scroll --}}
     @include('admin.components.sidebar')
 
     {{-- Kolom kanan: header di atas, konten halaman di bawahnya --}}
-    <div class="flex-1 flex flex-col min-h-screen">
+    <div class="flex-1 min-w-0 flex flex-col h-screen overflow-y-auto">
 
         @include('admin.components.header', ['title' => 'Rekap Absensi'])
 

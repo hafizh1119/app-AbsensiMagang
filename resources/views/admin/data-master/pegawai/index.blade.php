@@ -19,7 +19,7 @@
             {{-- Judul & Tombol Tambah --}}
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-xl font-bold text-gray-900">Data Pegawai</h2>
-                <a href="#"
+                <a href="{{ route('admin.data-master.pegawai.create') }}"
                    class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <line x1="12" y1="5" x2="12" y2="19"/>
@@ -52,18 +52,6 @@
                            class="w-full bg-white border border-gray-200 rounded-lg pl-9 pr-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500">
                 </div>
 
-                {{-- Status --}}
-                <div class="relative">
-                    <select class="appearance-none w-32 bg-white border border-gray-200 rounded-lg pl-3 pr-8 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                        <option>Semua Status</option>
-                        <option>Aktif</option>
-                        <option>Nonaktif</option>
-                    </select>
-                    <svg class="w-4 h-4 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
-                    </svg>
-                </div>
-
                 {{-- Unit --}}
                 <div class="relative">
                     <select class="appearance-none w-40 bg-white border border-gray-200 rounded-lg pl-3 pr-8 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
@@ -91,8 +79,7 @@
                                 <th class="text-left font-medium px-4 py-3">NIP</th>
                                 <th class="text-left font-medium px-4 py-3">Unit</th>
                                 <th class="text-left font-medium px-4 py-3">Jabatan</th>
-                                <th class="text-left font-medium px-4 py-3">Status</th>
-                                <th class="text-left font-medium px-4 py-3">Aksi</th>
+                                <th class="text-center font-medium px-4 py-3">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
@@ -103,31 +90,66 @@
                                     <td class="px-4 py-3 text-gray-500">{{ $row['nip'] }}</td>
                                     <td class="px-4 py-3 text-gray-500">{{ $row['unit'] }}</td>
                                     <td class="px-4 py-3 text-gray-500">{{ $row['jabatan'] }}</td>
-                                    <td class="px-4 py-3">
-                                        <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full
-                                            {{ $row['status'] === 'Aktif' ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-100 text-gray-500' }}">
-                                            {{ $row['status'] }}
-                                        </span>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <div class="flex items-center gap-1">
-                                            <a href="#"
-                                               class="inline-flex items-center justify-center w-7 h-7 rounded-full text-gray-400 hover:bg-gray-100 hover:text-emerald-600 transition">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"/>
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                                                </svg>
+                                    <td class="px-4 py-3 text-center">
+                                        <div class="flex items-center justify-center gap-1">
+                                            <a href="{{ route('admin.data-master.pegawai.show') }}"
+                                            class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-gray-500 hover:bg-gray-600 text-white transition">
+                                                Lihat
                                             </a>
-                                            <form action="#" method="POST" class="inline" onsubmit="return confirm('Hapus data pegawai ini?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit"
-                                                        class="inline-flex items-center justify-center w-7 h-7 rounded-full text-gray-400 hover:bg-rose-50 hover:text-rose-500 transition">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/>
-                                                    </svg>
-                                                </button>
-                                            </form>
+                                            <a href="{{ route('admin.data-master.pegawai.edit') }}"
+                                            class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition">
+                                                Edit
+                                            </a>
+                                            <div x-data="{ confirmOpen: false }" class="inline">
+
+                                            {{-- Tombol Hapus --}}
+                                            <button type="button" @click="confirmOpen = true"
+                                                    class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-rose-500 hover:bg-rose-600 text-white transition">
+                                                Hapus
+                                            </button>
+
+                                            {{-- Overlay --}}
+                                            <div x-show="confirmOpen"
+                                                x-transition.opacity
+                                                style="display: none;"
+                                                class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+
+                                                {{-- Card konfirmasi --}}
+                                                <div x-show="confirmOpen"
+                                                    x-transition:enter="transition ease-out duration-200"
+                                                    x-transition:enter-start="opacity-0 scale-95"
+                                                    x-transition:enter-end="opacity-100 scale-100"
+                                                    @click.outside="confirmOpen = false"
+                                                    class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 text-center">
+
+                                                    <div class="w-14 h-14 mx-auto rounded-full bg-rose-50 flex items-center justify-center mb-4">
+                                                        <svg class="w-7 h-7 text-rose-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/>
+                                                        </svg>
+                                                    </div>
+
+                                                    <h3 class="text-base font-bold text-gray-900 mb-1">Hapus Data Pegawai?</h3>
+                                                    <p class="text-sm text-gray-500 mb-6">
+                                                        Data yang sudah dihapus tidak dapat dikembalikan. Pastikan kamu yakin sebelum melanjutkan.
+                                                    </p>
+
+                                                    <div class="flex items-center gap-3">
+                                                        <button type="button" @click="confirmOpen = false"
+                                                                class="flex-1 text-sm font-semibold px-4 py-2.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition">
+                                                            Batal
+                                                        </button>
+                                                        <form action="#" method="POST" class="flex-1">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit"
+                                                                    class="w-full text-sm font-semibold px-4 py-2.5 rounded-lg bg-rose-500 hover:bg-rose-600 text-white transition">
+                                                                Ya, Hapus
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                         </div>
                                     </td>
                                 </tr>

@@ -5,13 +5,13 @@
 
 @section('content')
 
-<div class="flex">
+<div class="flex h-screen overflow-hidden">
 
-    {{-- Sidebar tetap di kiri --}}
+    {{-- Sidebar tetap di kiri, tidak ikut scroll --}}
     @include('admin.components.sidebar')
 
     {{-- Kolom kanan: header di atas, konten halaman di bawahnya --}}
-    <div class="flex-1 flex flex-col min-h-screen">
+    <div class="flex-1 min-w-0 flex flex-col h-screen overflow-y-auto">
 
         @include('admin.components.header', ['title' => 'Absensi Hari Ini'])
 
@@ -19,7 +19,8 @@
 
             @php
                 // Data contoh, ganti dengan data asli dari controller
-                $tanggal = $tanggal ?? '24 Mei 2025';
+                $tanggalValue = $tanggalValue ?? \Carbon\Carbon::now()->format('Y-m-d');
+                $tanggal = $tanggal ?? \Carbon\Carbon::parse($tanggalValue)->translatedFormat('d F Y');
 
                 $ringkasan = $ringkasan ?? [
                     'total'       => 128,
@@ -42,6 +43,9 @@
                     ['no' => 5, 'nip' => '199104182018031005', 'nama' => 'Agus Setiawan',  'unit' => 'Bidang Pengawasan',   'masuk' => '-',     'pulang' => '-', 'status' => 'Izin',        'keterangan' => 'Izin Sakit'],
                 ]);
 
+                // Daftar unit untuk dropdown filter, ambil unik dari data (atau ganti dengan data master unit)
+                $unitOptions = $unitOptions ?? $absensis->pluck('unit')->unique()->values();
+
                 $statusStyle = [
                     'Hadir'       => 'bg-emerald-50 text-emerald-600',
                     'Terlambat'   => 'bg-amber-50 text-amber-600',
@@ -55,32 +59,67 @@
                 $c3 = $c2 + $persenBelumAbsen;
             @endphp
 
-            {{-- Judul Halaman & Filter Tanggal --}}
+            {{-- Judul Halaman --}}
             <div class="flex flex-wrap items-start justify-between gap-4 mb-5">
                 <div>
                     <h1 class="text-2xl font-bold text-gray-800">Absensi Hari Ini</h1>
                     <p class="text-sm text-gray-400 mt-0.5">Data absensi pegawai hari ini</p>
                 </div>
+            </div>
 
-                <div>
-                    <label class="block text-xs text-gray-400 mb-1.5">Tanggal</label>
-                    <div class="flex items-center gap-2">
+            {{-- Bar Filter: Cari Nama, Unit, Tanggal --}}
+            <form method="GET" class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 mb-5">
+                <div class="flex flex-wrap items-end gap-3">
+
+                    {{-- Cari Nama --}}
+                    <div class="flex-1 min-w-[200px]">
+                        <label class="block text-xs text-gray-400 mb-1.5">Cari Nama Pegawai</label>
                         <div class="relative">
-                            <input type="text" value="{{ $tanggal }}" readonly
-                                   class="w-48 border border-gray-200 rounded-lg pl-3 pr-9 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <svg class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <circle cx="11" cy="11" r="7"/>
+                                <path stroke-linecap="round" d="M21 21l-3.5-3.5"/>
+                            </svg>
+                            <input type="text" name="cari" value="{{ request('cari') }}" placeholder="Ketik nama pegawai..."
+                                   class="w-full border border-gray-200 rounded-lg pl-9 pr-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                    </div>
+
+                    {{-- Unit / Divisi --}}
+                    <div class="w-full sm:w-56">
+                        <label class="block text-xs text-gray-400 mb-1.5">Unit / Divisi</label>
+                        <div class="relative">
+                            <select name="unit" class="w-full appearance-none border border-gray-200 rounded-lg pl-3 pr-9 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                <option value="">Semua Unit</option>
+                                @foreach($unitOptions as $unit)
+                                    <option value="{{ $unit }}" @selected(request('unit') === $unit)>{{ $unit }}</option>
+                                @endforeach
+                            </select>
                             <svg class="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <rect x="3" y="4" width="18" height="18" rx="2"/>
-                                <path stroke-linecap="round" d="M16 2v4M8 2v4M3 10h18"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                             </svg>
                         </div>
-                        <button type="button" class="w-9 h-9 flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:text-emerald-600 hover:border-emerald-300 transition">
+                    </div>
+
+                    {{-- Tanggal --}}
+                    <div class="w-full sm:w-48">
+                        <label class="block text-xs text-gray-400 mb-1.5">Tanggal</label>
+                        <input type="date" name="tanggal" value="{{ request('tanggal', $tanggalValue) }}"
+                               class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    </div>
+
+                    {{-- Tombol Aksi --}}
+                    <div class="flex items-center gap-2">
+                        <a href="{{ url()->current() }}"
+                           class="w-9 h-9 flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:text-emerald-600 hover:border-emerald-300 transition"
+                           title="Reset Filter">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                             </svg>
-                        </button>
+                        </a>
                     </div>
+
                 </div>
-            </div>
+            </form>
 
             {{-- Kartu Statistik --}}
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
@@ -155,7 +194,6 @@
                                     <th class="text-left font-medium px-5 py-3">Jam Pulang</th>
                                     <th class="text-left font-medium px-5 py-3">Status</th>
                                     <th class="text-left font-medium px-5 py-3">Keterangan</th>
-                                    <th class="text-left font-medium px-5 py-3">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-100">
@@ -173,13 +211,6 @@
                                             </span>
                                         </td>
                                         <td class="px-5 py-3 text-gray-500">{{ $row['keterangan'] }}</td>
-                                        <td class="px-5 py-3">
-                                            <a href="#" class="inline-flex items-center justify-center w-7 h-7 rounded-full text-gray-400 hover:bg-gray-100 hover:text-emerald-600 transition">
-                                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                                    <path fill-rule="evenodd" d="M12 2a7 7 0 00-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 00-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z" clip-rule="evenodd"/>
-                                                </svg>
-                                            </a>
-                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>

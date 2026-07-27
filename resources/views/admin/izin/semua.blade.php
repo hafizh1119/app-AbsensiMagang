@@ -5,13 +5,13 @@
 
 @section('content')
 
-<div class="flex">
+<div class="flex h-screen overflow-hidden">
 
-    {{-- Sidebar tetap di kiri --}}
+    {{-- Sidebar tetap di kiri, tidak ikut scroll --}}
     @include('admin.components.sidebar')
 
     {{-- Kolom kanan: header di atas, konten halaman di bawahnya --}}
-    <div class="flex-1 min-w-0 flex flex-col min-h-screen">
+    <div class="flex-1 min-w-0 flex flex-col h-screen overflow-y-auto">
 
         @include('admin.components.header', ['title' => 'Semua Pengajuan'])
 
@@ -151,7 +151,7 @@
                                 <th class="text-left font-medium px-3 py-2 w-14">Durasi</th>
                                 <th class="text-left font-medium px-3 py-2 max-w-[140px]">Alasan</th>
                                 <th class="text-left font-medium px-3 py-2">Status</th>
-                                <th class="text-left font-medium px-3 py-2">Aksi</th>
+                                <th class="text-center font-medium px-3 py-2">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
@@ -171,12 +171,10 @@
                                             {{ $row['status'] }}
                                         </span>
                                     </td>
-                                    <td class="px-3 py-2">
-                                        <a href="#" class="inline-flex items-center justify-center w-7 h-7 rounded-full text-gray-400 hover:bg-gray-100 hover:text-emerald-600 transition">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                            </svg>
+                                    <td class="px-3 py-2 text-center">
+                                        <a href="#"
+                                            class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-gray-500 hover:bg-gray-600 text-white transition">
+                                                Lihat
                                         </a>
                                     </td>
                                 </tr>

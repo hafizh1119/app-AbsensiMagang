@@ -2,26 +2,36 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
-
-    /**
+    protected $table = 'users';
+    /** 
      * The attributes that are mass assignable.
      *
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'nama',
+        'nip',
         'email',
         'password',
+        'role',
+        'unit_id',
+        'jabatan',
+        'tempat_lahir',
+        'tanggal_lahir',
+        'kewarganegaraan',
+        'status_kewarganegaraan',
+        'no_hp',
+        'alamat',
+        'foto',
+        'status',
+        'last_login',
     ];
 
     /**
@@ -35,15 +45,48 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
      * @return array<string, string>
      */
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
+            'tanggal_lahir' => 'date',
+            'last_login' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * User belongs to one Unit.
+     */
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class);
+    }
+
+    /**
+     * User has many Absensi.
+     */
+    public function absensi()
+    {
+        return $this->hasMany(Absensi::class);
+    }
+
+    public function pengajuanIzin()
+    {
+        return $this->hasMany(PengajuanIzin::class);
+    }
+
+    public function pengajuanIzinDisetujui()
+    {
+        return $this->hasMany(PengajuanIzin::class, 'disetujui_oleh');
     }
 }

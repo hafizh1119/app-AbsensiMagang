@@ -26,6 +26,46 @@
             <span>Dashboard</span>
         </a>
 
+        {{-- Data Master --}}
+        <div x-data="{ open: {{ request()->routeIs(['admin.data-master.unit*', 'admin.data-master.jenis-izin*', 'admin.data-master.pegawai*']) ? 'true' : 'false' }} }">
+            <button type="button" @click="open = !open"
+                    class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150
+                    {{ request()->routeIs(['admin.data-master.unit*', 'admin.data-master.jenis-izin*', 'admin.data-master.pegawai*']) ? 'text-emerald-700' : 'text-gray-600 hover:bg-emerald-50 hover:text-emerald-700' }}">
+                <span class="flex items-center gap-3">
+                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+                    </svg>
+                    <span>Data Master</span>
+                </span>
+                <svg class="w-4 h-4 text-gray-400 transition-transform duration-200" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </button>
+
+            <div x-show="open" x-collapse class="mt-1 ml-11 space-y-1">
+                {{-- Unit / Divisi --}}
+                <a href="{{ route('admin.data-master.unit') }}"
+                class="block px-3 py-2 rounded-lg text-sm transition-colors duration-150
+                {{ request()->routeIs('admin.data-master.unit*') ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-500 hover:bg-emerald-50 hover:text-emerald-700' }}">
+                    Unit
+                </a>
+                
+                {{-- Jenis Izin --}}
+                <a href="{{ route('admin.data-master.jenis-izin') }}"
+                class="block px-3 py-2 rounded-lg text-sm transition-colors duration-150
+                {{ request()->routeIs('admin.data-master.jenis-izin*') ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-500 hover:bg-emerald-50 hover:text-emerald-700' }}">
+                    Jenis Izin
+                </a>
+
+                {{-- Pegawai --}}
+                <a href="{{ route('admin.data-master.pegawai') }}"
+                class="block px-3 py-2 rounded-lg text-sm transition-colors duration-150
+                {{ request()->routeIs('admin.data-master.pegawai*') ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-500 hover:bg-emerald-50 hover:text-emerald-700' }}">
+                    Pegawai
+                </a>
+            </div>
+        </div>
+
         {{-- Data Absensi --}}
         <div x-data="{ open: {{ request()->routeIs('admin.absensi.*') ? 'true' : 'false' }} }">
             <button type="button" @click="open = !open"
@@ -72,27 +112,21 @@
             </button>
 
             <div x-show="open" x-collapse class="mt-1 ml-11 space-y-1">
+                {{-- Semua Pengajuan --}}
                 <a href="{{ route('admin.izin.semua') }}"
-                   class="block px-3 py-2 rounded-lg text-sm transition-colors duration-150
-                   {{ request()->routeIs('admin.izin.semua') ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-500 hover:bg-emerald-50 hover:text-emerald-700' }}">Semua Pengajuan</a>
+                class="block px-3 py-2 rounded-lg text-sm transition-colors duration-150
+                {{ request()->routeIs('admin.izin.semua') ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-500 hover:bg-emerald-50 hover:text-emerald-700' }}">
+                    Semua Pengajuan
+                </a>
+                
+                {{-- Menunggu Persetujuan --}}
                 <a href="{{ route('admin.izin.menunggu') }}"
-                   class="block px-3 py-2 rounded-lg text-sm transition-colors duration-150
-                   {{ request()->routeIs('admin.izin.menunggu') ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-500 hover:bg-emerald-50 hover:text-emerald-700' }}">Menunggu Persetujuan</a>
-                <a href="{{ route('admin.izin.riwayat') }}"
-                   class="block px-3 py-2 rounded-lg text-sm transition-colors duration-150
-                   {{ request()->routeIs('admin.izin.riwayat') ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-500 hover:bg-emerald-50 hover:text-emerald-700' }}">Riwayat Pengajuan</a>
+                class="block px-3 py-2 rounded-lg text-sm transition-colors duration-150
+                {{ request()->routeIs('admin.izin.menunggu') ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-500 hover:bg-emerald-50 hover:text-emerald-700' }}">
+                    Menunggu Persetujuan
+                </a>
             </div>
         </div>
-
-        {{-- Data Pegawai --}}
-        <a href="{{ route('admin.pegawai') }}"
-           class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150
-           {{ request()->routeIs('admin.pegawai') ? 'bg-emerald-50 text-emerald-700' : 'text-gray-600 hover:bg-emerald-50 hover:text-emerald-700' }}">
-            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
-            </svg>
-            <span>Data Pegawai</span>
-        </a>
 
         {{-- Unit / Divisi --}}
         <a href="{{ route('admin.unit') }}"
@@ -102,16 +136,6 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2M5 21H3m4 0h10M9 7h1m4 0h1M9 11h1m4 0h1m-6 4h1m4 0h1"/>
             </svg>
             <span>Unit</span>
-        </a>
-
-        {{-- Jadwal Kerja --}}
-        <a href="{{ route('admin.jadwal-kerja') }}"
-           class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150
-           {{ request()->routeIs('admin.jadwal-kerja') ? 'bg-emerald-50 text-emerald-700' : 'text-gray-600 hover:bg-emerald-50 hover:text-emerald-700' }}">
-            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-            </svg>
-            <span>Jadwal Kerja</span>
         </a>
 
         {{-- Lokasi Kantor --}}

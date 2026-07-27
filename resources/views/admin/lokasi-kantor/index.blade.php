@@ -5,12 +5,12 @@
 
 @section('content')
 
-<div class="flex">
+<div class="flex h-screen overflow-hidden">
 
-    {{-- Sidebar tetap di kiri --}}
+    {{-- Sidebar tetap di kiri, tidak ikut scroll --}}
     @include('admin.components.sidebar')
 
-    <div class="flex-1 min-w-0 flex flex-col min-h-screen">
+    <div class="flex-1 min-w-0 flex flex-col h-screen overflow-y-auto">
 
         @include('admin.components.header', ['title' => 'Lokasi Kantor'])
 
@@ -229,7 +229,6 @@
                                 <th class="text-left font-medium px-4 py-3">Nama Lokasi</th>
                                 <th class="text-left font-medium px-4 py-3">Alamat</th>
                                 <th class="text-left font-medium px-4 py-3">Radius</th>
-                                <th class="text-left font-medium px-4 py-3">Jumlah Pegawai</th>
                                 <th class="text-left font-medium px-4 py-3">Status</th>
                                 <th class="text-left font-medium px-4 py-3">Aksi</th>
                             </tr>
@@ -248,7 +247,6 @@
                                     </td>
                                     <td class="px-4 py-3 text-gray-500">{{ $row['alamat'] }}</td>
                                     <td class="px-4 py-3 text-gray-500">{{ $row['radius'] }}</td>
-                                    <td class="px-4 py-3 text-gray-500">{{ $row['jumlah_pegawai'] }} Pegawai</td>
                                     <td class="px-4 py-3">
                                         <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full
                                             {{ $row['status'] === 'Aktif' ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-100 text-gray-500' }}">

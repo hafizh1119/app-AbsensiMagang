@@ -5,13 +5,13 @@
 
 @section('content')
 
-<div class="flex">
+<div class="flex h-screen overflow-hidden">
 
-    {{-- Sidebar tetap di kiri --}}
+    {{-- Sidebar tetap di kiri, tidak ikut scroll --}}
     @include('admin.components.sidebar')
 
     {{-- Kolom kanan: header di atas, konten halaman di bawahnya --}}
-    <div class="flex-1 flex flex-col min-h-screen">
+    <div class="flex-1 min-w-0 flex flex-col h-screen overflow-y-auto">
 
         @include('admin.components.header', ['title' => 'Semua Absensi'])
 
@@ -20,11 +20,11 @@
             @php
                 // Data contoh, ganti dengan data asli dari controller (mis. $absensis dari paginate())
                 $absensis = $absensis ?? collect([
-                    ['no' => 1, 'nip' => '199203152019031005', 'nama' => 'Budi Santoso',   'tanggal' => '26/05/2025', 'unit' => 'Keuangan', 'masuk' => '07:58', 'pulang' => '16:31', 'status' => 'Hadir'],
-                    ['no' => 2, 'nip' => '199508202020032011', 'nama' => 'Siti Rahmawati', 'tanggal' => '26/05/2025', 'unit' => 'SDM',      'masuk' => '08:12', 'pulang' => '-',     'status' => 'Terlambat'],
-                    ['no' => 3, 'nip' => '199001102015041002', 'nama' => 'Agus Setiawan',  'tanggal' => '26/05/2025', 'unit' => 'IT',       'masuk' => '07:45', 'pulang' => '16:32', 'status' => 'Pulang'],
-                    ['no' => 4, 'nip' => '199712052021032018', 'nama' => 'Dewi Lestari',   'tanggal' => '26/05/2025', 'unit' => 'Keuangan', 'masuk' => '-',     'pulang' => '-',     'status' => 'Tidak Hadir'],
-                    ['no' => 5, 'nip' => '199403182018011007', 'nama' => 'Eko Prasetyo',   'tanggal' => '26/05/2025', 'unit' => 'Umum',     'masuk' => '08:05', 'pulang' => '16:33', 'status' => 'Hadir'],
+                    ['no' => 1, 'nip' => '199203152019031005', 'nama' => 'Budi Santoso',   'tanggal' => '26/05/2025', 'unit' => 'Keuangan', 'masuk' => '07:58', 'pulang' => '16:31', 'status' => 'Hadir', 'keterangan' => '-'],
+                    ['no' => 2, 'nip' => '199508202020032011', 'nama' => 'Siti Rahmawati', 'tanggal' => '26/05/2025', 'unit' => 'SDM',      'masuk' => '08:12', 'pulang' => '-',     'status' => 'Terlambat', 'keterangan' => 'Terlambat 12 menit'],
+                    ['no' => 3, 'nip' => '199001102015041002', 'nama' => 'Agus Setiawan',  'tanggal' => '26/05/2025', 'unit' => 'IT',       'masuk' => '07:45', 'pulang' => '16:32', 'status' => 'Hadir', 'keterangan' => '-'],
+                    ['no' => 4, 'nip' => '199712052021032018', 'nama' => 'Dewi Lestari',   'tanggal' => '26/05/2025', 'unit' => 'Keuangan', 'masuk' => '-',     'pulang' => '-',     'status' => 'Tidak Hadir', 'keterangan' => 'Izin'],
+                    ['no' => 5, 'nip' => '199403182018011007', 'nama' => 'Eko Prasetyo',   'tanggal' => '26/05/2025', 'unit' => 'Umum',     'masuk' => '08:05', 'pulang' => '16:33', 'status' => 'Hadir', 'keterangan' => '-'],
                 ]);
 
                 $statusStyle = [
@@ -101,12 +101,13 @@
                                 <th class="text-left font-medium px-5 py-3">Jam Masuk</th>
                                 <th class="text-left font-medium px-5 py-3">Jam Pulang</th>
                                 <th class="text-left font-medium px-5 py-3">Status</th>
-                                <th class="text-left font-medium px-5 py-3">Aksi</th>
+                                <th class="text-left font-medium px-5 py-3">Keterangan</th>
+                                <th class="text-center font-medium px-5 py-3">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
                             @foreach($absensis as $row)
-                                <tr class="hover:bg-gray-50/60 transition-colors">
+                                <tr class="hover:bg-gray-50/60 transition-colors" x-data="{ confirmOpen: false }">
                                     <td class="px-5 py-3 text-gray-500">{{ $row['no'] }}</td>
                                     <td class="px-5 py-3 text-gray-500">{{ $row['tanggal'] }}</td>
                                     <td class="px-5 py-3 text-gray-500">{{ $row['nip'] }}</td>
@@ -119,13 +120,62 @@
                                             {{ $row['status'] }}
                                         </span>
                                     </td>
-                                    <td class="px-5 py-3">
-                                        <a href="#" class="inline-flex items-center justify-center w-7 h-7 rounded-full text-gray-400 hover:bg-gray-100 hover:text-emerald-600 transition">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                            </svg>
-                                        </a>
+                                    <td class="px-5 py-3 text-gray-500">{{ $row['keterangan'] ?? '-' }}</td>
+                                    <td class="px-5 py-3 text-center">
+                                        <div class="flex items-center justify-center gap-2">
+                                            <a href="#"
+                                               class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-yellow-500 hover:bg-yellow-600 text-white transition">
+                                                Edit
+                                            </a>
+                                            
+                                            {{-- Tombol Hapus --}}
+                                            <button type="button" @click="confirmOpen = true"
+                                                    class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-rose-500 hover:bg-rose-600 text-white transition">
+                                                Hapus
+                                            </button>
+
+                                            {{-- Overlay --}}
+                                            <div x-show="confirmOpen"
+                                                x-transition.opacity
+                                                style="display: none;"
+                                                class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+
+                                                {{-- Card konfirmasi --}}
+                                                <div x-show="confirmOpen"
+                                                    x-transition:enter="transition ease-out duration-200"
+                                                    x-transition:enter-start="opacity-0 scale-95"
+                                                    x-transition:enter-end="opacity-100 scale-100"
+                                                    @click.outside="confirmOpen = false"
+                                                    class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 text-center">
+
+                                                    <div class="w-14 h-14 mx-auto rounded-full bg-rose-50 flex items-center justify-center mb-4">
+                                                        <svg class="w-7 h-7 text-rose-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/>
+                                                        </svg>
+                                                    </div>
+
+                                                    <h3 class="text-base font-bold text-gray-900 mb-1">Hapus Data Absensi?</h3>
+                                                    <p class="text-sm text-gray-500 mb-6">
+                                                        Data yang sudah dihapus tidak dapat dikembalikan. Pastikan kamu yakin sebelum melanjutkan.
+                                                    </p>
+
+                                                    <div class="flex items-center gap-3">
+                                                        <button type="button" @click="confirmOpen = false"
+                                                                class="flex-1 text-sm font-semibold px-4 py-2.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition">
+                                                            Batal
+                                                        </button>
+                                                        <form action="#" method="POST" class="flex-1">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit"
+                                                                    class="w-full text-sm font-semibold px-4 py-2.5 rounded-lg bg-rose-500 hover:bg-rose-600 text-white transition">
+                                                                Ya, Hapus
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
