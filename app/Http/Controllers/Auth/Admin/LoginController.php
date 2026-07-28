@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Auth\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class AbsensiController extends Controller
+class LoginController extends Controller
 {
     //
 }

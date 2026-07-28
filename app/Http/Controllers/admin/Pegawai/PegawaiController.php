@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Admin\Pegawai;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class LokasiAbsensiController extends Controller
+class PegawaiController extends Controller
 {
     /**
      * Display a listing of the resource.

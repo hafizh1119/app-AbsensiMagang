@@ -10,6 +10,8 @@
     <link rel="alternate icon" href="{{ asset('icon/logo.svg') }}">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    @stack('styles')
 </head>
 
 <body class="bg-gray-100 min-h-screen">

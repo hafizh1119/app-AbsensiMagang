@@ -1,7 +1,7 @@
-<aside class="w-64 min-h-screen bg-white border-r border-gray-100 flex flex-col">
+<aside class="w-64 h-screen bg-white border-r border-gray-100 flex flex-col sticky top-0">
 
     {{-- Header / Brand --}}
-    <div class="bg-gradient-to-br from-emerald-600 to-emerald-700 px-4 py-4">
+    <div class="bg-gradient-to-br from-emerald-600 to-emerald-700 px-4 py-4 flex-shrink-0">
         <div class="flex items-center gap-3">
             {{-- Logo polos, tanpa lingkaran/background di belakangnya --}}
             <img src="{{ asset('icon/logo.svg') }}" alt="Logo" class="shrink-0 w-10 h-10 object-contain">
@@ -140,8 +140,8 @@
 
         {{-- Lokasi Kantor --}}
         <a href="{{ route('admin.lokasi-kantor') }}"
-           class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150
-           {{ request()->routeIs('admin.lokasi-kantor') ? 'bg-emerald-50 text-emerald-700' : 'text-gray-600 hover:bg-emerald-50 hover:text-emerald-700' }}">
+        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150
+        {{ request()->routeIs('admin.lokasi-kantor*') ? 'bg-emerald-50 text-emerald-700' : 'text-gray-600 hover:bg-emerald-50 hover:text-emerald-700' }}">
             <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -179,7 +179,7 @@
     </nav>
 
     {{-- Keluar --}}
-    <div class="px-3 py-4 border-t border-gray-100">
+    <div class="px-3 py-4 border-t border-gray-100 flex-shrink-0">
         <form method="POST" action="#">
             @csrf
             <button type="submit"

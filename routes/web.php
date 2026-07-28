@@ -37,24 +37,36 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/unit/show', function () { return view('admin.unit.show'); })->name('unit.show');
 
     Route::get('/lokasi-kantor', function () { return view('admin.lokasi-kantor.index'); })->name('lokasi-kantor');
+    Route::get('/lokasi-kantor/create', function () { return view('admin.lokasi-kantor.create'); })->name('lokasi-kantor.create');
+    Route::get('/lokasi-kantor/edit', function () { return view('admin.lokasi-kantor.edit'); })->name('lokasi-kantor.edit');
+    Route::get('/lokasi-kantor/show', function () { return view('admin.lokasi-kantor.show'); })->name('lokasi-kantor.show');
 
-    Route::get('/manajemen/user', function () { return view('admin.manajemen.user'); })->name('manajemen.user');
-    Route::get('/manajemen/admin', function () { return view('admin.manajemen.admin'); })->name('manajemen.admin');
+    Route::get('/manajemen/user', function () { return view('admin.manajemen.user.index'); })->name('manajemen.user');
+    Route::get('/manajemen/user/create', function () { return view('admin.manajemen.user.create'); })->name('manajemen.user.create');
+    Route::get('/manajemen/user/edit', function () { return view('admin.manajemen.user.edit'); })->name('manajemen.user.edit');
+
+    Route::get('/manajemen/admin', function () { return view('admin.manajemen.admin.index'); })->name('manajemen.admin');
+    Route::get('/manajemen/admin/create', function () { return view('admin.manajemen.admin.create'); })->name('manajemen.admin.create');
+    Route::get('/manajemen/admin/edit', function () { return view('admin.manajemen.admin.edit');})->name('manajemen.admin.edit');
 
 });
 
 Route::prefix('pengguna')->name('pengguna.')->group(function () {
 
     Route::get('/home', function () { return view('pengguna.home.index'); })->name('home');
+
     Route::get('/absensi', function () { return view('pengguna.absensi.face-recognition'); })->name('absensi');
     Route::get('/absensi/riwayat', function () { return view('pengguna.absensi.riwayat-absensi'); })->name('riwayat');
+
     Route::get('/jadwal', function () { return view('pengguna.jadwal.index'); })->name('jadwal');
+
     Route::get('/izin', function () { return view('pengguna.izin.pengajuan'); })->name('izin');
     Route::get('/izin/form', function () { return view('pengguna.izin.form-pengajuan'); })->name('izin.form');
     Route::get('/izin/review', function () { return view('pengguna.izin.review'); })->name('izin.review');
     Route::get('/izin/akhir', function () { return view('pengguna.izin.akhir'); })->name('izin.akhir');
     Route::get('/izin/riwayat-izin', function () { return view('pengguna.izin.riwayat-izin'); })->name('izin.riwayat');
     Route::get('/izin/detail', function () { return view('pengguna.detail'); })->name('izin.detail');
+    
     Route::get('/profil', function () { return view('pengguna.profil.index'); })->name('profil');
 
 });

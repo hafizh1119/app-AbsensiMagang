@@ -21,7 +21,6 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
-        'unit_id',
         'jabatan',
         'tempat_lahir',
         'tanggal_lahir',
@@ -64,17 +63,11 @@ class User extends Authenticatable
     |--------------------------------------------------------------------------
     */
 
-    /**
-     * User belongs to one Unit.
-     */
     public function unit()
     {
-        return $this->belongsTo(Unit::class);
+        return $this->hasOne(Unit::class);
     }
 
-    /**
-     * User has many Absensi.
-     */
     public function absensi()
     {
         return $this->hasMany(Absensi::class);
