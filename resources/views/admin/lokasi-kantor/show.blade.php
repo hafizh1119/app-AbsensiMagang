@@ -26,9 +26,6 @@
                     'lat'       => '-6.986931',
                     'lng'       => '110.420279',
                     'radius'    => 100,
-                    'status'    => 'Aktif',
-                    'deskripsi' => 'Titik lokasi utama untuk absensi pegawai kantor pusat.',
-                    'jumlah_pegawai' => 156,
                 ];
             @endphp
 
@@ -101,24 +98,8 @@
                                 <p class="text-xs text-gray-400 mb-1">Radius</p>
                                 <p class="text-gray-700">{{ $lokasi->radius }} Meter</p>
                             </div>
-                            <div>
-                                <p class="text-xs text-gray-400 mb-1">Status</p>
-                                <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full
-                                    {{ $lokasi->status === 'Aktif' ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-100 text-gray-500' }}">
-                                    {{ $lokasi->status }}
-                                </span>
-                            </div>
                         </div>
 
-                        <div>
-                            <p class="text-xs text-gray-400 mb-1">Jumlah Pegawai Terdaftar</p>
-                            <p class="text-gray-700">{{ $lokasi->jumlah_pegawai }} Orang</p>
-                        </div>
-
-                        <div>
-                            <p class="text-xs text-gray-400 mb-1">Deskripsi</p>
-                            <p class="text-gray-700">{{ $lokasi->deskripsi }}</p>
-                        </div>
                     </div>
 
                 </div>

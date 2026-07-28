@@ -8,24 +8,22 @@
 
 <div class="min-h-screen bg-gray-50 px-5 py-4">
 
-    {{-- Filter: Bulan & Tahun dalam satu baris --}}
-    <div class="flex items-center gap-2 mb-4">
+    {{-- Filter: Bulan & Tahun --}}
+    <form method="GET" action="{{ route('pengguna.jadwal') }}" class="flex items-center gap-2 mb-4">
 
         <div class="relative flex-1">
-            <select name="bulan"
+            <select name="bulan" onchange="this.form.submit()"
                     class="w-full appearance-none bg-white border border-gray-200 rounded-xl pl-3 pr-9 py-2.5 text-sm font-medium text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                <option value="1">Januari</option>
-                <option value="2">Februari</option>
-                <option value="3">Maret</option>
-                <option value="4">April</option>
-                <option value="5" selected>Mei</option>
-                <option value="6">Juni</option>
-                <option value="7">Juli</option>
-                <option value="8">Agustus</option>
-                <option value="9">September</option>
-                <option value="10">Oktober</option>
-                <option value="11">November</option>
-                <option value="12">Desember</option>
+                @php
+                    $namaBulanList = [
+                        1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+                        5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+                        9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
+                    ];
+                @endphp
+                @foreach ($namaBulanList as $angka => $nama)
+                    <option value="{{ $angka }}" {{ $bulan == $angka ? 'selected' : '' }}>{{ $nama }}</option>
+                @endforeach
             </select>
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="6 9 12 15 18 9"></polyline>
@@ -33,46 +31,25 @@
         </div>
 
         <div class="relative flex-1">
-            <select name="tahun"
+            <select name="tahun" onchange="this.form.submit()"
                     class="w-full appearance-none bg-white border border-gray-200 rounded-xl pl-3 pr-9 py-2.5 text-sm font-medium text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                <option value="2023">2023</option>
-                <option value="2024">2024</option>
-                <option value="2025" selected>2025</option>
-                <option value="2026">2026</option>
+                @foreach (range(now()->year - 1, now()->year + 1) as $tahunOpsi)
+                    <option value="{{ $tahunOpsi }}" {{ $tahun == $tahunOpsi ? 'selected' : '' }}>{{ $tahunOpsi }}</option>
+                @endforeach
             </select>
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
         </div>
 
-    </div>
-
-    @php
-        $bulan = $bulan ?? 5;
-        $tahun = $tahun ?? 2025;
-
-        // Tanggal merah / hari libur nasional tambahan (selain Sabtu-Minggu)
-        $liburNasional = $liburNasional ?? [
-            // 'Y-m-d' => 'Nama libur'
-            '2025-05-01' => 'Hari Buruh',
-            '2025-05-12' => 'Waisak',
-        ];
-
-        $shiftMasuk  = $shiftMasuk  ?? '07.30';
-        $shiftPulang = $shiftPulang ?? '16.30';
-
-        $awalBulan   = \Carbon\Carbon::createFromDate($tahun, $bulan, 1);
-        $jumlahHari  = $awalBulan->daysInMonth;
-        $hariPertama = $awalBulan->dayOfWeekIso; // 1 = Senin ... 7 = Minggu
-        $hariIni     = \Carbon\Carbon::now()->format('Y-m-d');
-
-        $namaBulan = $awalBulan->translatedFormat('F Y');
-    @endphp
+    </form>
 
     {{-- Ringkasan singkat --}}
     <div class="bg-white rounded-2xl shadow-sm px-5 py-4 mb-4">
         <p class="text-gray-900 font-semibold mb-1">{{ ucfirst($namaBulan) }}</p>
-        <p class="text-sm text-gray-500">Jam kerja: <span class="font-medium text-gray-700">{{ $shiftMasuk }} - {{ $shiftPulang }}</span></p>
+        <p class="text-sm text-gray-500">
+            Jam kerja (Senin–Jumat): <span class="font-medium text-gray-700">{{ $shiftMasuk }} - {{ $shiftPulang }}</span>
+        </p>
     </div>
 
     {{-- Kalender --}}
@@ -95,12 +72,12 @@
 
             @for ($tgl = 1; $tgl <= $jumlahHari; $tgl++)
                 @php
-                    $tanggalObj  = \Carbon\Carbon::createFromDate($tahun, $bulan, $tgl);
-                    $tanggalKey  = $tanggalObj->format('Y-m-d');
-                    $isWeekend   = $tanggalObj->isWeekend();
-                    $namaLibur   = $liburNasional[$tanggalKey] ?? null;
-                    $isLibur     = $isWeekend || $namaLibur;
-                    $isHariIni   = $tanggalKey === $hariIni;
+                    $tanggalObj = \Carbon\Carbon::createFromDate($tahun, $bulan, $tgl);
+                    $tanggalKey = $tanggalObj->format('Y-m-d');
+                    $isWeekend   = $tanggalObj->isSunday();
+                    $namaLibur  = $liburNasional[$tanggalKey] ?? null;
+                    $isLibur    = $isWeekend || $namaLibur;
+                    $isHariIni  = $tanggalKey === $hariIni;
                 @endphp
 
                 <div class="aspect-square rounded-xl flex flex-col items-center justify-center relative
@@ -128,29 +105,32 @@
                 <span class="w-2.5 h-2.5 rounded-full bg-red-400"></span>
                 <span class="text-xs text-gray-500">Libur</span>
             </div>
+            <div class="flex items-center gap-1.5">
+                <span class="w-3 h-3 rounded-md ring-2 ring-emerald-600"></span>
+                <span class="text-xs text-gray-500">Hari Ini</span>
+            </div>
         </div>
     </div>
 
     {{-- Daftar hari libur bulan ini --}}
     @php
         $daftarLibur = collect($liburNasional)
-            ->filter(fn ($nama, $tgl) => \Carbon\Carbon::parse($tgl)->month == $bulan && \Carbon\Carbon::parse($tgl)->year == $tahun);
+            ->filter(fn ($nama, $tgl) => \Carbon\Carbon::parse($tgl)->month == $bulan && \Carbon\Carbon::parse($tgl)->year == $tahun)
+            ->sortKeys();
     @endphp
 
-    @if ($daftarLibur->isNotEmpty())
-        <div class="bg-white rounded-2xl shadow-sm px-5 py-4 mb-20">
-            <p class="text-gray-900 font-semibold mb-3">Libur Nasional Bulan Ini</p>
-            <div class="space-y-2">
-                @foreach ($daftarLibur as $tgl => $nama)
-                    <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-600">{{ \Carbon\Carbon::parse($tgl)->translatedFormat('d F Y') }}</span>
-                        <span class="text-sm font-medium text-red-500">{{ $nama }}</span>
-                    </div>
-                @endforeach
+    <div class="bg-white rounded-2xl shadow-sm px-5 py-4 mb-20">
+        <p class="text-gray-900 font-semibold mb-3">Libur Nasional Bulan Ini</p>
+
+        @forelse ($daftarLibur as $tgl => $nama)
+            <div class="flex items-center justify-between py-1.5 {{ !$loop->last ? 'border-b border-gray-50' : '' }}">
+                <span class="text-sm text-gray-600">{{ \Carbon\Carbon::parse($tgl)->translatedFormat('d F Y') }}</span>
+                <span class="text-sm font-medium text-red-500">{{ $nama }}</span>
             </div>
-        </div>
-    @endif
+        @empty
+            <p class="text-sm text-gray-400">Tidak ada hari libur nasional bulan ini.</p>
+        @endforelse
+    </div>
 
 </div>
-@include('pengguna.components.menu')
 @endsection

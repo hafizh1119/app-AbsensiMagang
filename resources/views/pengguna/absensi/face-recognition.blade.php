@@ -1,4 +1,4 @@
-{{-- resources/views/absen/face-recognition.blade.php --}}
+{{-- resources/views/pengguna/absensi/face-recognition.blade.php --}}
 @extends('layouts.app')
 
 @section('title', 'Deteksi Wajah')
@@ -13,19 +13,31 @@
 
 <div class="flex-1 flex flex-col justify-center px-5 py-3 overflow-hidden min-h-0 h-[calc(100vh-4rem)]">
 
+    {{-- Flash message --}}
+    @if (session('success'))
+        <div class="max-w-sm mx-auto w-full mb-2 bg-emerald-50 text-emerald-700 text-sm font-medium px-4 py-2.5 rounded-xl border border-emerald-100">
+            {{ session('success') }}
+        </div>
+    @endif
+    @if (session('error'))
+        <div class="max-w-sm mx-auto w-full mb-2 bg-rose-50 text-rose-600 text-sm font-medium px-4 py-2.5 rounded-xl border border-rose-100">
+            {{ session('error') }}
+        </div>
+    @endif
+
     {{-- Kotak Kamera --}}
     <div class="relative w-full max-w-sm mx-auto mt-2 aspect-square max-h-[42vh] rounded-3xl bg-gray-200 overflow-hidden shadow-sm">
 
         {{-- Video live dari kamera --}}
         <video id="camera-feed" autoplay playsinline muted class="w-full h-full object-cover -scale-x-100"></video>
 
-        {{-- Placeholder kalau kamera belum aktif / gagal diakses --}}
+        {{-- Placeholder kalau kamera / model belum siap --}}
         <div id="camera-placeholder" class="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-gray-200 text-gray-400">
             <svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
                 <circle cx="12" cy="13" r="4"/>
             </svg>
-            <span class="text-xs">Mengaktifkan kamera...</span>
+            <span id="placeholder-text" class="text-xs">Menyiapkan model deteksi wajah...</span>
         </div>
 
         {{-- Overlay oval panduan wajah --}}
@@ -93,6 +105,21 @@
                 </svg>
             </span>
         </div>
+        {{-- Checklist lokasi GPS --}}
+        <div class="flex items-center justify-between px-4 py-2">
+            <div class="flex items-center gap-2.5">
+                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                    <circle cx="12" cy="11" r="3"/>
+                </svg>
+                <span class="text-sm text-gray-600">Lokasi GPS terdeteksi</span>
+            </div>
+            <span id="check-4" class="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center shrink-0 transition-colors duration-300">
+                <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                </svg>
+            </span>
+        </div>
     </div>
 
     {{-- Status Deteksi --}}
@@ -101,19 +128,29 @@
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
         </svg>
-        <span id="status-text" class="text-sm font-semibold text-emerald-700">Arahkan wajah ke kamera...</span>
+        <span id="status-text" class="text-sm font-semibold text-emerald-700">Memuat model deteksi wajah...</span>
     </div>
 
-    {{-- Form kirim hasil capture, terkirim otomatis begitu wajah cocok --}}
-    <form id="absen-form" action="#" method="POST" class="hidden">
+    {{-- Form kirim hasil capture, terkirim otomatis begitu wajah cocok & lokasi valid --}}
+    <form id="absen-form" action="{{ route('pengguna.absensi.store') }}" method="POST" class="hidden">
+        @csrf
         <input type="hidden" name="photo" id="photo-input">
+        <input type="hidden" name="latitude" id="latitude-input">
+        <input type="hidden" name="longitude" id="longitude-input">
     </form>
 </div>
 </div>
 
+{{-- face-api.js: deteksi wajah via TensorFlow.js/WASM, jalan di semua browser modern
+     (tidak tergantung FaceDetector API bawaan browser yang sudah tidak didukung luas) --}}
+<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+
 <script>
+    const MODEL_URL = 'https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@master/weights';
+
     const video = document.getElementById('camera-feed');
     const placeholder = document.getElementById('camera-placeholder');
+    const placeholderText = document.getElementById('placeholder-text');
     const canvas = document.getElementById('capture-canvas');
     const faceOval = document.getElementById('face-oval');
     const statusText = document.getElementById('status-text');
@@ -121,14 +158,21 @@
     const statusSpinner = document.getElementById('status-spinner');
     const absenForm = document.getElementById('absen-form');
     const photoInput = document.getElementById('photo-input');
+    const latitudeInput = document.getElementById('latitude-input');
+    const longitudeInput = document.getElementById('longitude-input');
     const check1 = document.getElementById('check-1');
     const check2 = document.getElementById('check-2');
     const check3 = document.getElementById('check-3');
+    const check4 = document.getElementById('check-4');
 
-    let detector = null;
+    let modelsReady = false;
     let detectLoop = null;
+    let locationWatch = null;
     let stableFrames = 0;      // hitung berapa kali wajah kedeteksi berturut-turut
     const REQUIRED_STABLE_FRAMES = 6; // ~ 3 detik kalau interval 500ms, wajah harus stabil kedeteksi
+    let faceReady = false;
+    let coords = null;         // { lat, lng } begitu GPS berhasil didapat
+    let locationFailed = false;
     let done = false;
 
     function markChecklist(active) {
@@ -136,6 +180,70 @@
             el.classList.toggle('bg-emerald-500', active);
             el.classList.toggle('bg-gray-200', !active);
         });
+    }
+
+    function markLocationChecklist(active) {
+        check4.classList.toggle('bg-emerald-500', active);
+        check4.classList.toggle('bg-gray-200', !active);
+    }
+
+    function setStatus(text, tone) {
+        statusText.textContent = text;
+        statusBox.classList.remove('bg-emerald-50', 'border-emerald-100', 'bg-amber-50', 'border-amber-100', 'bg-red-50', 'border-red-100');
+        statusText.classList.remove('text-emerald-700', 'text-amber-700', 'text-red-600');
+
+        if (tone === 'amber') {
+            statusBox.classList.add('bg-amber-50', 'border-amber-100');
+            statusText.classList.add('text-amber-700');
+        } else if (tone === 'red') {
+            statusBox.classList.add('bg-red-50', 'border-red-100');
+            statusText.classList.add('text-red-600');
+        } else {
+            statusBox.classList.add('bg-emerald-50', 'border-emerald-100');
+            statusText.classList.add('text-emerald-700');
+        }
+    }
+
+    // Ambil lokasi GPS user. Dipakai terus (watchPosition) supaya begitu user
+    // mengizinkan akses lokasi meski agak telat, prosesnya tetap lanjut otomatis.
+    function startLocation() {
+        if (!navigator.geolocation) {
+            locationFailed = true;
+            markLocationChecklist(false);
+            setStatus('Perangkat tidak mendukung GPS, absen tidak bisa dilanjutkan', 'red');
+            return;
+        }
+
+        locationWatch = navigator.geolocation.watchPosition(
+            (pos) => {
+                coords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                locationFailed = false;
+                markLocationChecklist(true);
+                tryFinish();
+            },
+            () => {
+                locationFailed = true;
+                coords = null;
+                markLocationChecklist(false);
+                if (!faceReady) {
+                    setStatus('Aktifkan izin lokasi untuk melanjutkan absen', 'amber');
+                }
+            },
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 5000 }
+        );
+    }
+
+    // Muat model face-api.js (sekali saja saat halaman dibuka)
+    async function loadModels() {
+        try {
+            await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
+            modelsReady = true;
+            startCamera();
+        } catch (err) {
+            placeholderText.textContent = 'Gagal memuat model deteksi wajah';
+            setStatus('Gagal memuat model deteksi wajah. Periksa koneksi internet Anda.', 'red');
+            statusSpinner.classList.add('hidden');
+        }
     }
 
     // Aktifkan kamera depan (selfie)
@@ -147,56 +255,64 @@
             });
             video.srcObject = stream;
             placeholder.classList.add('hidden');
+            setStatus('Arahkan wajah ke kamera...');
 
-            if ('FaceDetector' in window) {
-                detector = new FaceDetector({ fastMode: true, maxDetectedFaces: 1 });
-                detectLoop = setInterval(runDetection, 500);
-            } else {
-                // Browser tidak mendukung FaceDetector API (mis. Firefox, Safari versi lama)
-                statusSpinner.classList.add('hidden');
-                statusText.textContent = 'Browser tidak mendukung deteksi wajah otomatis';
-                statusBox.classList.replace('bg-emerald-50', 'bg-amber-50');
-                statusBox.classList.replace('border-emerald-100', 'border-amber-100');
-                statusText.classList.replace('text-emerald-700', 'text-amber-700');
-            }
+            detectLoop = setInterval(runDetection, 500);
         } catch (err) {
-            statusText.textContent = 'Kamera tidak dapat diakses';
-            statusBox.classList.replace('bg-emerald-50', 'bg-red-50');
-            statusBox.classList.replace('border-emerald-100', 'border-red-100');
-            statusText.classList.replace('text-emerald-700', 'text-red-600');
+            setStatus('Kamera tidak dapat diakses. Izinkan akses kamera pada browser Anda.', 'red');
             statusSpinner.classList.add('hidden');
         }
     }
 
     // Cek betulan ada wajah di frame video saat ini
     async function runDetection() {
-        if (done || video.readyState < 2) return;
+        if (done || !modelsReady || video.readyState < 2) return;
 
         try {
-            const faces = await detector.detect(video);
+            const detection = await faceapi.detectSingleFace(
+                video,
+                new faceapi.TinyFaceDetectorOptions({ inputSize: 224, scoreThreshold: 0.5 })
+            );
 
-            if (faces.length > 0) {
+            if (detection) {
                 stableFrames++;
                 faceOval.classList.remove('border-emerald-400');
                 faceOval.classList.add('border-emerald-500');
                 markChecklist(true);
-                statusText.textContent = `Wajah terdeteksi (${stableFrames}/${REQUIRED_STABLE_FRAMES})...`;
 
                 if (stableFrames >= REQUIRED_STABLE_FRAMES) {
-                    done = true;
-                    clearInterval(detectLoop);
-                    capturePhoto();
+                    faceReady = true;
+                    tryFinish();
+                } else if (!locationFailed) {
+                    setStatus(`Wajah terdeteksi (${stableFrames}/${REQUIRED_STABLE_FRAMES})...`);
                 }
             } else {
                 // Wajah tidak/kepotong dari frame -> reset progres
                 stableFrames = 0;
+                faceReady = false;
                 faceOval.classList.remove('border-emerald-500');
                 faceOval.classList.add('border-emerald-400');
                 markChecklist(false);
-                statusText.textContent = 'Arahkan wajah ke kamera...';
+                if (!locationFailed) {
+                    setStatus('Arahkan wajah ke kamera...');
+                }
             }
         } catch (e) {
             // Abaikan error deteksi sesaat, coba lagi di interval berikutnya
+        }
+    }
+
+    // Baru capture & kirim kalau wajah SUDAH stabil DAN lokasi SUDAH didapat.
+    function tryFinish() {
+        if (done) return;
+
+        if (faceReady && coords) {
+            done = true;
+            clearInterval(detectLoop);
+            if (locationWatch !== null) navigator.geolocation.clearWatch(locationWatch);
+            capturePhoto();
+        } else if (faceReady && !coords) {
+            setStatus('Wajah oke, menunggu lokasi GPS...', 'amber');
         }
     }
 
@@ -205,10 +321,13 @@
         canvas.height = video.videoHeight;
         canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
         const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+
         photoInput.value = dataUrl;
+        latitudeInput.value = coords.lat;
+        longitudeInput.value = coords.lng;
 
         statusSpinner.classList.add('hidden');
-        statusText.textContent = 'Wajah terdeteksi! Absen berhasil';
+        setStatus('Wajah & lokasi terverifikasi! Menyimpan absensi...');
 
         // Hentikan kamera setelah selesai
         if (video.srcObject) {
@@ -218,9 +337,10 @@
         // Kirim otomatis ke server tanpa perlu konfirmasi manual
         setTimeout(() => {
             absenForm.submit();
-        }, 1200);
+        }, 800);
     }
 
-    startCamera();
+    startLocation();
+    loadModels();
 </script>
 @endsection

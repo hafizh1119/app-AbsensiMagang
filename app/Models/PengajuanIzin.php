@@ -35,31 +35,16 @@ class PengajuanIzin extends Model
         ];
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Relationships
-    |--------------------------------------------------------------------------
-    */
-
-    /**
-     * Pengajuan izin dimiliki oleh satu user.
-     */
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Pengajuan izin memiliki satu jenis izin.
-     */
     public function jenisIzin()
     {
         return $this->belongsTo(JenisIzin::class);
     }
 
-    /**
-     * User yang menyetujui pengajuan izin.
-     */
     public function penyetuju()
     {
         return $this->belongsTo(User::class, 'disetujui_oleh');

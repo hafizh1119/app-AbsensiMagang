@@ -176,13 +176,6 @@
                                 </div>
                             </div>
 
-                            {{-- Deskripsi --}}
-                            <div>
-                                <label class="block text-xs text-gray-400 mb-1.5">Deskripsi</label>
-                                <textarea name="deskripsi" rows="2" placeholder="Keterangan tambahan tentang lokasi ini"
-                                          class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none">{{ old('deskripsi', $lokasi->deskripsi) }}</textarea>
-                            </div>
-
                         </div>
                     </div>
 

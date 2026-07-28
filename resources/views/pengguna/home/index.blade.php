@@ -1,17 +1,31 @@
-{{-- resources/views/home.blade.php --}}
+{{-- resources/views/pengguna/home/index.blade.php --}}
 @extends('layouts.app')
 
 @section('title', 'Home')
 
 @section('content')
-{{--
-    Contoh variabel status, ganti dengan data asli dari controller kamu:
-    $sudahAbsenMasuk = true/false;
-    $terlambat = true/false;
---}}
 @php
+    // Set locale ke Indonesia untuk Carbon
+    Carbon\Carbon::setLocale('id');
+    setlocale(LC_TIME, 'id_ID');
+    
     $sudahAbsenMasuk = $sudahAbsenMasuk ?? false;
     $terlambat = $terlambat ?? false;
+    
+    // Gunakan waktu lokal (Asia/Jakarta)
+    $waktuSekarang = now('Asia/Jakarta');
+    
+    // Menentukan sapaan berdasarkan jam (waktu lokal)
+    $jam = $waktuSekarang->format('H');
+    if ($jam >= 5 && $jam < 11) {
+        $sapaan = 'pagi';
+    } elseif ($jam >= 11 && $jam < 15) {
+        $sapaan = 'siang';
+    } elseif ($jam >= 15 && $jam < 18) {
+        $sapaan = 'sore';
+    } else {
+        $sapaan = 'malam';
+    }
 @endphp
 
 <div class="min-h-screen bg-gray-50 pb-24">
@@ -22,18 +36,18 @@
         <div class="absolute -top-8 -right-10 w-32 h-32 rounded-full bg-white/10"></div>
         <div class="absolute top-16 -right-4 w-16 h-16 rounded-full bg-white/10"></div>
         <div class="relative flex items-center gap-3 mt-5">
+            {{-- Header foto & nama --}}
             <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-lg ring-2 ring-white/40 shrink-0">
-                {{-- Ganti dengan foto profil pengguna kalau ada --}}
-                @if(auth()->check() && auth()->user()->avatar)
-                    <img src="{{ asset('storage/'.auth()->user()->avatar) }}" alt="Foto Profil" class="w-full h-full rounded-full object-cover">
+                @if($user->foto)
+                    <img src="{{ asset('foto-pegawai/'.$user->foto) }}" alt="Foto Profil" class="w-full h-full rounded-full object-cover">
                 @else
-                    {{ auth()->check() ? strtoupper(substr(auth()->user()->name, 0, 1)) : 'B' }}
+                    {{ strtoupper(substr($user->nama, 0, 1)) }}
                 @endif
             </div>
             <div>
-                <p class="text-emerald-100 text-sm">Selamat pagi,</p>
-                <h1 class="text-white text-xl font-bold leading-tight">{{ auth()->user()->name ?? 'Budi Santoso' }}</h1>
-                <p class="text-emerald-100 text-xs">{{ auth()->user()->jabatan ?? 'Staf Keuangan' }}</p>
+                <p class="text-emerald-100 text-sm">Selamat {{ $sapaan }},</p>
+                <h1 class="text-white text-xl font-bold leading-tight">{{ $user->nama }}</h1>
+                <p class="text-emerald-100 text-xs">{{ $user->jabatan ?? '-' }}</p>
             </div>
         </div>
     </div>
@@ -43,8 +57,8 @@
         <div class="bg-white rounded-2xl shadow-lg shadow-emerald-900/10 border border-gray-100 p-5 flex items-center justify-between overflow-hidden">
             <div>
                 <p class="text-xs text-gray-400">Hari ini</p>
-                <p class="text-sm font-semibold text-gray-700 mt-0.5">{{ now()->translatedFormat('l, d F Y') }}</p>
-                <p class="text-2xl font-extrabold text-gray-800 mt-1 tabular-nums" id="live-clock">{{ now()->format('H:i:s') }}</p>
+                <p class="text-sm font-semibold text-gray-700 mt-0.5">{{ $waktuSekarang->translatedFormat('l, d F Y') }}</p>
+                <p class="text-2xl font-extrabold text-gray-800 mt-1 tabular-nums" id="live-clock">{{ $waktuSekarang->format('H:i:s') }}</p>
 
                 @if(!$sudahAbsenMasuk)
                     <span class="inline-block mt-2 text-xs font-semibold text-orange-600 bg-orange-50 px-3 py-1 rounded-full">
@@ -147,71 +161,72 @@
                 Kehadiran Hari Ini
             </h2>
 
-            <span class="px-3 py-1 rounded-full bg-amber-100 text-amber-700 text-[11px] font-semibold">
-                Belum Absen
-            </span>
+            @if(!$sudahAbsenMasuk)
+                <span class="px-3 py-1 rounded-full bg-amber-100 text-amber-700 text-[11px] font-semibold">
+                    Belum Absen
+                </span>
+            @elseif($terlambat)
+                <span class="px-3 py-1 rounded-full bg-red-100 text-red-700 text-[11px] font-semibold">
+                    Terlambat
+                </span>
+            @else
+                <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[11px] font-semibold">
+                    Tepat Waktu
+                </span>
+            @endif
         </div>
 
         <div class="grid grid-cols-3 gap-2">
 
-        {{-- Jam Masuk --}}
-        <div class="bg-gray-50 rounded-xl py-3 text-center">
-            <p class="text-[11px] text-gray-500">
-                Masuk
-            </p>
+            {{-- Jam Masuk --}}
+            <div class="bg-gray-50 rounded-xl py-3 text-center">
+                <p class="text-[11px] text-gray-500">Masuk</p>
+                <p class="text-base font-bold text-gray-800 mt-1">
+                    {{ $absensiHariIni?->jam_masuk ? \Carbon\Carbon::parse($absensiHariIni->jam_masuk)->format('H:i') : '--' }}
+                </p>
+            </div>
 
-            <p class="text-base font-bold text-gray-800 mt-1">
-                --
-            </p>
-        </div>
+            {{-- Jam Pulang --}}
+            <div class="bg-gray-50 rounded-xl py-3 text-center">
+                <p class="text-[11px] text-gray-500">Pulang</p>
+                <p class="text-base font-bold text-gray-800 mt-1">
+                    {{ $absensiHariIni?->jam_pulang ? \Carbon\Carbon::parse($absensiHariIni->jam_pulang)->format('H:i') : '--' }}
+                </p>
+            </div>
 
-        {{-- Jam Pulang --}}
-        <div class="bg-gray-50 rounded-xl py-3 text-center">
-            <p class="text-[11px] text-gray-500">
-                Pulang
-            </p>
+            {{-- Durasi --}}
+            <div class="bg-blue-50 rounded-xl py-3 text-center">
+                <p class="text-[11px] text-gray-500">Durasi</p>
+                <p class="text-base font-bold text-blue-600 mt-1">
+                    {{ $durasi ?? '--' }}
+                </p>
+            </div>
 
-            <p class="text-base font-bold text-gray-800 mt-1">
-                --
-            </p>
-        </div>
-
-        {{-- Durasi --}}
-        <div class="bg-blue-50 rounded-xl py-3 text-center">
-            <p class="text-[11px] text-gray-500">
-                Durasi
-            </p>
-
-            <p class="text-base font-bold text-blue-600 mt-1">
-                --
-            </p>
         </div>
 
     </div>
-
-</div>
 
     {{-- Status Bulan Ini --}}
     <div class="bg-white mx-4 mt-5 rounded-2xl shadow-sm border border-gray-100 p-5">
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-sm font-bold text-gray-700">Status Bulan Ini</h2>
-            <a href="#" class="text-xs font-semibold text-emerald-600 hover:text-emerald-700 hover:underline">Lihat Detail</a>
+            <a href="{{ route('pengguna.riwayat') }}" class="text-xs font-semibold text-emerald-600 hover:text-emerald-700 hover:underline">Lihat Detail</a>
         </div>
         <div class="grid grid-cols-4 gap-2">
             <div class="text-center bg-gray-50 rounded-xl py-3">
-                <p class="text-lg font-extrabold text-emerald-600">20</p>
+                <p class="text-lg font-extrabold text-emerald-600">{{ $rekapBulanIni->hadir ?? 0 }}</p>
                 <p class="text-[11px] text-gray-500 mt-0.5">Hadir</p>
             </div>
             <div class="text-center bg-gray-50 rounded-xl py-3">
-                <p class="text-lg font-extrabold text-amber-500">2</p>
+                <p class="text-lg font-extrabold text-amber-500">{{ $rekapBulanIni->terlambat ?? 0 }}</p>
                 <p class="text-[11px] text-gray-500 mt-0.5">Terlambat</p>
             </div>
             <div class="text-center bg-gray-50 rounded-xl py-3">
-                <p class="text-lg font-extrabold text-blue-500">1</p>
+                <p class="text-lg font-extrabold text-blue-500">{{ $rekapBulanIni->izin ?? 0 }}</p>
                 <p class="text-[11px] text-gray-500 mt-0.5">Izin</p>
             </div>
             <div class="text-center bg-gray-50 rounded-xl py-3">
-                <p class="text-lg font-extrabold text-rose-500">0</p>
+                <p class="text-lg font-extrabold text-rose-500">{{ $rekapBulanIni->sakit ?? 0 }}</p>
                 <p class="text-[11px] text-gray-500 mt-0.5">Sakit</p>
             </div>
         </div>
@@ -222,10 +237,15 @@
 </div>
 
 <script>
-    // Jam berjalan otomatis, hapus kalau waktunya mau full dari server
+    // Jam berjalan otomatis dengan locale Indonesia
     setInterval(() => {
         const el = document.getElementById('live-clock');
-        if (el) el.textContent = new Date().toLocaleTimeString('id-ID', { hour12: false });
+        if (el) {
+            const now = new Date();
+            // Konversi ke WIB (UTC+7)
+            const wibTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Jakarta' }));
+            el.textContent = wibTime.toLocaleTimeString('id-ID', { hour12: false });
+        }
     }, 1000);
 </script>
 

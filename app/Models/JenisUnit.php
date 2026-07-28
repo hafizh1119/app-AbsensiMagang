@@ -14,8 +14,8 @@ class JenisUnit extends Model
         'status',
     ];
 
-    public function unit()
+    public function penempatanUnit()
     {
-        return $this->hasMany(Unit::class);
+        return $this->hasMany(PenempatanUnit::class);
     }
 }

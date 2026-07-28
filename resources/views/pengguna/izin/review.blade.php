@@ -34,41 +34,47 @@
             </div>
             <div>
                 <p class="text-xs text-gray-400 mb-0.5">Jenis Izin</p>
-                <p class="text-gray-900 font-semibold">Izin Sakit</p>
+                <p class="text-gray-900 font-semibold">{{ $draft['jenis_izin_nama'] }}</p>
             </div>
         </div>
 
         {{-- Ditujukan Kepada --}}
         <div class="px-5 py-4">
             <p class="text-xs text-gray-400 mb-1">Ditujukan Kepada</p>
-            <p class="text-gray-800 font-medium">Siti Aminah <span class="text-gray-400 font-normal">- Kepala Bagian Keuangan</span></p>
+            <p class="text-gray-800 font-medium">
+                {{ $atasan->nama ?? '-' }}
+                <span class="text-gray-400 font-normal">- {{ $atasan->jabatan ?? '-' }}</span>
+            </p>
         </div>
 
         {{-- Tanggal --}}
         <div class="px-5 py-4">
             <p class="text-xs text-gray-400 mb-1">Tanggal</p>
             <p class="text-emerald-600 font-semibold mb-1">Izin</p>
-            <p class="text-gray-800">26 Mei 2025 - 26 Mei 2025</p>
-            <p class="text-gray-400 text-sm">(1 hari)</p>
+            <p class="text-gray-800">
+                {{ \Carbon\Carbon::parse($draft['tanggal_mulai'])->translatedFormat('d F Y') }}
+                @if($draft['tanggal_mulai'] !== $draft['tanggal_selesai'])
+                    - {{ \Carbon\Carbon::parse($draft['tanggal_selesai'])->translatedFormat('d F Y') }}
+                @endif
+            </p>
+            <p class="text-gray-400 text-sm">({{ $draft['durasi'] }} hari)</p>
         </div>
 
         {{-- Keterangan --}}
         <div class="px-5 py-4">
             <p class="text-xs text-gray-400 mb-1">Keterangan</p>
-            <p class="text-gray-800 leading-relaxed">Demam dan flu, tidak memungkinkan untuk bekerja.</p>
+            <p class="text-gray-800 leading-relaxed">{{ $draft['alasan'] }}</p>
         </div>
 
         {{-- Lampiran --}}
         <div class="px-5 py-4">
             <p class="text-xs text-gray-400 mb-1">Lampiran</p>
-            <p class="text-gray-800 font-medium">surat_dokter.pdf</p>
-            <p class="text-gray-400 text-sm">450 KB</p>
-        </div>
-
-        {{-- Catatan Tambahan --}}
-        <div class="px-5 py-4">
-            <p class="text-xs text-gray-400 mb-1">Catatan Tambahan</p>
-            <p class="text-gray-400">-</p>
+            @if($draft['lampiran'])
+                <p class="text-gray-800 font-medium">{{ $draft['lampiran_nama_asli'] }}</p>
+                <a href="{{ asset($draft['lampiran']) }}" target="_blank" class="text-emerald-600 text-sm hover:underline">Lihat File</a>
+            @else
+                <p class="text-gray-400">Tidak ada lampiran</p>
+            @endif
         </div>
 
     </div>
@@ -78,15 +84,18 @@
     {{-- Tombol Aksi --}}
     <div class="px-5 mt-5 mb-20">
         <div class="flex items-center gap-3">
-            <a href="{{ url()->previous() }}"
+            <a href="{{ route('pengguna.izin.form') }}"
                class="flex-1 text-center border-2 border-emerald-600 text-emerald-600 font-semibold rounded-2xl py-3.5">
                 Kembali
             </a>
-            <div class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-2xl py-3.5 shadow-sm">
-                <a href="{{ route('pengguna.izin.akhir') }}" class="block w-full text-center">
+
+            <form action="{{ route('pengguna.izin.simpan') }}" method="POST" class="flex-1">
+                @csrf
+                <button type="submit"
+                        class="block w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-2xl py-3.5 shadow-sm">
                     Kirim Pengajuan
-                </a>
-            </div>
+                </button>
+            </form>
         </div>
     </div>
 

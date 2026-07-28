@@ -16,23 +16,11 @@ class PenempatanUnit extends Model
         'jenis_unit_id',
     ];
 
-    /*
-    |--------------------------------------------------------------------------
-    | Relationships
-    |--------------------------------------------------------------------------
-    */
-
-    /**
-     * Penempatan unit dimiliki oleh satu pegawai.
-     */
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Penempatan unit mengacu pada satu jenis unit.
-     */
     public function jenisUnit()
     {
         return $this->belongsTo(JenisUnit::class);

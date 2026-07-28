@@ -1,16 +1,16 @@
-{{-- resources/views/admin/pegawai/edit.blade.php --}}
+{{-- resources/views/admin/data-master/pegawai/edit.blade.php --}}
 @extends('layouts.app')
 
 @section('title', 'Edit Pegawai')
 
 @section('content')
 
-<div class="flex h-screen overflow-hidden">
+<div class="flex">
 
-    {{-- Sidebar tetap di kiri, tidak ikut scroll --}}
+    {{-- Sidebar tetap di kiri --}}
     @include('admin.components.sidebar')
 
-    <div class="flex-1 min-w-0 flex flex-col h-screen overflow-y-auto">
+    <div class="flex-1 min-w-0 flex flex-col min-h-screen">
 
         @include('admin.components.header', ['title' => 'Edit Pegawai'])
 
@@ -24,8 +24,9 @@
                 </div>
             </div>
 
-            <form action="#" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('admin.data-master.pegawai.update', $pegawai->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
+                @method('PUT')
 
                 {{-- Satu Card Gabungan --}}
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
@@ -34,7 +35,7 @@
                     <div class="mb-6">
                         <h3 class="text-sm font-bold text-gray-900 mb-4">Foto Profil</h3>
 
-                        <div x-data="{ preview: null }" class="flex items-center gap-5">
+                        <div x-data="{ preview: {{ $pegawai->foto ? "'" . asset('foto-pegawai/' . $pegawai->foto) . "'" : 'null' }} }" class="flex items-center gap-5">
                             <div class="w-28 h-28 rounded-full bg-gray-100 border border-gray-200 overflow-hidden flex items-center justify-center flex-shrink-0">
                                 <template x-if="!preview">
                                     <svg class="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
@@ -72,7 +73,7 @@
                             {{-- Nama Lengkap --}}
                             <div class="md:col-span-2">
                                 <label class="block text-xs font-medium text-gray-500 mb-1.5">Nama Lengkap</label>
-                                <input type="text" name="nama" value="{{ old('nama', 'Budi Santoso') }}" placeholder="Masukkan nama lengkap"
+                                <input type="text" name="nama" value="{{ old('nama', $pegawai->nama) }}" placeholder="Masukkan nama lengkap"
                                        class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 @error('nama') border-rose-400 @enderror">
                                 @error('nama') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
@@ -80,7 +81,7 @@
                             {{-- NIP --}}
                             <div>
                                 <label class="block text-xs font-medium text-gray-500 mb-1.5">NIP</label>
-                                <input type="text" name="nip" value="{{ old('nip', '199203152019031005') }}" placeholder="Nomor Induk Pegawai"
+                                <input type="text" name="nip" value="{{ old('nip', $pegawai->nip) }}" placeholder="Nomor Induk Pegawai"
                                        class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 @error('nip') border-rose-400 @enderror">
                                 @error('nip') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
@@ -93,8 +94,8 @@
                                             class="appearance-none w-full bg-white border border-gray-200 rounded-lg pl-3 pr-8 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 @error('unit_id') border-rose-400 @enderror">
                                         <option value="">Pilih Unit / Divisi</option>
                                         @foreach ($units ?? [] as $unit)
-                                            <option value="{{ $unit->id }}" {{ old('unit_id') == $unit->id ? 'selected' : '' }}>
-                                                {{ $unit->nama }}
+                                            <option value="{{ $unit->id }}" {{ old('unit_id', $pegawai->unit_id) == $unit->id ? 'selected' : '' }}>
+                                                {{ $unit->nama_unit }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -108,7 +109,7 @@
                             {{-- Jabatan --}}
                             <div>
                                 <label class="block text-xs font-medium text-gray-500 mb-1.5">Jabatan</label>
-                                <input type="text" name="jabatan" value="{{ old('jabatan', 'Staf Keuangan') }}" placeholder="Contoh: Staf Keuangan"
+                                <input type="text" name="jabatan" value="{{ old('jabatan', $pegawai->jabatan) }}" placeholder="Contoh: Staf Keuangan"
                                        class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 @error('jabatan') border-rose-400 @enderror">
                                 @error('jabatan') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
@@ -116,7 +117,7 @@
                             {{-- Email --}}
                             <div>
                                 <label class="block text-xs font-medium text-gray-500 mb-1.5">Email</label>
-                                <input type="email" name="email" value="{{ old('email', 'budi.santoso@kopjateng.go.id') }}" placeholder="nama@instansi.go.id"
+                                <input type="email" name="email" value="{{ old('email', $pegawai->email) }}" placeholder="nama@instansi.go.id"
                                        class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 @error('email') border-rose-400 @enderror">
                                 @error('email') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
@@ -144,7 +145,7 @@
                             {{-- Tempat Lahir --}}
                             <div>
                                 <label class="block text-xs font-medium text-gray-500 mb-1.5">Tempat Lahir</label>
-                                <input type="text" name="tempat_lahir" value="{{ old('tempat_lahir', 'Semarang') }}" placeholder="Contoh: Semarang"
+                                <input type="text" name="tempat_lahir" value="{{ old('tempat_lahir', $pegawai->tempat_lahir) }}" placeholder="Contoh: Semarang"
                                        class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 @error('tempat_lahir') border-rose-400 @enderror">
                                 @error('tempat_lahir') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
@@ -152,7 +153,8 @@
                             {{-- Tanggal Lahir --}}
                             <div>
                                 <label class="block text-xs font-medium text-gray-500 mb-1.5">Tanggal Lahir</label>
-                                <input type="date" name="tanggal_lahir" value="{{ old('tanggal_lahir', '1992-03-15') }}"
+                                <input type="date" name="tanggal_lahir"
+                                       value="{{ old('tanggal_lahir', optional($pegawai->tanggal_lahir)->format('Y-m-d')) }}"
                                        class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 @error('tanggal_lahir') border-rose-400 @enderror">
                                 @error('tanggal_lahir') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
@@ -160,7 +162,7 @@
                             {{-- Kewarganegaraan --}}
                             <div>
                                 <label class="block text-xs font-medium text-gray-500 mb-1.5">Kewarganegaraan</label>
-                                <input type="text" name="kewarganegaraan" value="{{ old('kewarganegaraan', 'Indonesia') }}" placeholder="Contoh: Indonesia"
+                                <input type="text" name="kewarganegaraan" value="{{ old('kewarganegaraan', $pegawai->kewarganegaraan) }}" placeholder="Contoh: Indonesia"
                                        class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 @error('kewarganegaraan') border-rose-400 @enderror">
                                 @error('kewarganegaraan') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
@@ -171,7 +173,7 @@
                                 <div class="relative">
                                     <select name="status_kewarganegaraan"
                                             class="appearance-none w-full bg-white border border-gray-200 rounded-lg pl-3 pr-8 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 @error('status_kewarganegaraan') border-rose-400 @enderror">
-                                        @php $statusKn = old('status_kewarganegaraan', 'WNI'); @endphp
+                                        @php $statusKn = old('status_kewarganegaraan', $pegawai->status_kewarganegaraan); @endphp
                                         <option value="">Pilih Status</option>
                                         <option value="WNI" {{ $statusKn === 'WNI' ? 'selected' : '' }}>WNI</option>
                                         <option value="WNA" {{ $statusKn === 'WNA' ? 'selected' : '' }}>WNA</option>
@@ -186,7 +188,7 @@
                             {{-- No. HP --}}
                             <div>
                                 <label class="block text-xs font-medium text-gray-500 mb-1.5">No. HP</label>
-                                <input type="tel" name="no_hp" value="{{ old('no_hp', '081234567890') }}" placeholder="Contoh: 08123456789"
+                                <input type="tel" name="no_hp" value="{{ old('no_hp', $pegawai->no_hp) }}" placeholder="Contoh: 08123456789"
                                        class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 @error('no_hp') border-rose-400 @enderror">
                                 @error('no_hp') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
@@ -197,7 +199,7 @@
                                 <div class="relative">
                                     <select name="status_pegawai"
                                             class="appearance-none w-full bg-white border border-gray-200 rounded-lg pl-3 pr-8 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 @error('status_pegawai') border-rose-400 @enderror">
-                                        @php $statusPeg = old('status_pegawai', 'Aktif'); @endphp
+                                        @php $statusPeg = old('status_pegawai', $pegawai->status_pegawai); @endphp
                                         <option value="Aktif" {{ $statusPeg === 'Aktif' ? 'selected' : '' }}>Aktif</option>
                                         <option value="Nonaktif" {{ $statusPeg === 'Nonaktif' ? 'selected' : '' }}>Nonaktif</option>
                                         <option value="Cuti" {{ $statusPeg === 'Cuti' ? 'selected' : '' }}>Cuti</option>
@@ -213,7 +215,7 @@
                             <div class="md:col-span-2">
                                 <label class="block text-xs font-medium text-gray-500 mb-1.5">Alamat</label>
                                 <textarea name="alamat" rows="3" placeholder="Masukkan alamat lengkap"
-                                          class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none @error('alamat') border-rose-400 @enderror">{{ old('alamat', 'Jl. Pemuda No. 123, Semarang') }}</textarea>
+                                          class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none @error('alamat') border-rose-400 @enderror">{{ old('alamat', $pegawai->alamat) }}</textarea>
                                 @error('alamat') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
 
@@ -224,7 +226,7 @@
 
                 {{-- Tombol Aksi --}}
                 <div class="flex items-center justify-end gap-3 mt-5">
-                    <a href="{{ route('admin.pegawai') }}"
+                    <a href="{{ route('admin.data-master.pegawai') }}"
                        class="text-sm font-semibold px-5 py-2.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition">
                         Batal
                     </a>

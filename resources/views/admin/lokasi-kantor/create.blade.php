@@ -1,4 +1,4 @@
-{{-- resources/views/admin/lokasi/create.blade.php --}}
+{{-- resources/views/admin/lokasi-kantor/create.blade.php --}}
 @extends('layouts.app')
 
 @section('title', 'Tambah Lokasi')
@@ -48,7 +48,7 @@
                 </a>
             </div>
 
-            <form action="#" method="POST">
+            <form action="{{ route('admin.lokasi-kantor.store') }}" method="POST">
                 @csrf
 
                 {{-- Peta & Form Detail Lokasi --}}

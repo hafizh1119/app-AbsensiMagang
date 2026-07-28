@@ -16,6 +16,34 @@
 
         <main class="p-6">
 
+            @if (session('success'))
+                <div id="toastSuccess"
+                     class="fixed top-5 right-5 z-[9999] flex items-center gap-3 bg-white border border-emerald-100 shadow-lg rounded-xl px-4 py-3 pr-5 transition-all duration-300 translate-x-0">
+                    <span class="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 shrink-0">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </span>
+                    <div>
+                        <p class="text-sm font-semibold text-gray-800">Berhasil</p>
+                        <p class="text-xs text-gray-500">{{ session('success') }}</p>
+                    </div>
+                </div>
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        var toast = document.getElementById('toastSuccess');
+                        if (!toast) return;
+
+                        setTimeout(function () {
+                            toast.style.opacity = '0';
+                            toast.style.transform = 'translateX(120%)';
+                            setTimeout(function () { toast.remove(); }, 300);
+                        }, 3000);
+                    });
+                </script>
+            @endif
+
             {{-- Judul & Tombol Tambah --}}
             <div class="flex items-center justify-between mb-5">
                 <div>
@@ -33,30 +61,41 @@
             </div>
 
             @php
+                // Fallback data dummy kalau controller belum mengirim $lokasi (mis. saat preview desain).
+                // Perhatikan: setiap baris sekarang wajib punya 'id' karena dipakai untuk link show/edit/destroy.
                 $lokasi = $lokasi ?? collect([
                     [
+                        'id' => 1,
                         'no' => 1,
                         'nama' => 'Kantor Dinas Koperasi Prov. Jateng',
                         'utama' => true,
                         'alamat' => 'Jl. Pahlawan No. 17, Semarang, Jawa Tengah',
+                        'latitude' => '-6.986931',
+                        'longitude' => '110.420279',
                         'radius' => '100 Meter',
                         'jumlah_pegawai' => 156,
                         'status' => 'Aktif',
                     ],
                     [
+                        'id' => 2,
                         'no' => 2,
                         'nama' => 'Kantor Cabang Bidang UMKM',
                         'utama' => false,
                         'alamat' => 'Jl. Pemuda No. 45, Semarang, Jawa Tengah',
+                        'latitude' => '-6.975432',
+                        'longitude' => '110.415678',
                         'radius' => '75 Meter',
                         'jumlah_pegawai' => 32,
                         'status' => 'Aktif',
                     ],
                     [
+                        'id' => 3,
                         'no' => 3,
                         'nama' => 'Kantor Cabang Bidang Pengawasan',
                         'utama' => false,
                         'alamat' => 'Jl. Diponegoro No. 8, Semarang, Jawa Tengah',
+                        'latitude' => '-6.993456',
+                        'longitude' => '110.408765',
                         'radius' => '50 Meter',
                         'jumlah_pegawai' => 18,
                         'status' => 'Nonaktif',
@@ -86,8 +125,10 @@
                                 <th class="text-left font-medium px-4 py-3 w-10">No</th>
                                 <th class="text-left font-medium px-4 py-3">Nama Lokasi</th>
                                 <th class="text-left font-medium px-4 py-3">Alamat</th>
+                                <th class="text-left font-medium px-4 py-3">Latitude</th>
+                                <th class="text-left font-medium px-4 py-3">Longitude</th>
                                 <th class="text-left font-medium px-4 py-3">Radius</th>
-                                <th class="text-left font-medium px-4 py-3">Aksi</th>
+                                <th class="text-center font-medium px-4 py-3">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
@@ -102,11 +143,13 @@
                                             @endif
                                         </div>
                                     </td>
-                                    <td class="px-4 py-3 text-gray-500">{{ $row['alamat'] }}</td>
+                                    <td class="px-4 py-3 text-gray-500 max-w-[200px] truncate" title="{{ $row['alamat'] }}">{{ $row['alamat'] }}</td>
+                                    <td class="px-4 py-3 text-gray-500 font-mono text-xs">{{ $row['latitude'] }}</td>
+                                    <td class="px-4 py-3 text-gray-500 font-mono text-xs">{{ $row['longitude'] }}</td>
                                     <td class="px-4 py-3 text-gray-500">{{ $row['radius'] }}</td>
-                                    <td class="px-4 py-3">
-                                        <div class="flex items-center gap-1">
-                                            <a href="{{ route('admin.lokasi-kantor.show') }}"
+                                    <td class="px-4 py-3 text-center">
+                                        <div class="flex items-center justify-center gap-1">
+                                            <a href="{{ route('admin.lokasi-kantor.show', $row['id']) }}"
                                                title="Lihat Detail"
                                                class="inline-flex items-center justify-center w-7 h-7 rounded-full text-gray-400 hover:bg-gray-100 hover:text-emerald-600 transition">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -114,7 +157,7 @@
                                                     <circle cx="12" cy="12" r="3"/>
                                                 </svg>
                                             </a>
-                                            <a href="{{ route('admin.lokasi-kantor.edit') }}"
+                                            <a href="{{ route('admin.lokasi-kantor.edit', $row['id']) }}"
                                                title="Edit Lokasi"
                                                class="inline-flex items-center justify-center w-7 h-7 rounded-full text-gray-400 hover:bg-gray-100 hover:text-emerald-600 transition">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -122,7 +165,7 @@
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                                                 </svg>
                                             </a>
-                                            <form action="#" method="POST" class="inline" onsubmit="return confirm('Hapus lokasi ini?')">
+                                            <form action="{{ route('admin.lokasi-kantor.destroy', $row['id']) }}" method="POST" class="inline" onsubmit="return confirm('Hapus lokasi ini?')">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit"

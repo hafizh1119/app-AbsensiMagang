@@ -16,7 +16,6 @@ class LokasiAbsensi extends Model
         'latitude',
         'longitude',
         'radius',
-        'status',
     ];
 
     protected function casts(): array
@@ -28,15 +27,6 @@ class LokasiAbsensi extends Model
         ];
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Relationships
-    |--------------------------------------------------------------------------
-    */
-
-    /**
-     * Satu lokasi absensi memiliki banyak data absensi.
-     */
     public function absensi()
     {
         return $this->hasMany(Absensi::class);

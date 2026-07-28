@@ -18,39 +18,17 @@
         <main class="p-6">
 
             @php
-                // Data contoh, ganti dengan data asli dari controller
-                $tanggalValue = $tanggalValue ?? \Carbon\Carbon::now()->format('Y-m-d');
-                $tanggal = $tanggal ?? \Carbon\Carbon::parse($tanggalValue)->translatedFormat('d F Y');
-
-                $ringkasan = $ringkasan ?? [
-                    'total'       => 128,
-                    'hadir'       => 96,
-                    'terlambat'   => 16,
-                    'belum_absen' => 12,
-                    'izin'        => 4,
-                ];
-
-                $persenHadir      = round($ringkasan['hadir']       / $ringkasan['total'] * 100, 2);
-                $persenTerlambat  = round($ringkasan['terlambat']   / $ringkasan['total'] * 100, 2);
-                $persenBelumAbsen = round($ringkasan['belum_absen'] / $ringkasan['total'] * 100, 2);
-                $persenIzin       = round($ringkasan['izin']        / $ringkasan['total'] * 100, 2);
-
-                $absensis = $absensis ?? collect([
-                    ['no' => 1, 'nip' => '198701152010011001', 'nama' => 'Budi Santoso',   'unit' => 'Sekretariat',         'masuk' => '07:58', 'pulang' => '-', 'status' => 'Hadir',       'keterangan' => '-'],
-                    ['no' => 2, 'nip' => '198903252015032002', 'nama' => 'Siti Aminah',    'unit' => 'Bidang Koperasi',     'masuk' => '08:05', 'pulang' => '-', 'status' => 'Hadir',       'keterangan' => '-'],
-                    ['no' => 3, 'nip' => '199205102017041003', 'nama' => 'Dwi Prasetyo',   'unit' => 'Bidang UMKM',         'masuk' => '08:15', 'pulang' => '-', 'status' => 'Terlambat',   'keterangan' => 'Terlambat 15 menit'],
-                    ['no' => 4, 'nip' => '199001202016042004', 'nama' => 'Rina Wulandari', 'unit' => 'Bidang Pembiayaan',   'masuk' => '-',     'pulang' => '-', 'status' => 'Belum Absen', 'keterangan' => '-'],
-                    ['no' => 5, 'nip' => '199104182018031005', 'nama' => 'Agus Setiawan',  'unit' => 'Bidang Pengawasan',   'masuk' => '-',     'pulang' => '-', 'status' => 'Izin',        'keterangan' => 'Izin Sakit'],
-                ]);
-
-                // Daftar unit untuk dropdown filter, ambil unik dari data (atau ganti dengan data master unit)
-                $unitOptions = $unitOptions ?? $absensis->pluck('unit')->unique()->values();
+                $persenHadir      = $ringkasan['total'] > 0 ? round($ringkasan['hadir']       / $ringkasan['total'] * 100, 2) : 0;
+                $persenTerlambat  = $ringkasan['total'] > 0 ? round($ringkasan['terlambat']   / $ringkasan['total'] * 100, 2) : 0;
+                $persenBelumAbsen = $ringkasan['total'] > 0 ? round($ringkasan['belum_absen'] / $ringkasan['total'] * 100, 2) : 0;
+                $persenIzin       = $ringkasan['total'] > 0 ? round($ringkasan['izin']        / $ringkasan['total'] * 100, 2) : 0;
 
                 $statusStyle = [
                     'Hadir'       => 'bg-emerald-50 text-emerald-600',
                     'Terlambat'   => 'bg-amber-50 text-amber-600',
                     'Belum Absen' => 'bg-purple-50 text-purple-600',
                     'Izin'        => 'bg-blue-50 text-blue-600',
+                    'Sakit'       => 'bg-blue-50 text-blue-600',
                 ];
 
                 // Titik potong conic-gradient buat donat chart (kumulatif persen)
@@ -63,7 +41,7 @@
             <div class="flex flex-wrap items-start justify-between gap-4 mb-5">
                 <div>
                     <h1 class="text-2xl font-bold text-gray-800">Absensi Hari Ini</h1>
-                    <p class="text-sm text-gray-400 mt-0.5">Data absensi pegawai hari ini</p>
+                    <p class="text-sm text-gray-400 mt-0.5">Data absensi pegawai tanggal {{ $tanggal }}</p>
                 </div>
             </div>
 
@@ -109,6 +87,10 @@
 
                     {{-- Tombol Aksi --}}
                     <div class="flex items-center gap-2">
+                        <button type="submit"
+                                class="text-sm font-semibold px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-900 text-white transition">
+                            Terapkan
+                        </button>
                         <a href="{{ url()->current() }}"
                            class="w-9 h-9 flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:text-emerald-600 hover:border-emerald-300 transition"
                            title="Reset Filter">
@@ -197,7 +179,7 @@
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-100">
-                                @foreach($absensis as $row)
+                                @forelse($absensis as $row)
                                     <tr class="hover:bg-gray-50/60 transition-colors">
                                         <td class="px-5 py-3 text-gray-500">{{ $row['no'] }}</td>
                                         <td class="px-5 py-3 text-gray-500">{{ $row['nip'] }}</td>
@@ -212,7 +194,11 @@
                                         </td>
                                         <td class="px-5 py-3 text-gray-500">{{ $row['keterangan'] }}</td>
                                     </tr>
-                                @endforeach
+                                @empty
+                                    <tr>
+                                        <td colspan="8" class="px-5 py-8 text-center text-gray-400">Tidak ada data pegawai.</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>

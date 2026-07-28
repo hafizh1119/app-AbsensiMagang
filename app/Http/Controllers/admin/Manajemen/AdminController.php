@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Absensi;
+namespace App\Http\Controllers\Admin\Manajemen;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class LokasiAbsensiController extends Controller
+class AdminController extends Controller
 {
     /**
      * Display a listing of the resource.

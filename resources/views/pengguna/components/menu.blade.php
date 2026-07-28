@@ -38,7 +38,7 @@
                 <div></div>
 
                 {{-- Izin --}}
-                <a href="{{ route('pengguna.izin') }}"
+                <a href="{{ route('pengguna.izin.index') }}"
                 class="flex flex-col items-center justify-center text-xs
                 {{ request()->routeIs('pengguna.izin*') ? 'text-emerald-600' : 'text-gray-500' }}">
 

@@ -21,6 +21,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'unit',
         'jabatan',
         'tempat_lahir',
         'tanggal_lahir',
@@ -56,16 +57,10 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Relationships
-    |--------------------------------------------------------------------------
-    */
-
-    public function unit()
+    
+    public function penempatanUnit()
     {
-        return $this->hasOne(Unit::class);
+        return $this->hasMany(PenempatanUnit::class);
     }
 
     public function absensi()

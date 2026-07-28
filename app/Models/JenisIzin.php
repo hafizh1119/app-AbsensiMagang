@@ -13,7 +13,7 @@ class JenisIzin extends Model
     protected $fillable = [
         'nama_izin',
         'deskripsi',
-        'status',
+        'kuota',
     ];
 
     protected function casts(): array
@@ -21,15 +21,6 @@ class JenisIzin extends Model
         return [];
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Relationships
-    |--------------------------------------------------------------------------
-    */
-
-    /**
-     * Satu jenis izin memiliki banyak pengajuan izin.
-     */
     public function pengajuanIzin()
     {
         return $this->hasMany(PengajuanIzin::class);

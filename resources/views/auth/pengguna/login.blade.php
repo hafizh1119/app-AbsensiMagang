@@ -44,7 +44,15 @@
                 </div>
             </div>
 
-            <form action="{{ route('pengguna.home') }}" method="GET" class="space-y-3">
+            {{-- Tampilkan pesan error validasi --}}
+            @if ($errors->any())
+                <div class="mb-3 rounded-xl bg-red-50 border border-red-200 px-4 py-2.5 text-sm text-red-700">
+                    {{ $errors->first() }}
+                </div>
+            @endif
+
+            <form action="{{ route('login.submit') }}" method="POST" class="space-y-3">
+                @csrf
 
                 {{-- NIP / Email --}}
                 <div>
@@ -56,10 +64,11 @@
                             </svg>
                         </span>
                         <input type="text"
-                               id="identifier"
-                               name="identifier"
-                               placeholder="Masukkan NIP atau email Anda"
-                               class="w-full px-4 py-2.5 text-sm focus:outline-none">
+                            id="identifier"
+                            name="identifier"
+                            value="{{ old('identifier') }}"
+                            placeholder="Masukkan NIP atau email Anda"
+                            class="w-full px-4 py-2.5 text-sm focus:outline-none">
                     </div>
                 </div>
 
@@ -73,10 +82,10 @@
                             </svg>
                         </span>
                         <input type="password"
-                               id="password"
-                               name="password"
-                               placeholder="Masukkan password Anda"
-                               class="w-full px-4 py-2.5 text-sm focus:outline-none">
+                            id="password"
+                            name="password"
+                            placeholder="Masukkan password Anda"
+                            class="w-full px-4 py-2.5 text-sm focus:outline-none">
                         <button type="button" onclick="togglePassword()" class="flex items-center justify-center w-11 text-gray-400 hover:text-gray-600 shrink-0">
                             <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
@@ -90,8 +99,8 @@
                 <div class="flex items-center justify-between pt-1">
                     <label class="flex items-center gap-2 cursor-pointer select-none">
                         <input type="checkbox"
-                               name="remember"
-                               class="w-4 h-4 text-emerald-700 border-gray-300 rounded focus:ring-emerald-600 accent-emerald-700">
+                            name="remember"
+                            class="w-4 h-4 text-emerald-700 border-gray-300 rounded focus:ring-emerald-600 accent-emerald-700">
                         <span class="text-sm text-gray-600">Ingat saya</span>
                     </label>
                     <a href="#" class="text-sm font-medium text-emerald-700 hover:text-emerald-800 hover:underline">

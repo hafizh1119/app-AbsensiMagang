@@ -17,33 +17,32 @@
 
         <main class="p-6">
 
-            @php
-                // Data contoh, ganti dengan data asli dari controller (mis. $absensis dari paginate())
-                $absensis = $absensis ?? collect([
-                    ['no' => 1, 'nip' => '199203152019031005', 'nama' => 'Budi Santoso',   'tanggal' => '26/05/2025', 'unit' => 'Keuangan', 'masuk' => '07:58', 'pulang' => '16:31', 'status' => 'Hadir', 'keterangan' => '-'],
-                    ['no' => 2, 'nip' => '199508202020032011', 'nama' => 'Siti Rahmawati', 'tanggal' => '26/05/2025', 'unit' => 'SDM',      'masuk' => '08:12', 'pulang' => '-',     'status' => 'Terlambat', 'keterangan' => 'Terlambat 12 menit'],
-                    ['no' => 3, 'nip' => '199001102015041002', 'nama' => 'Agus Setiawan',  'tanggal' => '26/05/2025', 'unit' => 'IT',       'masuk' => '07:45', 'pulang' => '16:32', 'status' => 'Hadir', 'keterangan' => '-'],
-                    ['no' => 4, 'nip' => '199712052021032018', 'nama' => 'Dewi Lestari',   'tanggal' => '26/05/2025', 'unit' => 'Keuangan', 'masuk' => '-',     'pulang' => '-',     'status' => 'Tidak Hadir', 'keterangan' => 'Izin'],
-                    ['no' => 5, 'nip' => '199403182018011007', 'nama' => 'Eko Prasetyo',   'tanggal' => '26/05/2025', 'unit' => 'Umum',     'masuk' => '08:05', 'pulang' => '16:33', 'status' => 'Hadir', 'keterangan' => '-'],
-                ]);
+            @if (session('success'))
+                <div class="mb-4 flex items-center gap-3 bg-emerald-50 border border-emerald-100 text-emerald-600 text-sm rounded-xl px-4 py-3">
+                    {{ session('success') }}
+                </div>
+            @endif
 
+            @php
                 $statusStyle = [
-                    'Hadir'      => 'bg-emerald-50 text-emerald-600',
-                    'Terlambat'  => 'bg-amber-50 text-amber-600',
-                    'Pulang'     => 'bg-blue-50 text-blue-600',
-                    'Tidak Hadir'=> 'bg-rose-50 text-rose-500',
+                    'hadir'       => 'bg-emerald-50 text-emerald-600',
+                    'terlambat'   => 'bg-amber-50 text-amber-600',
+                    'izin'        => 'bg-blue-50 text-blue-600',
+                    'sakit'       => 'bg-blue-50 text-blue-600',
+                    'tidak_hadir' => 'bg-rose-50 text-rose-500',
+                    'alpha'       => 'bg-rose-50 text-rose-500',
                 ];
             @endphp
 
             {{-- Filter Bar --}}
-            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 mb-4">
+            <form action="{{ route('admin.absensi.semua') }}" method="GET" class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 mb-4">
                 <div class="flex flex-wrap items-end gap-3">
 
                     {{-- Tanggal --}}
                     <div>
                         <label class="block text-xs text-gray-400 mb-1.5">Tanggal</label>
                         <div class="relative">
-                            <input type="date" value="2025-05-26"
+                            <input type="date" name="tanggal" value="{{ $tanggal }}"
                                    class="appearance-none border border-gray-200 rounded-lg pl-3 pr-8 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
                         </div>
                     </div>
@@ -52,12 +51,14 @@
                     <div>
                         <label class="block text-xs text-gray-400 mb-1.5">Unit</label>
                         <div class="relative">
-                            <select class="appearance-none border border-gray-200 rounded-lg pl-3 pr-8 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
-                                <option>Semua Unit</option>
-                                <option>Keuangan</option>
-                                <option>SDM</option>
-                                <option>IT</option>
-                                <option>Umum</option>
+                            <select name="unit_id"
+                                    class="appearance-none border border-gray-200 rounded-lg pl-3 pr-8 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
+                                <option value="">Semua Unit</option>
+                                @foreach ($units as $unit)
+                                    <option value="{{ $unit->id }}" {{ (string) $unitId === (string) $unit->id ? 'selected' : '' }}>
+                                        {{ $unit->nama_unit }}
+                                    </option>
+                                @endforeach
                             </select>
                             <svg class="w-4 h-4 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
@@ -72,20 +73,32 @@
                             <svg class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"/>
                             </svg>
-                            <input type="text" placeholder="Cari pegawai..."
+                            <input type="text" name="search" value="{{ $search }}" placeholder="Cari nama atau NIP pegawai..."
                                    class="w-full border border-gray-200 rounded-lg pl-9 pr-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
                         </div>
                     </div>
 
+                    {{-- Terapkan Filter --}}
+                    <button type="submit" class="flex items-center gap-2 bg-gray-800 hover:bg-gray-900 text-white text-sm font-semibold px-4 py-2 rounded-lg transition duration-150 shadow-sm">
+                        Terapkan
+                    </button>
+
+                    @if ($tanggal || $unitId || $search)
+                        <a href="{{ route('admin.absensi.semua') }}"
+                           class="text-sm font-semibold text-gray-500 hover:text-gray-700 px-2 py-2">
+                            Reset
+                        </a>
+                    @endif
+
                     {{-- Export --}}
-                    <button type="button" class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition duration-150 shadow-sm">
+                    <button type="button" class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition duration-150 shadow-sm ml-auto">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M7 10l5 5 5-5M12 15V3"/>
                         </svg>
                         Export
                     </button>
                 </div>
-            </div>
+            </form>
 
             {{-- Tabel --}}
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
@@ -106,28 +119,32 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
-                            @foreach($absensis as $row)
+                            @forelse ($absensis as $absensi)
+                                @php
+                                    $unit = $absensi->user?->penempatanUnit?->first()?->jenisUnit;
+                                    $no = ($absensis->currentPage() - 1) * $absensis->perPage() + $loop->iteration;
+                                @endphp
                                 <tr class="hover:bg-gray-50/60 transition-colors" x-data="{ confirmOpen: false }">
-                                    <td class="px-5 py-3 text-gray-500">{{ $row['no'] }}</td>
-                                    <td class="px-5 py-3 text-gray-500">{{ $row['tanggal'] }}</td>
-                                    <td class="px-5 py-3 text-gray-500">{{ $row['nip'] }}</td>
-                                    <td class="px-5 py-3 font-medium text-gray-700">{{ $row['nama'] }}</td>
-                                    <td class="px-5 py-3 text-gray-500">{{ $row['unit'] }}</td>
-                                    <td class="px-5 py-3 text-gray-500">{{ $row['masuk'] }}</td>
-                                    <td class="px-5 py-3 text-gray-500">{{ $row['pulang'] }}</td>
+                                    <td class="px-5 py-3 text-gray-500">{{ $no }}</td>
+                                    <td class="px-5 py-3 text-gray-500">{{ optional($absensi->tanggal)->format('d/m/Y') }}</td>
+                                    <td class="px-5 py-3 text-gray-500">{{ $absensi->user->nip ?? '-' }}</td>
+                                    <td class="px-5 py-3 font-medium text-gray-700">{{ $absensi->user->nama ?? '-' }}</td>
+                                    <td class="px-5 py-3 text-gray-500">{{ $unit->nama_unit ?? '-' }}</td>
+                                    <td class="px-5 py-3 text-gray-500">{{ $absensi->jam_masuk ? \Carbon\Carbon::parse($absensi->jam_masuk)->format('H:i') : '-' }}</td>
+                                    <td class="px-5 py-3 text-gray-500">{{ $absensi->jam_pulang ? \Carbon\Carbon::parse($absensi->jam_pulang)->format('H:i') : '-' }}</td>
                                     <td class="px-5 py-3">
-                                        <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full {{ $statusStyle[$row['status']] ?? 'bg-gray-100 text-gray-500' }}">
-                                            {{ $row['status'] }}
+                                        <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full {{ $statusStyle[$absensi->status] ?? 'bg-gray-100 text-gray-500' }}">
+                                            {{ ucwords(str_replace('_', ' ', $absensi->status ?? '-')) }}
                                         </span>
                                     </td>
-                                    <td class="px-5 py-3 text-gray-500">{{ $row['keterangan'] ?? '-' }}</td>
+                                    <td class="px-5 py-3 text-gray-500">{{ $absensi->keterangan ?? '-' }}</td>
                                     <td class="px-5 py-3 text-center">
                                         <div class="flex items-center justify-center gap-2">
-                                            <a href="#"
+                                            <a href="{{ route('admin.absensi.edit', $absensi->id) }}"
                                                class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-yellow-500 hover:bg-yellow-600 text-white transition">
                                                 Edit
                                             </a>
-                                            
+
                                             {{-- Tombol Hapus --}}
                                             <button type="button" @click="confirmOpen = true"
                                                     class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-rose-500 hover:bg-rose-600 text-white transition">
@@ -164,7 +181,7 @@
                                                                 class="flex-1 text-sm font-semibold px-4 py-2.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition">
                                                             Batal
                                                         </button>
-                                                        <form action="#" method="POST" class="flex-1">
+                                                        <form action="{{ route('admin.absensi.destroy', $absensi->id) }}" method="POST" class="flex-1">
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="submit"
@@ -178,31 +195,21 @@
                                         </div>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="10" class="px-5 py-8 text-center text-gray-400">Belum ada data absensi.</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
 
                 {{-- Pagination --}}
                 <div class="flex items-center justify-between px-5 py-4 border-t border-gray-100">
-                    <p class="text-sm text-gray-400">Menampilkan 1-5 dari 128 data</p>
-                    <div class="flex items-center gap-1.5">
-                        <button type="button" class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 disabled:opacity-40" disabled>
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
-                            </svg>
-                        </button>
-                        <button type="button" class="w-8 h-8 flex items-center justify-center rounded-lg bg-emerald-600 text-white text-sm font-semibold">1</button>
-                        <button type="button" class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 text-sm font-medium">2</button>
-                        <button type="button" class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 text-sm font-medium">3</button>
-                        <span class="w-8 h-8 flex items-center justify-center text-gray-400 text-sm">...</span>
-                        <button type="button" class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 text-sm font-medium">26</button>
-                        <button type="button" class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-                            </svg>
-                        </button>
-                    </div>
+                    <p class="text-sm text-gray-400">
+                        Menampilkan {{ $absensis->firstItem() ?? 0 }}-{{ $absensis->lastItem() ?? 0 }} dari {{ $absensis->total() }} data
+                    </p>
+                    {{ $absensis->onEachSide(1)->links() }}
                 </div>
             </div>
 

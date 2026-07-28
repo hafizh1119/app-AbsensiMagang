@@ -16,41 +16,19 @@
 
         <main class="p-6">
 
-            {{-- Judul & Tombol Tambah --}}
+            @if (session('success'))
+                <div class="mb-4 flex items-center gap-3 bg-emerald-50 border border-emerald-100 text-emerald-600 text-sm rounded-xl px-4 py-3">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            {{-- Judul --}}
             <div class="flex items-center justify-between mb-1">
                 <div>
                     <h2 class="text-2xl font-bold text-gray-900">Unit</h2>
-                    <p class="text-sm text-gray-400 mt-1">Kelola data unit atau divisi di lingkungan dinas</p>
+                    <p class="text-sm text-gray-400 mt-1">Lihat daftar pegawai yang ditempatkan di setiap unit atau divisi</p>
                 </div>
-                <a href="#"
-                   class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <line x1="12" y1="5" x2="12" y2="19"/>
-                        <line x1="5" y1="12" x2="19" y2="12"/>
-                    </svg>
-                    Tambah Unit
-                </a>
             </div>
-
-            @php
-                $stats = [
-                    ['label' => 'Total Unit',     'value' => '12',  'suffix' => 'Unit',     'icon' => 'building',   'color' => 'emerald'],
-                    ['label' => 'Total Pegawai',  'value' => '128', 'suffix' => 'Pegawai',  'icon' => 'users',      'color' => 'blue'],
-                ];
-
-                $unit = $unit ?? collect([
-                    ['no' => 1,  'kode' => 'SET',      'nama' => 'Sekretariat',               'jenis' => 'Struktural',            'jumlah' => 15],
-                    ['no' => 2,  'kode' => 'BID-KOP',  'nama' => 'Bidang Koperasi',           'jenis' => 'Struktural',            'jumlah' => 28],
-                    ['no' => 3,  'kode' => 'BID-UMKM', 'nama' => 'Bidang UMKM',               'jenis' => 'Struktural',            'jumlah' => 25],
-                    ['no' => 4,  'kode' => 'BID-PMB',  'nama' => 'Bidang Pembiayaan',         'jenis' => 'Struktural',            'jumlah' => 20],
-                    ['no' => 5,  'kode' => 'BID-PGW',  'nama' => 'Bidang Pengawasan',         'jenis' => 'Struktural',            'jumlah' => 18],
-                    ['no' => 6,  'kode' => 'UPT-LAB',  'nama' => 'UPT Laboratorium',          'jenis' => 'Unit Pelaksana Teknis', 'jumlah' => 8],
-                    ['no' => 7,  'kode' => 'UPT-BLK',  'nama' => 'UPT Balatkop',              'jenis' => 'Unit Pelaksana Teknis', 'jumlah' => 7],
-                    ['no' => 8,  'kode' => 'SUB-PRG',  'nama' => 'Subbag Program',            'jenis' => 'Sub Bagian',            'jumlah' => 5],
-                    ['no' => 9,  'kode' => 'SUB-KEU',  'nama' => 'Subbag Keuangan',           'jenis' => 'Sub Bagian',            'jumlah' => 6],
-                    ['no' => 10, 'kode' => 'SUB-UMUM', 'nama' => 'Subbag Umum & Kepegawaian', 'jenis' => 'Sub Bagian',            'jumlah' => 6],
-                ]);
-            @endphp
 
             {{-- Kartu Statistik --}}
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-5">
@@ -94,8 +72,6 @@
 
                 {{-- Filter --}}
                 <div class="flex flex-wrap items-end gap-3 p-5 border-b border-gray-100">
-
-                    {{-- Cari --}}
                     <div class="flex-1 min-w-[220px]">
                         <label class="block text-xs font-medium text-gray-500 mb-1.5">Cari</label>
                         <div class="relative">
@@ -103,37 +79,10 @@
                                 <circle cx="11" cy="11" r="7"/>
                                 <line x1="21" y1="21" x2="16.65" y2="16.65"/>
                             </svg>
-                            <input type="text" placeholder="Cari nama unit atau kode..."
+                            <input type="text" placeholder="Cari nama unit..."
                                    class="w-full bg-white border border-gray-200 rounded-lg pl-9 pr-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500">
                         </div>
                     </div>
-
-                    {{-- Jenis Unit --}}
-                    <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Unit</label>
-                        <div class="relative">
-                            <select class="appearance-none w-44 bg-white border border-gray-200 rounded-lg pl-3 pr-8 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                                <option>Semua Unit</option>
-                                <option>Struktural</option>
-                                <option>Unit Pelaksana Teknis</option>
-                                <option>Sub Bagian</option>
-                            </select>
-                            <svg class="w-4 h-4 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
-                            </svg>
-                        </div>
-                    </div>
-
-                    {{-- Tombol Filter & Reset --}}
-                    <div class="flex items-center gap-2">
-                        <button type="button"
-                                class="flex items-center gap-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 text-sm font-semibold px-4 py-2.5 rounded-lg">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h5M20 20v-5h-5M4 9a8 8 0 0 1 14.5-4.5M20 15a8 8 0 0 1-14.5 4.5"/>
-                            </svg>
-                        </button>
-                    </div>
-
                 </div>
 
                 {{-- Tabel --}}
@@ -148,94 +97,25 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
-                            @foreach ($unit as $row)
-                                <tr class="hover:bg-gray-50/60 transition-colors" x-data="{ confirmOpen: false }">
+                            @forelse ($unit as $row)
+                                <tr class="hover:bg-gray-50/60 transition-colors">
                                     <td class="px-4 py-3 text-gray-500">{{ $row['no'] }}</td>
                                     <td class="px-4 py-3 text-gray-700">{{ $row['nama'] }}</td>
                                     <td class="px-4 py-3 text-gray-500">{{ $row['jumlah'] }}</td>
                                     <td class="px-4 py-3 text-center">
-                                        <div class="flex items-center justify-center gap-2">
-                                            <a href="{{ route('admin.unit.show') }}"
-                                            class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-gray-500 hover:bg-gray-600 text-white transition">
-                                                Lihat
-                                            </a>
-                                            <a href="{{ route('admin.unit.edit') }}"
-                                            class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition">
-                                                Edit
-                                            </a>
-                                            
-                                            {{-- Tombol Hapus --}}
-                                            <button type="button" @click="confirmOpen = true"
-                                                    class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-rose-500 hover:bg-rose-600 text-white transition">
-                                                Hapus
-                                            </button>
-
-                                            {{-- Overlay --}}
-                                            <div x-show="confirmOpen"
-                                                x-transition.opacity
-                                                style="display: none;"
-                                                class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-
-                                                {{-- Card konfirmasi --}}
-                                                <div x-show="confirmOpen"
-                                                    x-transition:enter="transition ease-out duration-200"
-                                                    x-transition:enter-start="opacity-0 scale-95"
-                                                    x-transition:enter-end="opacity-100 scale-100"
-                                                    @click.outside="confirmOpen = false"
-                                                    class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 text-center">
-
-                                                    <div class="w-14 h-14 mx-auto rounded-full bg-rose-50 flex items-center justify-center mb-4">
-                                                        <svg class="w-7 h-7 text-rose-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/>
-                                                        </svg>
-                                                    </div>
-
-                                                    <h3 class="text-base font-bold text-gray-900 mb-1">Hapus Data Unit?</h3>
-                                                    <p class="text-sm text-gray-500 mb-6">
-                                                        Data yang sudah dihapus tidak dapat dikembalikan. Pastikan kamu yakin sebelum melanjutkan.
-                                                    </p>
-
-                                                    <div class="flex items-center gap-3">
-                                                        <button type="button" @click="confirmOpen = false"
-                                                                class="flex-1 text-sm font-semibold px-4 py-2.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition">
-                                                            Batal
-                                                        </button>
-                                                        <form action="#" method="POST" class="flex-1">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit"
-                                                                    class="w-full text-sm font-semibold px-4 py-2.5 rounded-lg bg-rose-500 hover:bg-rose-600 text-white transition">
-                                                                Ya, Hapus
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <a href="{{ route('admin.unit.show', $row['id']) }}"
+                                           class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition">
+                                            Lihat Anggota
+                                        </a>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="px-4 py-8 text-center text-gray-400">Belum ada data unit.</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
-                </div>
-
-                {{-- Pagination --}}
-                <div class="flex items-center justify-between px-5 py-4 border-t border-gray-100">
-                    <p class="text-sm text-gray-400">Menampilkan 1 - {{ $unit->count() }} dari 12 data</p>
-                    <div class="flex items-center gap-1.5">
-                        <button type="button" class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 disabled:opacity-40" disabled>
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
-                            </svg>
-                        </button>
-                        <button type="button" class="w-8 h-8 flex items-center justify-center rounded-lg bg-emerald-600 text-white text-sm font-semibold">1</button>
-                        <button type="button" class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 text-sm font-medium">2</button>
-                        <button type="button" class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-                            </svg>
-                        </button>
-                    </div>
                 </div>
 
             </div>

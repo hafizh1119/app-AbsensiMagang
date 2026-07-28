@@ -8,20 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Absensi extends Model
 {
     use HasFactory;
-
-    /**
-     * Nama tabel
-     */
     protected $table = 'absensi';
-
-    /**
-     * Primary Key
-     */
     protected $primaryKey = 'id';
-
-    /**
-     * Mass Assignment
-     */
     protected $fillable = [
         'user_id',
         'lokasi_absensi_id',
@@ -36,9 +24,6 @@ class Absensi extends Model
         'keterangan',
     ];
 
-    /**
-     * Attribute Casting
-     */
     protected function casts(): array
     {
         return [
@@ -50,23 +35,11 @@ class Absensi extends Model
         ];
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Relationships
-    |--------------------------------------------------------------------------
-    */
-
-    /**
-     * Absensi dimiliki oleh satu User.
-     */
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Absensi dilakukan pada satu Lokasi Absensi.
-     */
     public function lokasiAbsensi()
     {
         return $this->belongsTo(LokasiAbsensi::class);

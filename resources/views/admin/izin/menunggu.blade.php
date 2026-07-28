@@ -110,23 +110,28 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
-                            @foreach($pengajuan as $row)
+                            @forelse($pengajuan as $row)
                                 <tr class="hover:bg-gray-50/60 transition-colors">
-                                    <td class="px-3 py-2 text-gray-500">{{ $row['no'] }}</td>
-                                    <td class="px-3 py-2 text-gray-500">{{ $row['diajukan'] }}</td>
-                                    <td class="px-3 py-2 font-medium text-gray-700">{{ $row['nama'] }}</td>
-                                    <td class="px-3 py-2 text-gray-500">{{ $row['nip'] }}</td>
-                                    <td class="px-3 py-2 text-gray-500">{{ $row['unit'] }}</td>
-                                    <td class="px-3 py-2 text-gray-500">{{ $row['jenis'] }}</td>
-                                    <td class="px-3 py-2 text-gray-500 max-w-[130px] whitespace-normal">{{ $row['tanggal_izin'] }}</td>
-                                    <td class="px-3 py-2 text-gray-500">{{ $row['durasi'] }}</td>
-                                    <td class="px-3 py-2 text-gray-500 max-w-[140px] whitespace-normal">{{ $row['alasan'] }}</td>
-                                    <td class="px-3 py-2 text-gray-500">{{ $row['diajukan_kepada'] }}</td>
+                                    <td class="px-3 py-2 text-gray-500">{{ $loop->iteration + ($pengajuan->currentPage() - 1) * $pengajuan->perPage() }}</td>
+                                    <td class="px-3 py-2 text-gray-500">{{ $row->tanggal_pengajuan->format('d M Y H:i') }}</td>
+                                    <td class="px-3 py-2 font-medium text-gray-700">{{ $row->user->nama ?? '-' }}</td>
+                                    <td class="px-3 py-2 text-gray-500">{{ $row->user->nip ?? '-' }}</td>
+                                    <td class="px-3 py-2 text-gray-500">{{ $row->user->penempatanUnit->jenisUnit->nama_unit ?? '-' }}</td>
+                                    <td class="px-3 py-2 text-gray-500">{{ $row->jenisIzin->nama_izin ?? '-' }}</td>
+                                    <td class="px-3 py-2 text-gray-500 max-w-[130px] whitespace-normal">
+                                        {{ $row->tanggal_mulai->format('d M Y') }}
+                                        @if($row->tanggal_selesai && !$row->tanggal_mulai->equalTo($row->tanggal_selesai))
+                                            - {{ $row->tanggal_selesai->format('d M Y') }}
+                                        @endif
+                                    </td>
+                                    <td class="px-3 py-2 text-gray-500">{{ $row->durasi }} Hari</td>
+                                    <td class="px-3 py-2 text-gray-500 max-w-[140px] whitespace-normal">{{ $row->alasan }}</td>
+                                    <td class="px-3 py-2 text-gray-500">{{ $row->jabatan_penyetuju ?? '-' }}</td>
                                     <td class="px-3 py-2">
                                         <div class="flex items-center gap-1">
                                             {{-- Lihat Detail --}}
-                                            <a href="#" title="Lihat Detail"
-                                               class="inline-flex items-center justify-center w-7 h-7 rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition">
+                                            <a href="{{ route('admin.izin.show', $row->id) }}" title="Lihat Detail"
+                                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -134,7 +139,7 @@
                                             </a>
 
                                             {{-- Setujui --}}
-                                            <form action="#" method="POST" class="inline">
+                                            <form action="{{ route('admin.izin.approve', $row->id) }}" method="POST" class="inline">
                                                 @csrf
                                                 <button type="submit" title="Setujui"
                                                         class="inline-flex items-center justify-center w-7 h-7 rounded-full text-emerald-500 hover:bg-emerald-50 transition">
@@ -145,7 +150,7 @@
                                             </form>
 
                                             {{-- Tolak --}}
-                                            <form action="#" method="POST" class="inline">
+                                            <form action="{{ route('admin.izin.reject', $row->id) }}" method="POST" class="inline">
                                                 @csrf
                                                 <button type="submit" title="Tolak"
                                                         class="inline-flex items-center justify-center w-7 h-7 rounded-full text-rose-500 hover:bg-rose-50 transition">
@@ -157,14 +162,23 @@
                                         </div>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="11" class="px-3 py-6 text-center text-gray-400">Tidak ada pengajuan yang menunggu persetujuan.</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
 
                 {{-- Pagination --}}
                 <div class="flex items-center justify-between px-5 py-4 border-t border-gray-100">
-                    <p class="text-sm text-gray-400">Menampilkan 1 - {{ $pengajuan->count() }} dari {{ $pengajuan->count() }} data</p>
+                    <p class="text-sm text-gray-400">
+                        Menampilkan {{ $pengajuan->firstItem() ?? 0 }} - {{ $pengajuan->lastItem() ?? 0 }} dari {{ $pengajuan->total() }} data
+                    </p>
+                    <div class="flex items-center gap-1.5">
+                        {{ $pengajuan->links() }}
+                    </div>
                 </div>
             </div>
 

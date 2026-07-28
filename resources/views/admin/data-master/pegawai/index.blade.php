@@ -1,4 +1,4 @@
-{{-- resources/views/admin/pegawai/index.blade.php --}}
+{{-- resources/views/admin/data-master/pegawai/index.blade.php --}}
 @extends('layouts.app')
 
 @section('title', 'Data Pegawai')
@@ -16,6 +16,12 @@
 
         <main class="p-6">
 
+            @if (session('success'))
+                <div class="mb-4 flex items-center gap-3 bg-emerald-50 border border-emerald-100 text-emerald-600 text-sm rounded-xl px-4 py-3">
+                    {{ session('success') }}
+                </div>
+            @endif
+
             {{-- Judul & Tombol Tambah --}}
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-xl font-bold text-gray-900">Data Pegawai</h2>
@@ -28,16 +34,6 @@
                     Tambah Pegawai
                 </a>
             </div>
-
-            @php
-                $pegawai = $pegawai ?? collect([
-                    ['no' => 1, 'nama' => 'Budi Santoso',   'nip' => '199203152019031005', 'unit' => 'Keuangan', 'jabatan' => 'Staf Keuangan',  'status' => 'Aktif'],
-                    ['no' => 2, 'nama' => 'Siti Rahmawati', 'nip' => '199401102008032002', 'unit' => 'SDM',      'jabatan' => 'Staf SDM',       'status' => 'Aktif'],
-                    ['no' => 3, 'nama' => 'Agus Setiawan',  'nip' => '199007110015031002', 'unit' => 'IT',       'jabatan' => 'Programmer',     'status' => 'Aktif'],
-                    ['no' => 4, 'nama' => 'Dewi Lestari',   'nip' => '198905250018032001', 'unit' => 'Keuangan', 'jabatan' => 'Staff Akuntansi', 'status' => 'Aktif'],
-                    ['no' => 5, 'nama' => 'Eko Prasetyo',   'nip' => '199301820017031004', 'unit' => 'Umum',     'jabatan' => 'Driver',         'status' => 'Aktif'],
-                ]);
-            @endphp
 
             {{-- Filter --}}
             <div class="flex flex-wrap items-center gap-3 mb-4">
@@ -55,11 +51,10 @@
                 {{-- Unit --}}
                 <div class="relative">
                     <select class="appearance-none w-40 bg-white border border-gray-200 rounded-lg pl-3 pr-8 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                        <option>Semua Unit</option>
-                        <option>Keuangan</option>
-                        <option>SDM</option>
-                        <option>IT</option>
-                        <option>Umum</option>
+                        <option value="">Semua Unit</option>
+                        @foreach ($units as $u)
+                            <option value="{{ $u->id }}">{{ $u->nama_unit }}</option>
+                        @endforeach
                     </select>
                     <svg class="w-4 h-4 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
@@ -83,7 +78,7 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
-                            @foreach ($pegawai as $row)
+                            @forelse ($pegawai as $row)
                                 <tr class="hover:bg-gray-50/60 transition-colors">
                                     <td class="px-4 py-3 text-gray-500">{{ $row['no'] }}</td>
                                     <td class="px-4 py-3 font-medium text-gray-800">{{ $row['nama'] }}</td>
@@ -92,11 +87,11 @@
                                     <td class="px-4 py-3 text-gray-500">{{ $row['jabatan'] }}</td>
                                     <td class="px-4 py-3 text-center">
                                         <div class="flex items-center justify-center gap-1">
-                                            <a href="{{ route('admin.data-master.pegawai.show') }}"
+                                            <a href="{{ route('admin.data-master.pegawai.show', $row['id']) }}"
                                             class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-gray-500 hover:bg-gray-600 text-white transition">
                                                 Lihat
                                             </a>
-                                            <a href="{{ route('admin.data-master.pegawai.edit') }}"
+                                            <a href="{{ route('admin.data-master.pegawai.edit', $row['id']) }}"
                                             class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition">
                                                 Edit
                                             </a>
@@ -138,7 +133,7 @@
                                                                 class="flex-1 text-sm font-semibold px-4 py-2.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition">
                                                             Batal
                                                         </button>
-                                                        <form action="#" method="POST" class="flex-1">
+                                                        <form action="{{ route('admin.data-master.pegawai.destroy', $row['id']) }}" method="POST" class="flex-1">
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="submit"
@@ -153,31 +148,18 @@
                                         </div>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="px-4 py-8 text-center text-gray-400">Belum ada data pegawai.</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
 
                 {{-- Pagination --}}
                 <div class="flex items-center justify-between px-5 py-4 border-t border-gray-100">
-                    <p class="text-sm text-gray-400">Menampilkan 1 - {{ $pegawai->count() }} dari 128 data</p>
-                    <div class="flex items-center gap-1.5">
-                        <button type="button" class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 disabled:opacity-40" disabled>
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
-                            </svg>
-                        </button>
-                        <button type="button" class="w-8 h-8 flex items-center justify-center rounded-lg bg-emerald-600 text-white text-sm font-semibold">1</button>
-                        <button type="button" class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 text-sm font-medium">2</button>
-                        <button type="button" class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 text-sm font-medium">3</button>
-                        <span class="w-8 h-8 flex items-center justify-center text-gray-400 text-sm">...</span>
-                        <button type="button" class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 text-sm font-medium">26</button>
-                        <button type="button" class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-                            </svg>
-                        </button>
-                    </div>
+                    <p class="text-sm text-gray-400">Menampilkan {{ $pegawai->count() }} dari {{ $pegawai->count() }} data</p>
                 </div>
             </div>
 

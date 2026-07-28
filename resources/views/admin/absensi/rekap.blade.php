@@ -18,17 +18,6 @@
         <main class="p-6">
 
             @php
-                // Data contoh, ganti dengan data asli dari controller
-                $periode = $periode ?? 'Mei 2025';
-
-                $rekap = $rekap ?? collect([
-                    ['unit' => 'Sekretariat',        'total' => 15,  'hadir' => 12, 'terlambat' => 2, 'izin' => 1, 'sakit' => 0, 'alpha' => 0],
-                    ['unit' => 'Bidang Koperasi',     'total' => 28,  'hadir' => 21, 'terlambat' => 4, 'izin' => 2, 'sakit' => 1, 'alpha' => 0],
-                    ['unit' => 'Bidang UMKM',          'total' => 25,  'hadir' => 18, 'terlambat' => 4, 'izin' => 2, 'sakit' => 0, 'alpha' => 1],
-                    ['unit' => 'Bidang Pembiayaan',    'total' => 20,  'hadir' => 16, 'terlambat' => 3, 'izin' => 1, 'sakit' => 0, 'alpha' => 0],
-                    ['unit' => 'Bidang Pengawasan',    'total' => 18,  'hadir' => 12, 'terlambat' => 3, 'izin' => 2, 'sakit' => 1, 'alpha' => 0],
-                ]);
-
                 $totalPegawai   = $rekap->sum('total');
                 $totalHadir     = $rekap->sum('hadir');
                 $totalTerlambat = $rekap->sum('terlambat');
@@ -37,9 +26,6 @@
                 $totalAlpha     = $rekap->sum('alpha');
 
                 $persen = fn($jumlah, $total) => $total > 0 ? number_format($jumlah / $total * 100, 2) . '%' : '0%';
-
-                // Data contoh grafik kehadiran harian (persen hadir per tanggal), ganti dengan data asli
-                $grafikHarian = $grafikHarian ?? [92,78,74,70,65,60,72,78,80,68,60,62,75,80,68,60,55,68,80,75,70,62,58,65,72,68,75,80,65,60,66];
 
                 // Hitung koordinat SVG untuk line chart
                 $chartWidth  = 400;
@@ -56,7 +42,7 @@
             @endphp
 
             {{-- Judul Halaman & Filter --}}
-            <div class="flex flex-wrap items-start justify-between gap-4 mb-5">
+            <form method="GET" class="flex flex-wrap items-start justify-between gap-4 mb-5">
                 <div>
                     <h1 class="text-2xl font-bold text-gray-800">Rekap Absensi</h1>
                     <p class="text-sm text-gray-400 mt-0.5">Rekapitulasi kehadiran pegawai</p>
@@ -67,24 +53,18 @@
                     {{-- Periode --}}
                     <div>
                         <label class="block text-xs text-gray-400 mb-1.5">Periode</label>
-                        <div class="relative">
-                            <input type="text" value="{{ $periode }}" readonly
-                                   class="w-36 border border-gray-200 rounded-lg pl-3 pr-9 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                            <svg class="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <rect x="3" y="4" width="18" height="18" rx="2"/>
-                                <path stroke-linecap="round" d="M16 2v4M8 2v4M3 10h18"/>
-                            </svg>
-                        </div>
+                        <input type="month" name="periode" value="{{ $periodeInput }}"
+                               class="w-40 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
                     </div>
 
                     {{-- Unit / Divisi --}}
                     <div>
                         <label class="block text-xs text-gray-400 mb-1.5">Unit / Divisi</label>
                         <div class="relative">
-                            <select class="appearance-none w-40 border border-gray-200 rounded-lg pl-3 pr-8 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                                <option>Semua Unit</option>
-                                @foreach($rekap as $r)
-                                    <option>{{ $r['unit'] }}</option>
+                            <select name="unit" class="appearance-none w-40 border border-gray-200 rounded-lg pl-3 pr-8 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                <option value="">Semua Unit</option>
+                                @foreach($units as $u)
+                                    <option value="{{ $u }}" @selected($unitFilter === $u)>{{ $u }}</option>
                                 @endforeach
                             </select>
                             <svg class="w-4 h-4 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -92,6 +72,12 @@
                             </svg>
                         </div>
                     </div>
+
+                    {{-- Terapkan --}}
+                    <button type="submit"
+                            class="text-sm font-semibold px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-900 text-white transition">
+                        Terapkan
+                    </button>
 
                     {{-- Export --}}
                     <div class="relative" x-data="{ open: false }" @click.outside="open = false">
@@ -109,7 +95,9 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </form>
+
+            <p class="text-sm text-gray-400 -mt-3 mb-5">Periode: <span class="font-semibold text-gray-600">{{ $periode }}</span></p>
 
             {{-- Grafik Kehadiran --}}
             <div class="w-full bg-white rounded-2xl border border-gray-100 shadow-sm p-5 mb-5">
@@ -135,27 +123,25 @@
                             <line x1="0" y1="105" x2="{{ $chartWidth }}" y2="105" stroke="#f1f5f9" stroke-width="1"/>
                             <line x1="0" y1="{{ $chartHeight }}" x2="{{ $chartWidth }}" y2="{{ $chartHeight }}" stroke="#f1f5f9" stroke-width="1"/>
 
-                            {{-- Area di bawah garis --}}
-                            <polygon points="{{ $areaPoints }}" fill="#10b981" fill-opacity="0.12"/>
+                            @if(count($points) > 0)
+                                {{-- Area di bawah garis --}}
+                                <polygon points="{{ $areaPoints }}" fill="#10b981" fill-opacity="0.12"/>
 
-                            {{-- Garis kehadiran --}}
-                            <polyline points="{{ $polylinePoints }}" fill="none" stroke="#10b981" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+                                {{-- Garis kehadiran --}}
+                                <polyline points="{{ $polylinePoints }}" fill="none" stroke="#10b981" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
 
-                            {{-- Titik data --}}
-                            @foreach($points as $p)
-                                <circle cx="{{ $p[0] }}" cy="{{ $p[1] }}" r="2" fill="#10b981"/>
-                            @endforeach
+                                {{-- Titik data --}}
+                                @foreach($points as $p)
+                                    <circle cx="{{ $p[0] }}" cy="{{ $p[1] }}" r="2" fill="#10b981"/>
+                                @endforeach
+                            @endif
                         </svg>
 
                         {{-- Sumbu X --}}
                         <div class="flex justify-between text-[10px] text-gray-400 mt-1.5 px-0.5">
-                            <span>1 Mei</span>
-                            <span>6 Mei</span>
-                            <span>11 Mei</span>
-                            <span>16 Mei</span>
-                            <span>21 Mei</span>
-                            <span>26 Mei</span>
-                            <span>31 Mei</span>
+                            @foreach($sumbuX as $label)
+                                <span>{{ $label }}</span>
+                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -189,7 +175,7 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
-                            @foreach($rekap as $r)
+                            @forelse($rekap as $r)
                                 <tr class="hover:bg-gray-50/60 transition-colors">
                                     <td class="px-5 py-3 font-medium text-gray-700">{{ $r['unit'] }}</td>
                                     <td class="px-5 py-3 text-gray-500">{{ $r['total'] }}</td>
@@ -204,7 +190,11 @@
                                     <td class="text-center px-3 py-3 text-gray-500 border-l border-gray-100">{{ $r['alpha'] }}</td>
                                     <td class="text-center px-3 py-3 text-gray-500">{{ $persen($r['alpha'], $r['total']) }}</td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="12" class="px-5 py-8 text-center text-gray-400">Belum ada data untuk periode ini.</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                         <tfoot>
                             <tr class="bg-gray-50 font-bold text-gray-700">

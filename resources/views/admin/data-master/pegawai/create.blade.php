@@ -1,4 +1,4 @@
-{{-- resources/views/admin/pegawai/create.blade.php --}}
+{{-- resources/views/admin/data-master/pegawai/create.blade.php --}}
 @extends('layouts.app')
 
 @section('title', 'Tambah Pegawai')
@@ -24,7 +24,7 @@
                 </div>
             </div>
 
-            <form action="#" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('admin.data-master.pegawai.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 {{-- Satu Card Gabungan --}}
@@ -94,7 +94,7 @@
                                         <option value="">Pilih Unit / Divisi</option>
                                         @foreach ($units ?? [] as $unit)
                                             <option value="{{ $unit->id }}" {{ old('unit_id') == $unit->id ? 'selected' : '' }}>
-                                                {{ $unit->nama }}
+                                                {{ $unit->nama_unit }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -205,7 +205,7 @@
 
                 {{-- Tombol Aksi --}}
                 <div class="flex items-center justify-end gap-3 mt-5">
-                    <a href="{{ route('admin.pegawai') }}"
+                    <a href="{{ route('admin.data-master.pegawai') }}"
                        class="text-sm font-semibold px-5 py-2.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition">
                         Batal
                     </a>

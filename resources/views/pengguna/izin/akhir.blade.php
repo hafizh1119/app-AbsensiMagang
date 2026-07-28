@@ -38,7 +38,7 @@
                 <div class="flex items-center justify-between">
                     <div class="text-left">
                         <p class="text-xs text-gray-400 mb-1">Nomor Pengajuan</p>
-                        <p id="nomor-pengajuan" class="text-gray-900 font-bold tracking-wide">IZN-20250526-00123</p>
+                        <p id="nomor-pengajuan" class="text-gray-900 font-bold tracking-wide">{{ $nomorPengajuan }}</p>
                     </div>
                     <button type="button" id="salin-nomor" class="shrink-0 text-gray-400 hover:text-emerald-600">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">

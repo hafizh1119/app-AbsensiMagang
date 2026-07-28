@@ -5,7 +5,25 @@
 
 @section('content')
 
-<div class="flex h-screen overflow-hidden">
+<div class="flex h-screen overflow-hidden"
+     x-data="{
+        createOpen: {{ $errors->any() && old('_form') === 'create' ? 'true' : 'false' }},
+        editOpen: {{ $errors->any() && old('_form') === 'edit' ? 'true' : 'false' }},
+        form: {
+            id: {{ old('_form') === 'edit' ? (int) old('id') : 'null' }},
+            nama_unit: @js(old('nama_unit', '')),
+            deskripsi: @js(old('deskripsi', '')),
+            status: @js(old('status', 'Aktif'))
+        },
+        openCreate() {
+            this.form = { id: null, nama_unit: '', deskripsi: '', status: 'Aktif' };
+            this.createOpen = true;
+        },
+        openEdit(row) {
+            this.form = { id: row.id, nama_unit: row.nama, deskripsi: row.deskripsi ?? '', status: row.status };
+            this.editOpen = true;
+        }
+     }">
 
     {{-- Sidebar tetap di kiri, tidak ikut scroll --}}
     @include('admin.components.sidebar')
@@ -16,41 +34,58 @@
 
         <main class="p-6">
 
+            @if (session('success'))
+                <div id="toastSuccess"
+                     class="fixed top-5 right-5 z-[9999] flex items-center gap-3 bg-white border border-emerald-100 shadow-lg rounded-xl px-4 py-3 pr-5">
+                    <span class="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 shrink-0">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </span>
+                    <div>
+                        <p class="text-sm font-semibold text-gray-800">Berhasil</p>
+                        <p class="text-xs text-gray-500">{{ session('success') }}</p>
+                    </div>
+                </div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        var toast = document.getElementById('toastSuccess');
+                        if (!toast) return;
+                        setTimeout(function () {
+                            toast.style.transition = 'all .3s';
+                            toast.style.opacity = '0';
+                            toast.style.transform = 'translateX(120%)';
+                            setTimeout(function () { toast.remove(); }, 300);
+                        }, 3000);
+                    });
+                </script>
+            @endif
+
+            @if (session('error'))
+                <div class="mb-4 flex items-center gap-3 bg-rose-50 border border-rose-100 text-rose-600 text-sm rounded-xl px-4 py-3">
+                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="9"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4M12 16h.01"/>
+                    </svg>
+                    {{ session('error') }}
+                </div>
+            @endif
+
             {{-- Judul & Tombol Tambah --}}
             <div class="flex items-center justify-between mb-1">
                 <div>
                     <h2 class="text-2xl font-bold text-gray-900">Unit</h2>
-                    <p class="text-sm text-gray-400 mt-1">Kelola data unit atau divisi di lingkungan dinas</p>
+                    <p class="text-sm text-gray-400 mt-1">Kelola data jenis unit atau divisi di lingkungan dinas</p>
                 </div>
-                <a href="#"
-                   class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow-sm">
+                <button type="button" @click="openCreate()"
+                        class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <line x1="12" y1="5" x2="12" y2="19"/>
                         <line x1="5" y1="12" x2="19" y2="12"/>
                     </svg>
                     Tambah Unit
-                </a>
+                </button>
             </div>
-
-            @php
-                $stats = [
-                    ['label' => 'Total Unit',     'value' => '12',  'suffix' => 'Unit',     'icon' => 'building',   'color' => 'emerald'],
-                    ['label' => 'Total Pegawai',  'value' => '128', 'suffix' => 'Pegawai',  'icon' => 'users',      'color' => 'blue'],
-                ];
-
-                $unit = $unit ?? collect([
-                    ['no' => 1,  'kode' => 'SET',      'nama' => 'Sekretariat',               'jenis' => 'Struktural',            'jumlah' => 15],
-                    ['no' => 2,  'kode' => 'BID-KOP',  'nama' => 'Bidang Koperasi',           'jenis' => 'Struktural',            'jumlah' => 28],
-                    ['no' => 3,  'kode' => 'BID-UMKM', 'nama' => 'Bidang UMKM',               'jenis' => 'Struktural',            'jumlah' => 25],
-                    ['no' => 4,  'kode' => 'BID-PMB',  'nama' => 'Bidang Pembiayaan',         'jenis' => 'Struktural',            'jumlah' => 20],
-                    ['no' => 5,  'kode' => 'BID-PGW',  'nama' => 'Bidang Pengawasan',         'jenis' => 'Struktural',            'jumlah' => 18],
-                    ['no' => 6,  'kode' => 'UPT-LAB',  'nama' => 'UPT Laboratorium',          'jenis' => 'Unit Pelaksana Teknis', 'jumlah' => 8],
-                    ['no' => 7,  'kode' => 'UPT-BLK',  'nama' => 'UPT Balatkop',              'jenis' => 'Unit Pelaksana Teknis', 'jumlah' => 7],
-                    ['no' => 8,  'kode' => 'SUB-PRG',  'nama' => 'Subbag Program',            'jenis' => 'Sub Bagian',            'jumlah' => 5],
-                    ['no' => 9,  'kode' => 'SUB-KEU',  'nama' => 'Subbag Keuangan',           'jenis' => 'Sub Bagian',            'jumlah' => 6],
-                    ['no' => 10, 'kode' => 'SUB-UMUM', 'nama' => 'Subbag Umum & Kepegawaian', 'jenis' => 'Sub Bagian',            'jumlah' => 6],
-                ]);
-            @endphp
 
             {{-- Kartu Statistik --}}
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-5">
@@ -94,8 +129,6 @@
 
                 {{-- Filter --}}
                 <div class="flex flex-wrap items-end gap-3 p-5 border-b border-gray-100">
-
-                    {{-- Cari --}}
                     <div class="flex-1 min-w-[220px]">
                         <label class="block text-xs font-medium text-gray-500 mb-1.5">Cari</label>
                         <div class="relative">
@@ -107,8 +140,6 @@
                                    class="w-full bg-white border border-gray-200 rounded-lg pl-9 pr-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500">
                         </div>
                     </div>
-
-                    {{-- Tombol Filter & Reset --}}
                     <div class="flex items-center gap-2">
                         <button type="button"
                                 class="flex items-center gap-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 text-sm font-semibold px-4 py-2.5 rounded-lg">
@@ -117,7 +148,6 @@
                             </svg>
                         </button>
                     </div>
-
                 </div>
 
                 {{-- Tabel --}}
@@ -127,34 +157,37 @@
                             <tr class="bg-gray-50 text-gray-400 text-xs">
                                 <th class="text-left font-medium px-4 py-3 w-10">No</th>
                                 <th class="text-left font-medium px-4 py-3">Nama Unit</th>
+                                <th class="text-left font-medium px-4 py-3">Deskripsi</th>
                                 <th class="text-center font-medium px-4 py-3">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
-                            @foreach ($unit as $row)
+                            @forelse ($unit as $row)
                                 <tr class="hover:bg-gray-50/60 transition-colors" x-data="{ confirmOpen: false }">
                                     <td class="px-4 py-3 text-gray-500">{{ $row['no'] }}</td>
                                     <td class="px-4 py-3 text-gray-700">{{ $row['nama'] }}</td>
+                                    <td class="px-4 py-3 text-gray-500 max-w-[280px] truncate" title="{{ $row['deskripsi'] }}">
+                                        {{ $row['deskripsi'] ?: '-' }}
+                                    </td>
                                     <td class="px-4 py-3 text-center">
                                         <div class="flex items-center justify-center gap-2">
-                                            <a href="#"
-                                            class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition">
+                                            <button type="button"
+                                                    @click="openEdit(@js($row))"
+                                                    class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition">
                                                 Edit
-                                            </a>
-                                            
-                                            {{-- Tombol Hapus --}}
+                                            </button>
+
                                             <button type="button" @click="confirmOpen = true"
                                                     class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-rose-500 hover:bg-rose-600 text-white transition">
                                                 Hapus
                                             </button>
 
-                                            {{-- Overlay --}}
+                                            {{-- Modal Konfirmasi Hapus --}}
                                             <div x-show="confirmOpen"
                                                 x-transition.opacity
                                                 style="display: none;"
                                                 class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
 
-                                                {{-- Card konfirmasi --}}
                                                 <div x-show="confirmOpen"
                                                     x-transition:enter="transition ease-out duration-200"
                                                     x-transition:enter-start="opacity-0 scale-95"
@@ -178,7 +211,7 @@
                                                                 class="flex-1 text-sm font-semibold px-4 py-2.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition">
                                                             Batal
                                                         </button>
-                                                        <form action="#" method="POST" class="flex-1">
+                                                        <form action="{{ route('admin.data-master.unit.destroy', $row['id']) }}" method="POST" class="flex-1">
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="submit"
@@ -192,7 +225,11 @@
                                         </div>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="px-4 py-8 text-center text-gray-400">Belum ada data jenis unit.</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -215,6 +252,110 @@
                     </div>
                 </div>
 
+            </div>
+
+            {{-- ============ MODAL TAMBAH UNIT ============ --}}
+            <div x-show="createOpen"
+                 x-transition.opacity
+                 style="display: none;"
+                 class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+
+                <div x-show="createOpen"
+                     x-transition:enter="transition ease-out duration-200"
+                     x-transition:enter-start="opacity-0 scale-95"
+                     x-transition:enter-end="opacity-100 scale-100"
+                     @click.outside="createOpen = false"
+                     class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+
+                    <h3 class="text-base font-bold text-gray-900 mb-4">Tambah Unit</h3>
+
+                    <form action="{{ route('admin.data-master.unit.store') }}" method="POST" class="space-y-4 text-sm text-left">
+                        @csrf
+                        <input type="hidden" name="_form" value="create">
+
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1.5">Nama Unit <span class="text-rose-500">*</span></label>
+                            <input type="text" name="nama_unit" x-model="form.nama_unit" placeholder="Contoh: Struktural"
+                                   class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 @error('nama_unit') border-rose-400 @enderror">
+                            @error('nama_unit')
+                                <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1.5">Deskripsi</label>
+                            <textarea name="deskripsi" x-model="form.deskripsi" rows="3" placeholder="Deskripsi singkat jenis unit ini"
+                                      class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none @error('deskripsi') border-rose-400 @enderror"></textarea>
+                            @error('deskripsi')
+                                <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div class="flex items-center gap-3 pt-2">
+                            <button type="button" @click="createOpen = false"
+                                    class="flex-1 text-sm font-semibold px-4 py-2.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition">
+                                Batal
+                            </button>
+                            <button type="submit"
+                                    class="flex-1 text-sm font-semibold px-4 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition">
+                                Simpan
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            {{-- ============ MODAL EDIT UNIT ============ --}}
+            <div x-show="editOpen"
+                 x-transition.opacity
+                 style="display: none;"
+                 class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+
+                <div x-show="editOpen"
+                     x-transition:enter="transition ease-out duration-200"
+                     x-transition:enter-start="opacity-0 scale-95"
+                     x-transition:enter-end="opacity-100 scale-100"
+                     @click.outside="editOpen = false"
+                     class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+
+                    <h3 class="text-base font-bold text-gray-900 mb-4">Edit Unit</h3>
+
+                    <form :action="'{{ url('/admin/data-master/unit') }}/' + form.id" method="POST" class="space-y-4 text-sm text-left">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" name="_form" value="edit">
+                        <input type="hidden" name="id" :value="form.id">
+
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1.5">Nama Unit <span class="text-rose-500">*</span></label>
+                            <input type="text" name="nama_unit" x-model="form.nama_unit" placeholder="Contoh: Struktural"
+                                   class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 @error('nama_unit') border-rose-400 @enderror">
+                            @error('nama_unit')
+                                <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1.5">Deskripsi</label>
+                            <textarea name="deskripsi" x-model="form.deskripsi" rows="3" placeholder="Deskripsi singkat jenis unit ini"
+                                      class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none @error('deskripsi') border-rose-400 @enderror"></textarea>
+                            @error('deskripsi')
+                                <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div class="flex items-center gap-3 pt-2">
+                            <button type="button" @click="editOpen = false"
+                                    class="flex-1 text-sm font-semibold px-4 py-2.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition">
+                                Batal
+                            </button>
+                            <button type="submit"
+                                    class="flex-1 text-sm font-semibold px-4 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition">
+                                Simpan Perubahan
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
 
         </main>
