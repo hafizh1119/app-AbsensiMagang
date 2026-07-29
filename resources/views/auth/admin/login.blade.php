@@ -18,7 +18,7 @@
             {{-- Dekorasi --}}
             <div class="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-emerald-500/20 blur-2xl"></div>
             <div class="absolute -bottom-20 -left-20 w-64 h-64 rounded-full bg-emerald-500/10 blur-2xl"></div>
-            
+
             <div class="relative z-10">
                 <div class="flex items-center gap-3">
                     <div class="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur flex items-center justify-center">
@@ -27,8 +27,8 @@
                         </svg>
                     </div>
                     <div>
-                        <p class="text-white font-bold text-sm">SIPAGA</p>
-                        <p class="text-emerald-300/80 text-[10px] font-medium">Sistem Informasi Pegawai</p>
+                        <p class="text-white font-bold text-sm">Absensi Pegawai</p>
+                        <p class="text-emerald-300/80 text-[10px] font-medium">Dinas Koperasi Prov Jawa Tengah</p>
                     </div>
                 </div>
             </div>
@@ -37,20 +37,6 @@
                 <div class="space-y-2">
                     <h1 class="text-3xl font-bold text-white leading-tight">Selamat Datang<br>Kembali Admin!</h1>
                     <p class="text-emerald-200/80 text-sm">Kelola data pegawai, absensi, dan izin dengan mudah</p>
-                </div>
-                <div class="flex items-center gap-4 text-emerald-200/60 text-xs">
-                    <span class="flex items-center gap-1">
-                        <svg class="w-3 h-3 text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                        </svg>
-                        Data Real-time
-                    </span>
-                    <span class="flex items-center gap-1">
-                        <svg class="w-3 h-3 text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                        </svg>
-                        Aman & Terpercaya
-                    </span>
                 </div>
             </div>
 
@@ -62,7 +48,7 @@
         {{-- Side Kanan: Form Login --}}
         <div class="w-full lg:w-3/5 p-8 lg:p-12">
             <div class="max-w-sm mx-auto lg:mx-0">
-                
+
                 {{-- Logo Mobile --}}
                 <div class="lg:hidden flex justify-center mb-6">
                     <div class="w-20 h-20 rounded-full bg-white shadow-md flex items-center justify-center ring-4 ring-emerald-50">
@@ -75,12 +61,19 @@
                     <p class="text-sm text-gray-400 mt-1">Masukkan kredensial Anda untuk mengakses dashboard</p>
                 </div>
 
-                <form action="{{ route('admin.dashboard') }}" method="GET" class="space-y-5">
+                <form action="{{ route('admin.login.submit') }}" method="POST" class="space-y-5">
+                    @csrf
 
-                    {{-- Username / Nama Admin --}}
+                    @if (session('error'))
+                        <div class="flex items-center gap-3 bg-rose-50 border border-rose-100 text-rose-600 text-sm rounded-xl px-4 py-3">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
+                    {{-- Email --}}
                     <div>
-                        <label for="username" class="block text-sm font-semibold text-gray-700 mb-1.5">
-                            Username / Nama Admin
+                        <label for="email" class="block text-sm font-semibold text-gray-700 mb-1.5">
+                            Email
                         </label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -88,12 +81,16 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                                 </svg>
                             </div>
-                            <input type="text"
-                                   id="username"
-                                   name="username"
-                                   placeholder="Masukkan username admin"
-                                   class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition">
+                            <input type="email"
+                                   id="email"
+                                   name="email"
+                                   value="{{ old('email') }}"
+                                   placeholder="Masukkan email admin"
+                                   class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition @error('email') border-rose-400 @enderror">
                         </div>
+                        @error('email')
+                            <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     {{-- Password --}}
@@ -111,8 +108,8 @@
                                    id="password"
                                    name="password"
                                    placeholder="Masukkan password Anda"
-                                   class="w-full pl-10 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition">
-                            <button type="button" onclick="togglePassword()" 
+                                   class="w-full pl-10 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition @error('password') border-rose-400 @enderror">
+                            <button type="button" onclick="togglePassword()"
                                     class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition">
                                 <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
@@ -120,6 +117,9 @@
                                 </svg>
                             </button>
                         </div>
+                        @error('password')
+                            <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     {{-- Remember Me & Lupa Password --}}
@@ -127,6 +127,7 @@
                         <label class="flex items-center gap-2 cursor-pointer select-none">
                             <input type="checkbox"
                                    name="remember"
+                                   value="1"
                                    class="w-4 h-4 text-emerald-700 border-gray-300 rounded focus:ring-emerald-600 accent-emerald-700">
                             <span class="text-sm text-gray-600">Ingat saya</span>
                         </label>

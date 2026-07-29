@@ -84,7 +84,7 @@
     {{-- Tombol Aksi --}}
     <div class="px-5 mt-5 mb-20">
         <div class="flex items-center gap-3">
-            <a href="{{ route('pengguna.izin.form') }}"
+            <a href="{{ route('pengguna.izin.index') }}"
                class="flex-1 text-center border-2 border-emerald-600 text-emerald-600 font-semibold rounded-2xl py-3.5">
                 Kembali
             </a>
@@ -100,5 +100,5 @@
     </div>
 
 </div>
-@include('pengguna.components.menu')
+
 @endsection

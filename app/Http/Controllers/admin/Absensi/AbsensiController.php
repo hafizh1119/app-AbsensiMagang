@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Admin\Absensi;
 
 use App\Http\Controllers\Controller;
 use App\Models\Absensi;
-use App\Models\JenisUnit;
-use App\Models\PenempatanUnit;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
@@ -14,23 +12,14 @@ use Illuminate\View\View;
 
 class AbsensiController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request): View
     {
         $tanggal = $request->input('tanggal');
-        $unitId  = $request->input('unit_id');
         $search  = $request->input('search');
 
         $absensis = Absensi::query()
-            ->with(['user.penempatanUnit.jenisUnit'])
+            ->with('user')
             ->when($tanggal, fn ($q) => $q->whereDate('tanggal', $tanggal))
-            ->when($unitId, function ($q) use ($unitId) {
-                $q->whereHas('user.penempatanUnit', function ($sub) use ($unitId) {
-                    $sub->where('jenis_unit_id', $unitId);
-                });
-            })
             ->when($search, function ($q) use ($search) {
                 $q->whereHas('user', function ($sub) use ($search) {
                     $sub->where('nama', 'like', "%{$search}%")
@@ -42,19 +31,13 @@ class AbsensiController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        $units = JenisUnit::orderBy('nama_unit')->get();
-
-        return view('admin.absensi.semua', compact('absensis', 'units', 'tanggal', 'unitId', 'search'));
+        return view('admin.absensi.semua', compact('absensis', 'tanggal', 'search'));
     }
 
-    /**
-     * Display attendance summary and list for a given day (default: today).
-     */
     public function hariIni(Request $request): View
     {
         $tanggalValue = $request->input('tanggal', now()->toDateString());
         $cari         = $request->input('cari');
-        $unitNama     = $request->input('unit');
 
         // Ringkasan dihitung dari SELURUH pegawai aktif, tidak terpengaruh filter tabel.
         $semuaPegawai   = User::where('role', 'pegawai')->where('status', 'aktif')->pluck('id');
@@ -78,38 +61,28 @@ class AbsensiController extends Controller
             'izin'        => $izin,
         ];
 
-        // Daftar pegawai untuk tabel, dengan filter cari nama & unit.
+        // Daftar pegawai untuk tabel, dengan filter cari nama.
         $absensiHariIniByUser = $absensiHariIni->keyBy('user_id');
 
-        $users = User::with('penempatanUnit.jenisUnit')
-            ->where('role', 'pegawai')
+        $users = User::where('role', 'pegawai')
             ->where('status', 'aktif')
             ->when($cari, fn ($q) => $q->where('nama', 'like', "%{$cari}%"))
-            ->when($unitNama, function ($q) use ($unitNama) {
-                $q->whereHas('penempatanUnit.jenisUnit', function ($sub) use ($unitNama) {
-                    $sub->where('nama_unit', $unitNama);
-                });
-            })
             ->orderBy('nama')
             ->get();
 
         $absensis = $users->values()->map(function (User $user, int $index) use ($absensiHariIniByUser) {
             $absensi = $absensiHariIniByUser->get($user->id);
-            $unit    = $user->penempatanUnit->first()?->jenisUnit;
 
             return [
                 'no'         => $index + 1,
                 'nip'        => $user->nip,
                 'nama'       => $user->nama,
-                'unit'       => $unit->nama_unit ?? '-',
                 'masuk'      => $absensi?->jam_masuk ? Carbon::parse($absensi->jam_masuk)->format('H:i') : '-',
                 'pulang'     => $absensi?->jam_pulang ? Carbon::parse($absensi->jam_pulang)->format('H:i') : '-',
                 'status'     => $this->labelStatus($absensi?->status),
                 'keterangan' => $absensi?->keterangan ?? '-',
             ];
         });
-
-        $unitOptions = JenisUnit::orderBy('nama_unit')->pluck('nama_unit');
 
         $tanggalValue = $tanggalValue;
         $tanggal      = Carbon::parse($tanggalValue)->translatedFormat('d F Y');
@@ -118,14 +91,10 @@ class AbsensiController extends Controller
             'tanggal',
             'tanggalValue',
             'ringkasan',
-            'absensis',
-            'unitOptions'
+            'absensis'
         ));
     }
 
-    /**
-     * Terjemahkan status mentah dari database ke label yang dipakai view.
-     */
     private function labelStatus(?string $status): string
     {
         if (!$status) {
@@ -141,13 +110,9 @@ class AbsensiController extends Controller
         };
     }
 
-    /**
-     * Rekapitulasi absensi per unit untuk satu bulan, plus grafik kehadiran harian.
-     */
     public function rekap(Request $request): View
     {
         $periodeInput = $request->input('periode', now()->format('Y-m'));
-        $unitFilter   = $request->input('unit');
 
         try {
             $awalBulan = Carbon::parse($periodeInput . '-01')->startOfMonth();
@@ -158,45 +123,29 @@ class AbsensiController extends Controller
 
         $periode = $awalBulan->translatedFormat('F Y');
 
-        $unitList = JenisUnit::orderBy('nama_unit')
-            ->when($unitFilter, fn ($q) => $q->where('nama_unit', $unitFilter))
+        $userIds = User::where('role', 'pegawai')->where('status', 'aktif')->pluck('id');
+
+        $totalPegawai = $userIds->count();
+
+        $absensiBulan = Absensi::whereIn('user_id', $userIds)
+            ->whereBetween('tanggal', [$awalBulan->toDateString(), $akhirBulan->toDateString()])
             ->get();
 
-        $rekap = $unitList->map(function (JenisUnit $unit) use ($awalBulan, $akhirBulan) {
-            $userIds = PenempatanUnit::where('jenis_unit_id', $unit->id)->pluck('user_id');
+        $statusCounts = $absensiBulan->groupBy(fn ($a) => strtolower($a->status ?? ''))->map->count();
 
-            $totalPegawai = User::whereIn('id', $userIds)
-                ->where('role', 'pegawai')
-                ->where('status', 'aktif')
-                ->count();
-
-            $absensiBulan = Absensi::whereIn('user_id', $userIds)
-                ->whereBetween('tanggal', [$awalBulan->toDateString(), $akhirBulan->toDateString()])
-                ->get();
-
-            $statusCounts = $absensiBulan->groupBy(fn ($a) => strtolower($a->status ?? ''))->map->count();
-
-            return [
-                'unit'      => $unit->nama_unit,
-                'total'     => $totalPegawai,
-                'hadir'     => $statusCounts->get('hadir', 0),
-                'terlambat' => $statusCounts->get('terlambat', 0),
-                'izin'      => $statusCounts->get('izin', 0),
-                'sakit'     => $statusCounts->get('sakit', 0),
-                'alpha'     => $statusCounts->get('alpha', 0) + $statusCounts->get('tidak_hadir', 0),
-            ];
-        });
+        $rekap = [
+            'total'     => $totalPegawai,
+            'hadir'     => $statusCounts->get('hadir', 0),
+            'terlambat' => $statusCounts->get('terlambat', 0),
+            'izin'      => $statusCounts->get('izin', 0),
+            'sakit'     => $statusCounts->get('sakit', 0),
+            'alpha'     => $statusCounts->get('alpha', 0) + $statusCounts->get('tidak_hadir', 0),
+        ];
 
         // Grafik kehadiran harian (persen hadir per tanggal) sepanjang bulan terpilih.
-        $userIdsGrafik = $unitFilter
-            ? PenempatanUnit::whereHas('jenisUnit', fn ($q) => $q->where('nama_unit', $unitFilter))->pluck('user_id')
-            : User::where('role', 'pegawai')->pluck('id');
+        $totalUserGrafik = $totalPegawai;
 
-        $totalUserGrafik = User::whereIn('id', $userIdsGrafik)
-            ->where('status', 'aktif')
-            ->count();
-
-        $absensiPerHari = Absensi::whereIn('user_id', $userIdsGrafik)
+        $absensiPerHari = Absensi::whereIn('user_id', $userIds)
             ->whereBetween('tanggal', [$awalBulan->toDateString(), $akhirBulan->toDateString()])
             ->where('status', 'hadir')
             ->selectRaw('tanggal, count(*) as jumlah')
@@ -217,16 +166,12 @@ class AbsensiController extends Controller
             }
         }
 
-        $units = JenisUnit::orderBy('nama_unit')->pluck('nama_unit');
-
         return view('admin.absensi.rekap', compact(
             'periode',
             'periodeInput',
             'rekap',
             'grafikHarian',
-            'sumbuX',
-            'units',
-            'unitFilter'
+            'sumbuX'
         ));
     }
 

@@ -103,7 +103,7 @@
     {{-- Menu Cepat --}}
     <div class="mx-4 mt-6">
         <h2 class="text-sm font-bold text-gray-700 mb-3">Menu Cepat</h2>
-        <div class="grid grid-cols-3 gap-3">
+        <div class="grid {{ $user->role === 'admin_unit' ? 'grid-cols-3' : 'grid-cols-2' }} gap-3">
 
             {{-- Riwayat --}}
             <a href="{{ route('pengguna.riwayat') }}"
@@ -116,25 +116,8 @@
                     </svg>
                 </div>
 
-                <span class="text-xs font-semibold text-gray-700">
-                    Riwayat Absensi
-                </span>
-
-            </a>
-
-            {{-- Jadwal Kerja --}}
-            <a href="{{ route('pengguna.jadwal') }}"
-            class="bg-white rounded-2xl shadow-sm border border-gray-100 py-4 px-2 flex flex-col items-center gap-2 hover:shadow-md hover:-translate-y-0.5 transition duration-200">
-
-                <div class="w-11 h-11 rounded-full bg-amber-50 flex items-center justify-center">
-                    <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                    </svg>
-                </div>
-
-                <span class="text-xs font-semibold text-gray-700">
-                    Jadwal Kerja
+                <span class="text-xs font-semibold text-gray-700 text-center leading-tight">
+                    Riwayat<br>Absensi
                 </span>
 
             </a>
@@ -147,8 +130,25 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
                 </div>
-                <span class="text-xs font-semibold text-gray-700">Riwayat Izin</span>
+                <span class="text-xs font-semibold text-gray-700 text-center leading-tight">
+                    Riwayat<br>Izin
+                </span>
             </a>
+
+            {{-- Verifikasi Izin (khusus admin_unit) --}}
+            @if($user->role === 'admin_unit')
+                <a href="{{ route('pengguna.verifikasi.index') }}"
+                class="bg-white rounded-2xl shadow-sm border border-gray-100 py-4 px-2 flex flex-col items-center gap-2 hover:shadow-md hover:-translate-y-0.5 transition duration-200 relative">
+                    <div class="w-11 h-11 rounded-full bg-purple-50 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <span class="text-xs font-semibold text-gray-700 text-center leading-tight">
+                        Verifikasi<br>Izin
+                    </span>
+                </a>
+            @endif
 
         </div>
     </div>

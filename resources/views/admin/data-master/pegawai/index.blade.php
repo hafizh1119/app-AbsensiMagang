@@ -48,19 +48,6 @@
                            class="w-full bg-white border border-gray-200 rounded-lg pl-9 pr-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500">
                 </div>
 
-                {{-- Unit --}}
-                <div class="relative">
-                    <select class="appearance-none w-40 bg-white border border-gray-200 rounded-lg pl-3 pr-8 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                        <option value="">Semua Unit</option>
-                        @foreach ($units as $u)
-                            <option value="{{ $u->id }}">{{ $u->nama_unit }}</option>
-                        @endforeach
-                    </select>
-                    <svg class="w-4 h-4 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
-                    </svg>
-                </div>
-
             </div>
 
             {{-- Tabel --}}

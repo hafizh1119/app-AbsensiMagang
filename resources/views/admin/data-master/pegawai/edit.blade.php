@@ -199,7 +199,7 @@
                                 <div class="relative">
                                     <select name="status_pegawai"
                                             class="appearance-none w-full bg-white border border-gray-200 rounded-lg pl-3 pr-8 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 @error('status_pegawai') border-rose-400 @enderror">
-                                        @php $statusPeg = old('status_pegawai', $pegawai->status_pegawai); @endphp
+                                        @php $statusPeg = old('status_pegawai', $pegawai->status_pegawai ?? null); @endphp
                                         <option value="Aktif" {{ $statusPeg === 'Aktif' ? 'selected' : '' }}>Aktif</option>
                                         <option value="Nonaktif" {{ $statusPeg === 'Nonaktif' ? 'selected' : '' }}>Nonaktif</option>
                                         <option value="Cuti" {{ $statusPeg === 'Cuti' ? 'selected' : '' }}>Cuti</option>

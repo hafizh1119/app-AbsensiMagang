@@ -21,7 +21,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
-        'unit',
+        'unit_id',
         'jabatan',
         'tempat_lahir',
         'tanggal_lahir',
@@ -57,15 +57,15 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    
-    public function penempatanUnit()
-    {
-        return $this->hasMany(PenempatanUnit::class);
-    }
 
     public function absensi()
     {
         return $this->hasMany(Absensi::class);
+    }
+
+    public function unit()
+    {
+        return $this->belongsTo(JenisUnit::class, 'unit_id');
     }
 
     public function pengajuanIzin()
@@ -76,5 +76,10 @@ class User extends Authenticatable
     public function pengajuanIzinDisetujui()
     {
         return $this->hasMany(PengajuanIzin::class, 'disetujui_oleh');
+    }
+
+    public function jenisUnit()
+    {
+        return $this->belongsTo(JenisUnit::class, 'unit_id');
     }
 }

@@ -41,7 +41,10 @@ class LoginController extends Controller
 
         $user = Auth::user();
 
-        if ($user->role !== 'pegawai') {
+        // Role yang diizinkan masuk lewat halaman login ini
+        $allowedRoles = ['pegawai', 'admin_unit'];
+
+        if (! in_array($user->role, $allowedRoles)) {
             Auth::logout();
 
             throw ValidationException::withMessages([

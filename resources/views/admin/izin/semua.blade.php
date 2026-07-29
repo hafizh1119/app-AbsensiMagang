@@ -17,13 +17,13 @@
 
         <main class="p-6">
 
-            @php
-                $statusStyle = [
-                    'Disetujui' => 'bg-emerald-50 text-emerald-600',
-                    'Menunggu'  => 'bg-amber-50 text-amber-600',
-                    'Ditolak'   => 'bg-rose-50 text-rose-500',
-                ];
-            @endphp
+        @php
+            $statusStyle = [
+                'menunggu'  => 'bg-yellow-100 text-yellow-700',
+                'disetujui' => 'bg-emerald-100 text-emerald-700',
+                'ditolak'   => 'bg-red-100 text-red-700',
+            ];
+        @endphp
 
             {{-- Filter Bar --}}
             <form method="GET" action="{{ route('admin.izin.semua') }}" class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 mb-4">
@@ -130,7 +130,7 @@
                                     <td class="px-3 py-2 text-gray-500">{{ $row->tanggal_pengajuan->format('d M Y') }}</td>
                                     <td class="px-3 py-2 font-medium text-gray-700">{{ $row->user->nama ?? '-' }}</td>
                                     <td class="px-3 py-2 text-gray-500">{{ $row->user->nip ?? '-' }}</td>
-                                    <td class="px-3 py-2 text-gray-500">{{ $row->user->penempatanUnit->jenisUnit->nama_unit ?? '-' }}</td>
+                                    <td class="px-3 py-2 text-gray-500">{{ $row->user->unit->nama_unit ?? '-' }}</td>
                                     <td class="px-3 py-2 text-gray-500">{{ $row->jenisIzin->nama_izin ?? '-' }}</td>
                                     <td class="px-3 py-2 text-gray-500 max-w-[130px] whitespace-normal">
                                         {{ $row->tanggal_mulai->format('d M Y') }}
@@ -141,7 +141,7 @@
                                     <td class="px-3 py-2 text-gray-500">{{ $row->durasi }} Hari</td>
                                     <td class="px-3 py-2 text-gray-500 max-w-[140px] whitespace-normal">{{ $row->alasan }}</td>
                                     <td class="px-3 py-2">
-                                        <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full {{ $statusStyle[$row->status] ?? 'bg-gray-100 text-gray-500' }}">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold {{ $statusStyle[$row->status] ?? 'bg-gray-100 text-gray-600' }}">
                                             {{ $row->status }}
                                         </span>
                                     </td>

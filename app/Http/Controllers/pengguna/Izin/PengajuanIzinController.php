@@ -15,31 +15,22 @@ class PengajuanIzinController extends Controller
     const SESSION_KEY = 'pengajuan_izin_draft';
 
     /**
-     * Halaman "Pilih Jenis Izin".
+     * Klik menu "Izin" -> langsung tampil form lengkap (pilih jenis izin ada di dalamnya).
      */
     public function index()
     {
-        $jenisIzinList = JenisIzin::all();
-        return view('pengguna.izin.pengajuan', compact('jenisIzinList'));
-    }
+        $jenisIzinList = JenisIzin::select('id', 'nama_izin', 'kuota')
+            ->orderBy('nama_izin')
+            ->get();
 
-    /**
-     * Tampilkan form Izin Sakit (step 1).
-     */
-    public function create()
-    {
-        // Ambil semua jenis izin untuk dropdown
-        $jenisIzinList = JenisIzin::all();
-        
-        // Ambil daftar atasan (admin_unit)
         $atasanList = User::where('role', 'admin_unit')->get();
 
         return view('pengguna.izin.form-pengajuan', compact('jenisIzinList', 'atasanList'));
     }
 
     /**
-     * Terima input dari form (step 1), simpan sementara di session,
-     * lalu tampilkan halaman review (step 2).
+     * Terima input dari form, simpan sementara di session,
+     * lalu tampilkan halaman review.
      */
     public function review(Request $request)
     {
@@ -55,7 +46,7 @@ class PengajuanIzinController extends Controller
         $jenisIzin = JenisIzin::findOrFail($validated['jenis_izin_id']);
 
         $tanggalMulai   = Carbon::parse($validated['tanggal_mulai']);
-        $tanggalSelesai = $validated['tanggal_selesai']
+        $tanggalSelesai = ($validated['tanggal_selesai'] ?? null)
             ? Carbon::parse($validated['tanggal_selesai'])
             : $tanggalMulai->copy();
 
@@ -97,14 +88,14 @@ class PengajuanIzinController extends Controller
     }
 
     /**
-     * Simpan draft dari session ke database (step 3 - final).
+     * Simpan draft dari session ke database.
      */
     public function store(Request $request)
     {
         $draft = session(self::SESSION_KEY);
 
         if (! $draft) {
-            return redirect()->route('pengguna.izin.form')
+            return redirect()->route('pengguna.izin.index')
                 ->with('error', 'Data pengajuan tidak ditemukan, silakan isi ulang.');
         }
 
@@ -127,7 +118,8 @@ class PengajuanIzinController extends Controller
     }
 
     /**
-     * Halaman "Pengajuan Berhasil".
+     * Halaman "Pengajuan Berhasil" — muncul sesaat setelah submit.
+     * Konfirmasi singkat, bukan detail lengkap.
      */
     public function show(string $id)
     {
@@ -142,15 +134,38 @@ class PengajuanIzinController extends Controller
     }
 
     /**
-     * Riwayat pengajuan izin milik user yang login.
+     * Halaman Detail pengajuan — dibuka dari klik item di Riwayat.
+     * Menampilkan status berwarna (menunggu/disetujui/ditolak) + detail lengkap.
      */
-    public function riwayat()
+    public function detail(string $id)
     {
-        $riwayat = PengajuanIzin::with(['jenisIzin', 'penyetuju'])
+        $pengajuan = PengajuanIzin::with(['jenisIzin', 'penyetuju'])
             ->where('user_id', Auth::id())
-            ->latest('tanggal_pengajuan')
-            ->paginate(10);
+            ->findOrFail($id);
 
-        return view('pengguna.izin.riwayat-izin', compact('riwayat'));
+        $nomorPengajuan = 'IZN-' . $pengajuan->tanggal_pengajuan->format('Ymd')
+            . '-' . str_pad($pengajuan->id, 5, '0', STR_PAD_LEFT);
+
+        return view('pengguna.izin.detail', compact('pengajuan', 'nomorPengajuan'));
+    }
+
+    /**
+     * Riwayat pengajuan izin milik user yang login.
+     * Support filter tab: ?status=semua|menunggu|disetujui|ditolak
+     */
+    public function riwayat(Request $request)
+    {
+        $activeTab = $request->query('status', 'semua');
+
+        $query = PengajuanIzin::with(['jenisIzin', 'penyetuju'])
+            ->where('user_id', Auth::id());
+
+        if ($activeTab !== 'semua') {
+            $query->whereRaw('LOWER(status) = ?', [$activeTab]);
+        }
+
+        $riwayat = $query->latest('tanggal_pengajuan')->paginate(10)->withQueryString();
+
+        return view('pengguna.izin.riwayat-izin', compact('riwayat', 'activeTab'));
     }
 }

@@ -12,7 +12,7 @@ class JenisUnitController extends Controller
 {
     public function index(): View
     {
-        $jenisUnit = JenisUnit::withCount('penempatanUnit')->orderBy('nama_unit')->get();
+        $jenisUnit = JenisUnit::orderBy('nama_unit')->get();
 
         $stats = [
             [
@@ -21,13 +21,6 @@ class JenisUnitController extends Controller
                 'suffix' => 'Jenis',
                 'icon'   => 'building',
                 'color'  => 'emerald',
-            ],
-            [
-                'label'  => 'Total Unit Terdaftar',
-                'value'  => $jenisUnit->sum('penempatan_unit_count'),
-                'suffix' => 'Unit',
-                'icon'   => 'users',
-                'color'  => 'blue',
             ],
         ];
 
@@ -38,18 +31,12 @@ class JenisUnitController extends Controller
                 'nama'      => $item->nama_unit,
                 'deskripsi' => $item->deskripsi,
                 'status'    => $item->status,
-                'jumlah'    => $item->penempatan_unit_count,
             ];
         });
 
         return view('admin.data-master.unit.index', compact('unit', 'stats'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     * Form "Tambah Unit" tidak punya field status, jadi status baru
-     * otomatis di-set "Aktif" tanpa perlu dipilih user.
-     */
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
@@ -66,10 +53,6 @@ class JenisUnitController extends Controller
             ->with('success', 'Jenis unit berhasil ditambahkan.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     * Form "Edit Unit" punya field status, jadi tetap divalidasi wajib diisi.
-     */
     public function update(Request $request, JenisUnit $unit): RedirectResponse
     {
         $validated = $this->validateData($request);
@@ -83,12 +66,6 @@ class JenisUnitController extends Controller
 
     public function destroy(JenisUnit $unit): RedirectResponse
     {
-        if ($unit->penempatanUnit()->exists()) {
-            return redirect()
-                ->route('admin.data-master.unit')
-                ->with('error', 'Jenis unit tidak bisa dihapus karena masih digunakan oleh data penempatan unit lain.');
-        }
-
         $unit->delete();
 
         return redirect()
@@ -96,9 +73,6 @@ class JenisUnitController extends Controller
             ->with('success', 'Jenis unit berhasil dihapus.');
     }
 
-    /**
-     * Validasi input dari form edit jenis unit (dikirim lewat modal).
-     */
     private function validateData(Request $request): array
     {
         return $request->validate([

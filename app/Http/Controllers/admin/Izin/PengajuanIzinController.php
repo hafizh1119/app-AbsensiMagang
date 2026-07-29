@@ -23,14 +23,14 @@ class PengajuanIzinController extends Controller
      */
     public function semua(Request $request)
     {
-        $query = PengajuanIzin::with(['user.penempatanUnit.jenisUnit', 'jenisIzin']);
+        $query = PengajuanIzin::with(['user.unit', 'jenisIzin']);
 
         if ($request->filled('tanggal')) {
             $query->whereDate('tanggal_pengajuan', $request->tanggal);
         }
 
         if ($request->filled('unit') && $request->unit !== 'Semua Unit') {
-            $query->whereHas('user.penempatanUnit.jenisUnit', function ($q) use ($request) {
+            $query->whereHas('user.unit', function ($q) use ($request) {
                 $q->where('nama_unit', $request->unit);
             });
         }
@@ -76,7 +76,7 @@ class PengajuanIzinController extends Controller
             $q->where('nama_izin', 'Izin Pribadi');
         })->count();
 
-        $pengajuan = PengajuanIzin::with(['user.penempatanUnit.jenisUnit', 'jenisIzin'])
+        $pengajuan = PengajuanIzin::with(['user.unit', 'jenisIzin'])
             ->where('status', 'Menunggu')
             ->latest('tanggal_pengajuan')
             ->paginate(10)
@@ -94,14 +94,18 @@ class PengajuanIzinController extends Controller
     /**
      * Setujui pengajuan izin.
      */
-    public function approve(string $id)
+    public function approve(Request $request, string $id)
     {
         $pengajuan = PengajuanIzin::findOrFail($id);
 
+        $tanggalPersetujuan = $request->filled('tanggal_persetujuan')
+            ? \Carbon\Carbon::parse($request->input('tanggal_persetujuan'))
+            : now();
+
         $pengajuan->update([
-            'status'              => 'Disetujui',
+            'status'              => 'disetujui',
             'disetujui_oleh'      => auth()->id(),
-            'tanggal_persetujuan' => now(),
+            'tanggal_persetujuan' => $tanggalPersetujuan,
         ]);
 
         return back()->with('success', 'Pengajuan izin berhasil disetujui.');
@@ -114,10 +118,18 @@ class PengajuanIzinController extends Controller
     {
         $pengajuan = PengajuanIzin::findOrFail($id);
 
+        $request->validate([
+            'catatan' => ['required', 'string'],
+        ]);
+
+        $tanggalPersetujuan = $request->filled('tanggal_persetujuan')
+            ? \Carbon\Carbon::parse($request->input('tanggal_persetujuan'))
+            : now();
+
         $pengajuan->update([
-            'status'              => 'Ditolak',
+            'status'              => 'ditolak',
             'disetujui_oleh'      => auth()->id(),
-            'tanggal_persetujuan' => now(),
+            'tanggal_persetujuan' => $tanggalPersetujuan,
             'catatan'             => $request->input('catatan'),
         ]);
 
@@ -145,7 +157,7 @@ class PengajuanIzinController extends Controller
      */
     public function show(string $id)
     {
-        $pengajuan = PengajuanIzin::with(['user.penempatanUnit.jenisUnit', 'jenisIzin'])
+        $pengajuan = PengajuanIzin::with(['user.unit', 'jenisIzin'])
             ->findOrFail($id);
 
         return view('admin.izin.show', compact('pengajuan'));

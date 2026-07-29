@@ -17,8 +17,8 @@
         <main class="p-6">
 
             @php
-                $unit = $pegawai->penempatanUnit->first()?->jenisUnit;
-                $tanggalMasuk = optional($pegawai->penempatanUnit->first()?->created_at)->translatedFormat('d F Y') ?? '-';
+                $unit = $pegawai->unit;
+                $tanggalBergabung = optional($pegawai->created_at)->translatedFormat('d F Y') ?? '-';
                 $statusLabel = ucfirst($pegawai->status ?? '-');
             @endphp
 
@@ -116,8 +116,8 @@
                         <dd class="text-sm text-gray-700 font-medium">{{ $pegawai->jabatan }}</dd>
                     </div>
                     <div class="flex items-start gap-4">
-                        <dt class="text-xs text-gray-400 w-36 flex-shrink-0">Tanggal Masuk Unit</dt>
-                        <dd class="text-sm text-gray-700 font-medium">{{ $tanggalMasuk }}</dd>
+                        <dt class="text-xs text-gray-400 w-36 flex-shrink-0">Tanggal Bergabung</dt>
+                        <dd class="text-sm text-gray-700 font-medium">{{ $tanggalBergabung }}</dd>
                     </div>
                     <div class="flex items-start gap-4">
                         <dt class="text-xs text-gray-400 w-36 flex-shrink-0">Status</dt>

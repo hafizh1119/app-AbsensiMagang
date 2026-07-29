@@ -45,7 +45,7 @@
                 </div>
             </div>
 
-            {{-- Bar Filter: Cari Nama, Unit, Tanggal --}}
+            {{-- Bar Filter: Cari Nama, Tanggal --}}
             <form method="GET" class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 mb-5">
                 <div class="flex flex-wrap items-end gap-3">
 
@@ -59,22 +59,6 @@
                             </svg>
                             <input type="text" name="cari" value="{{ request('cari') }}" placeholder="Ketik nama pegawai..."
                                    class="w-full border border-gray-200 rounded-lg pl-9 pr-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                        </div>
-                    </div>
-
-                    {{-- Unit / Divisi --}}
-                    <div class="w-full sm:w-56">
-                        <label class="block text-xs text-gray-400 mb-1.5">Unit / Divisi</label>
-                        <div class="relative">
-                            <select name="unit" class="w-full appearance-none border border-gray-200 rounded-lg pl-3 pr-9 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                                <option value="">Semua Unit</option>
-                                @foreach($unitOptions as $unit)
-                                    <option value="{{ $unit }}" @selected(request('unit') === $unit)>{{ $unit }}</option>
-                                @endforeach
-                            </select>
-                            <svg class="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
-                            </svg>
                         </div>
                     </div>
 
@@ -171,7 +155,6 @@
                                     <th class="text-left font-medium px-5 py-3 w-12">No</th>
                                     <th class="text-left font-medium px-5 py-3">NIP</th>
                                     <th class="text-left font-medium px-5 py-3">Nama Pegawai</th>
-                                    <th class="text-left font-medium px-5 py-3">Unit / Divisi</th>
                                     <th class="text-left font-medium px-5 py-3">Jam Masuk</th>
                                     <th class="text-left font-medium px-5 py-3">Jam Pulang</th>
                                     <th class="text-left font-medium px-5 py-3">Status</th>
@@ -184,7 +167,6 @@
                                         <td class="px-5 py-3 text-gray-500">{{ $row['no'] }}</td>
                                         <td class="px-5 py-3 text-gray-500">{{ $row['nip'] }}</td>
                                         <td class="px-5 py-3 font-medium text-gray-700">{{ $row['nama'] }}</td>
-                                        <td class="px-5 py-3 text-gray-500">{{ $row['unit'] }}</td>
                                         <td class="px-5 py-3 text-gray-500">{{ $row['masuk'] }}</td>
                                         <td class="px-5 py-3 text-gray-500">{{ $row['pulang'] }}</td>
                                         <td class="px-5 py-3">
@@ -196,7 +178,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="8" class="px-5 py-8 text-center text-gray-400">Tidak ada data pegawai.</td>
+                                        <td colspan="7" class="px-5 py-8 text-center text-gray-400">Tidak ada data pegawai.</td>
                                     </tr>
                                 @endforelse
                             </tbody>

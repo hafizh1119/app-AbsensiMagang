@@ -100,7 +100,7 @@
                                 <th class="text-left font-medium px-3 py-2">Tanggal Pengajuan</th>
                                 <th class="text-left font-medium px-3 py-2">Nama Pegawai</th>
                                 <th class="text-left font-medium px-3 py-2">NIP</th>
-                                <th class="text-left font-medium px-3 py-2">Unit / Divisi</th>
+                                <th class="text-left font-medium px-3 py-2">Unit</th>
                                 <th class="text-left font-medium px-3 py-2">Jenis Izin</th>
                                 <th class="text-left font-medium px-3 py-2 max-w-[130px]">Tanggal Izin</th>
                                 <th class="text-left font-medium px-3 py-2 w-14">Durasi</th>
@@ -116,7 +116,7 @@
                                     <td class="px-3 py-2 text-gray-500">{{ $row->tanggal_pengajuan->format('d M Y H:i') }}</td>
                                     <td class="px-3 py-2 font-medium text-gray-700">{{ $row->user->nama ?? '-' }}</td>
                                     <td class="px-3 py-2 text-gray-500">{{ $row->user->nip ?? '-' }}</td>
-                                    <td class="px-3 py-2 text-gray-500">{{ $row->user->penempatanUnit->jenisUnit->nama_unit ?? '-' }}</td>
+                                    <td class="px-3 py-2 text-gray-500">{{ $row->user->unit->nama_unit ?? '-' }}</td>
                                     <td class="px-3 py-2 text-gray-500">{{ $row->jenisIzin->nama_izin ?? '-' }}</td>
                                     <td class="px-3 py-2 text-gray-500 max-w-[130px] whitespace-normal">
                                         {{ $row->tanggal_mulai->format('d M Y') }}
@@ -126,7 +126,7 @@
                                     </td>
                                     <td class="px-3 py-2 text-gray-500">{{ $row->durasi }} Hari</td>
                                     <td class="px-3 py-2 text-gray-500 max-w-[140px] whitespace-normal">{{ $row->alasan }}</td>
-                                    <td class="px-3 py-2 text-gray-500">{{ $row->jabatan_penyetuju ?? '-' }}</td>
+                                    <td class="px-3 py-2 text-gray-500">{{ $row->penyetuju->nama ?? '-' }}</td>
                                     <td class="px-3 py-2">
                                         <div class="flex items-center gap-1">
                                             {{-- Lihat Detail --}}

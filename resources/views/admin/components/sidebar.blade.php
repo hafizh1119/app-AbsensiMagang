@@ -27,10 +27,10 @@
         </a>
 
         {{-- Data Master --}}
-        <div x-data="{ open: {{ request()->routeIs(['admin.data-master.unit*', 'admin.data-master.jenis-izin*', 'admin.data-master.pegawai*']) ? 'true' : 'false' }} }">
+        <div x-data="{ open: {{ request()->routeIs(['admin.data-master.unit*', 'admin.data-master.jenis-izin*', 'admin.data-master.pegawai*', 'admin.data-master.jam-kerja*']) ? 'true' : 'false' }} }">
             <button type="button" @click="open = !open"
                     class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150
-                    {{ request()->routeIs(['admin.data-master.unit*', 'admin.data-master.jenis-izin*', 'admin.data-master.pegawai*']) ? 'text-emerald-700' : 'text-gray-600 hover:bg-emerald-50 hover:text-emerald-700' }}">
+                    {{ request()->routeIs(['admin.data-master.unit*', 'admin.data-master.jenis-izin*', 'admin.data-master.pegawai*', 'admin.data-master.jam-kerja*']) ? 'text-emerald-700' : 'text-gray-600 hover:bg-emerald-50 hover:text-emerald-700' }}">
                 <span class="flex items-center gap-3">
                     <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
@@ -62,6 +62,13 @@
                 class="block px-3 py-2 rounded-lg text-sm transition-colors duration-150
                 {{ request()->routeIs('admin.data-master.pegawai*') ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-500 hover:bg-emerald-50 hover:text-emerald-700' }}">
                     Pegawai
+                </a>
+
+                {{-- Jam Kerja --}}
+                <a href="{{ route('admin.data-master.jam-kerja') }}"
+                class="block px-3 py-2 rounded-lg text-sm transition-colors duration-150
+                {{ request()->routeIs('admin.data-master.jam-kerja*') ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-500 hover:bg-emerald-50 hover:text-emerald-700' }}">
+                    Jam Kerja
                 </a>
             </div>
         </div>
@@ -128,16 +135,6 @@
             </div>
         </div>
 
-        {{-- Unit / Divisi --}}
-        <a href="{{ route('admin.unit') }}"
-           class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150
-           {{ request()->routeIs('admin.unit') ? 'bg-emerald-50 text-emerald-700' : 'text-gray-600 hover:bg-emerald-50 hover:text-emerald-700' }}">
-            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2M5 21H3m4 0h10M9 7h1m4 0h1M9 11h1m4 0h1m-6 4h1m4 0h1"/>
-            </svg>
-            <span>Unit</span>
-        </a>
-
         {{-- Lokasi Kantor --}}
         <a href="{{ route('admin.lokasi-kantor') }}"
         class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150
@@ -159,7 +156,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                     </svg>
-                    <span>Manajemen</span>
+                    <span>Kelola Akses</span>
                 </span>
                 <svg class="w-4 h-4 text-gray-400 transition-transform duration-200" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
@@ -169,10 +166,10 @@
             <div x-show="open" x-collapse class="mt-1 ml-11 space-y-1">
                 <a href="{{ route('admin.manajemen.user') }}"
                    class="block px-3 py-2 rounded-lg text-sm transition-colors duration-150
-                   {{ request()->routeIs('admin.manajemen.user') ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-500 hover:bg-emerald-50 hover:text-emerald-700' }}">Pengguna</a>
+                   {{ request()->routeIs('admin.manajemen.user') ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-500 hover:bg-emerald-50 hover:text-emerald-700' }}">Pegawai</a>
                 <a href="{{ route('admin.manajemen.admin') }}"
                    class="block px-3 py-2 rounded-lg text-sm transition-colors duration-150
-                   {{ request()->routeIs('admin.manajemen.admin') ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-500 hover:bg-emerald-50 hover:text-emerald-700' }}">Admin</a>
+                   {{ request()->routeIs('admin.manajemen.admin') ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-500 hover:bg-emerald-50 hover:text-emerald-700' }}">Super Admin</a>
             </div>
         </div>
 
@@ -180,10 +177,10 @@
 
     {{-- Keluar --}}
     <div class="px-3 py-4 border-t border-gray-100 flex-shrink-0">
-        <form method="POST" action="#">
+        <form method="POST" action="{{ route('admin.logout') }}">
             @csrf
             <button type="submit"
-                    class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition-colors duration-150">
+                    class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-600 hover:bg-red-100 hover:text-red-700 transition-colors duration-150">
                 <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                 </svg>

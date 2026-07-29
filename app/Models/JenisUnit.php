@@ -14,8 +14,9 @@ class JenisUnit extends Model
         'status',
     ];
 
-    public function penempatanUnit()
+    public function pegawai()
     {
-        return $this->hasMany(PenempatanUnit::class);
+        return $this->hasMany(User::class, 'unit_id');
     }
+
 }

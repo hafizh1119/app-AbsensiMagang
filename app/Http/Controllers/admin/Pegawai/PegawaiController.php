@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin\Pegawai;
 
 use App\Http\Controllers\Controller;
 use App\Models\JenisUnit;
-use App\Models\PenempatanUnit;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -24,28 +23,25 @@ class PegawaiController extends Controller
      */
     public function index(): View
     {
-        $users = User::with(['penempatanUnit.jenisUnit'])
-            ->where('role', 'pegawai')
+        $users = User::with('unit')
+            ->whereIn('role', ['pegawai', 'admin_unit'])
             ->orderBy('nama')
             ->get();
 
         $pegawai = $users->values()->map(function (User $user, int $index) {
-            $unit = $user->penempatanUnit->first()?->jenisUnit;
-
             return [
                 'id'      => $user->id,
                 'no'      => $index + 1,
                 'nama'    => $user->nama,
                 'nip'     => $user->nip,
-                'unit'    => $unit->nama_unit ?? '-',
+                'unit'    => $user->unit->nama_unit ?? '-',
                 'jabatan' => $user->jabatan,
+                'role'    => $user->role,
                 'status'  => $user->status,
             ];
         });
 
-        $units = JenisUnit::orderBy('nama_unit')->get();
-
-        return view('admin.data-master.pegawai.index', compact('pegawai', 'units'));
+        return view('admin.data-master.pegawai.index', compact('pegawai'));
     }
 
     /**
@@ -53,7 +49,7 @@ class PegawaiController extends Controller
      */
     public function create(): View
     {
-        $units = JenisUnit::orderBy('nama_unit')->get();
+        $units = JenisUnit::where('status', 'aktif')->orderBy('nama_unit')->get();
 
         return view('admin.data-master.pegawai.create', compact('units'));
     }
@@ -70,9 +66,10 @@ class PegawaiController extends Controller
             $fotoName = $this->simpanFoto($request);
         }
 
-        $user = User::create([
+        User::create([
             'nama'                   => $validated['nama'],
             'nip'                    => $validated['nip'],
+            'unit_id'                => $validated['unit_id'],
             'email'                  => $validated['email'],
             'password'               => $validated['password'],
             'role'                   => 'pegawai',
@@ -87,13 +84,6 @@ class PegawaiController extends Controller
             'status'                 => 'aktif',
         ]);
 
-        if (!empty($validated['unit_id'])) {
-            PenempatanUnit::create([
-                'user_id'       => $user->id,
-                'jenis_unit_id' => $validated['unit_id'],
-            ]);
-        }
-
         return redirect()
             ->route('admin.data-master.pegawai')
             ->with('success', 'Pegawai berhasil ditambahkan.');
@@ -104,7 +94,7 @@ class PegawaiController extends Controller
      */
     public function show(User $pegawai): View
     {
-        $pegawai->load('penempatanUnit.jenisUnit');
+        $pegawai->load('unit');
 
         return view('admin.data-master.pegawai.show', compact('pegawai'));
     }
@@ -114,8 +104,7 @@ class PegawaiController extends Controller
      */
     public function edit(User $pegawai): View
     {
-        $units = JenisUnit::orderBy('nama_unit')->get();
-        $pegawai->load('penempatanUnit');
+        $units = JenisUnit::where('status', 'aktif')->orderBy('nama_unit')->get();
 
         return view('admin.data-master.pegawai.edit', compact('pegawai', 'units'));
     }
@@ -137,19 +126,7 @@ class PegawaiController extends Controller
             unset($validated['password']);
         }
 
-        $unitId = $validated['unit_id'] ?? null;
-        unset($validated['unit_id']);
-
         $pegawai->update($validated);
-
-        // Perbarui penempatan unit: hapus penempatan lama, buat yang baru jika ada.
-        $pegawai->penempatanUnit()->delete();
-        if ($unitId) {
-            PenempatanUnit::create([
-                'user_id'       => $pegawai->id,
-                'jenis_unit_id' => $unitId,
-            ]);
-        }
 
         return redirect()
             ->route('admin.data-master.pegawai')
@@ -163,7 +140,6 @@ class PegawaiController extends Controller
     {
         $this->hapusFoto($pegawai->foto);
 
-        $pegawai->penempatanUnit()->delete();
         $pegawai->delete();
 
         return redirect()
@@ -217,7 +193,7 @@ class PegawaiController extends Controller
         $validated = $request->validate([
             'nama'                    => ['required', 'string', 'max:255'],
             'nip'                     => ['required', 'string', 'max:50', 'unique:users,nip' . ($ignoreUserId ? ",{$ignoreUserId}" : '')],
-            'unit_id'                 => ['nullable', 'exists:jenis_unit,id'],
+            'unit_id'                 => ['required', 'exists:jenis_unit,id'],
             'jabatan'                 => ['required', 'string', 'max:255'],
             'email'                   => ['required', 'email', 'max:255', 'unique:users,email' . ($ignoreUserId ? ",{$ignoreUserId}" : '')],
             'password'                => [$isCreate ? 'required' : 'nullable', 'string', 'min:8'],

@@ -18,12 +18,12 @@
         <main class="p-6">
 
             @php
-                $totalPegawai   = $rekap->sum('total');
-                $totalHadir     = $rekap->sum('hadir');
-                $totalTerlambat = $rekap->sum('terlambat');
-                $totalIzin      = $rekap->sum('izin');
-                $totalSakit     = $rekap->sum('sakit');
-                $totalAlpha     = $rekap->sum('alpha');
+                $totalPegawai   = $rekap['total'];
+                $totalHadir     = $rekap['hadir'];
+                $totalTerlambat = $rekap['terlambat'];
+                $totalIzin      = $rekap['izin'];
+                $totalSakit     = $rekap['sakit'];
+                $totalAlpha     = $rekap['alpha'];
 
                 $persen = fn($jumlah, $total) => $total > 0 ? number_format($jumlah / $total * 100, 2) . '%' : '0%';
 
@@ -55,22 +55,6 @@
                         <label class="block text-xs text-gray-400 mb-1.5">Periode</label>
                         <input type="month" name="periode" value="{{ $periodeInput }}"
                                class="w-40 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                    </div>
-
-                    {{-- Unit / Divisi --}}
-                    <div>
-                        <label class="block text-xs text-gray-400 mb-1.5">Unit / Divisi</label>
-                        <div class="relative">
-                            <select name="unit" class="appearance-none w-40 border border-gray-200 rounded-lg pl-3 pr-8 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                                <option value="">Semua Unit</option>
-                                @foreach($units as $u)
-                                    <option value="{{ $u }}" @selected($unitFilter === $u)>{{ $u }}</option>
-                                @endforeach
-                            </select>
-                            <svg class="w-4 h-4 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
-                            </svg>
-                        </div>
                     </div>
 
                     {{-- Terapkan --}}
@@ -153,7 +137,6 @@
                     <table class="w-full text-sm whitespace-nowrap">
                         <thead>
                             <tr class="bg-gray-50 text-gray-400 text-xs">
-                                <th rowspan="2" class="text-left font-medium px-5 py-3 align-bottom">Unit / Divisi</th>
                                 <th rowspan="2" class="text-left font-medium px-5 py-3 align-bottom">Total Pegawai</th>
                                 <th colspan="2" class="text-center font-medium px-3 py-2 border-l border-gray-100">Hadir</th>
                                 <th colspan="2" class="text-center font-medium px-3 py-2 border-l border-gray-100">Terlambat</th>
@@ -175,43 +158,26 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
-                            @forelse($rekap as $r)
+                            @if($totalPegawai > 0)
                                 <tr class="hover:bg-gray-50/60 transition-colors">
-                                    <td class="px-5 py-3 font-medium text-gray-700">{{ $r['unit'] }}</td>
-                                    <td class="px-5 py-3 text-gray-500">{{ $r['total'] }}</td>
-                                    <td class="text-center px-3 py-3 text-gray-500 border-l border-gray-100">{{ $r['hadir'] }}</td>
-                                    <td class="text-center px-3 py-3 text-gray-500">{{ $persen($r['hadir'], $r['total']) }}</td>
-                                    <td class="text-center px-3 py-3 text-gray-500 border-l border-gray-100">{{ $r['terlambat'] }}</td>
-                                    <td class="text-center px-3 py-3 text-gray-500">{{ $persen($r['terlambat'], $r['total']) }}</td>
-                                    <td class="text-center px-3 py-3 text-gray-500 border-l border-gray-100">{{ $r['izin'] }}</td>
-                                    <td class="text-center px-3 py-3 text-gray-500">{{ $persen($r['izin'], $r['total']) }}</td>
-                                    <td class="text-center px-3 py-3 text-gray-500 border-l border-gray-100">{{ $r['sakit'] }}</td>
-                                    <td class="text-center px-3 py-3 text-gray-500">{{ $persen($r['sakit'], $r['total']) }}</td>
-                                    <td class="text-center px-3 py-3 text-gray-500 border-l border-gray-100">{{ $r['alpha'] }}</td>
-                                    <td class="text-center px-3 py-3 text-gray-500">{{ $persen($r['alpha'], $r['total']) }}</td>
+                                    <td class="px-5 py-3 font-medium text-gray-700">{{ $totalPegawai }}</td>
+                                    <td class="text-center px-3 py-3 text-gray-500 border-l border-gray-100">{{ $totalHadir }}</td>
+                                    <td class="text-center px-3 py-3 text-gray-500">{{ $persen($totalHadir, $totalPegawai) }}</td>
+                                    <td class="text-center px-3 py-3 text-gray-500 border-l border-gray-100">{{ $totalTerlambat }}</td>
+                                    <td class="text-center px-3 py-3 text-gray-500">{{ $persen($totalTerlambat, $totalPegawai) }}</td>
+                                    <td class="text-center px-3 py-3 text-gray-500 border-l border-gray-100">{{ $totalIzin }}</td>
+                                    <td class="text-center px-3 py-3 text-gray-500">{{ $persen($totalIzin, $totalPegawai) }}</td>
+                                    <td class="text-center px-3 py-3 text-gray-500 border-l border-gray-100">{{ $totalSakit }}</td>
+                                    <td class="text-center px-3 py-3 text-gray-500">{{ $persen($totalSakit, $totalPegawai) }}</td>
+                                    <td class="text-center px-3 py-3 text-gray-500 border-l border-gray-100">{{ $totalAlpha }}</td>
+                                    <td class="text-center px-3 py-3 text-gray-500">{{ $persen($totalAlpha, $totalPegawai) }}</td>
                                 </tr>
-                            @empty
+                            @else
                                 <tr>
-                                    <td colspan="12" class="px-5 py-8 text-center text-gray-400">Belum ada data untuk periode ini.</td>
+                                    <td colspan="11" class="px-5 py-8 text-center text-gray-400">Belum ada data untuk periode ini.</td>
                                 </tr>
-                            @endforelse
+                            @endif
                         </tbody>
-                        <tfoot>
-                            <tr class="bg-gray-50 font-bold text-gray-700">
-                                <td class="px-5 py-3">Total</td>
-                                <td class="px-5 py-3">{{ $totalPegawai }}</td>
-                                <td class="text-center px-3 py-3 border-l border-gray-100">{{ $totalHadir }}</td>
-                                <td class="text-center px-3 py-3">{{ $persen($totalHadir, $totalPegawai) }}</td>
-                                <td class="text-center px-3 py-3 border-l border-gray-100">{{ $totalTerlambat }}</td>
-                                <td class="text-center px-3 py-3">{{ $persen($totalTerlambat, $totalPegawai) }}</td>
-                                <td class="text-center px-3 py-3 border-l border-gray-100">{{ $totalIzin }}</td>
-                                <td class="text-center px-3 py-3">{{ $persen($totalIzin, $totalPegawai) }}</td>
-                                <td class="text-center px-3 py-3 border-l border-gray-100">{{ $totalSakit }}</td>
-                                <td class="text-center px-3 py-3">{{ $persen($totalSakit, $totalPegawai) }}</td>
-                                <td class="text-center px-3 py-3 border-l border-gray-100">{{ $totalAlpha }}</td>
-                                <td class="text-center px-3 py-3">{{ $persen($totalAlpha, $totalPegawai) }}</td>
-                            </tr>
-                        </tfoot>
                     </table>
                 </div>
             </div>

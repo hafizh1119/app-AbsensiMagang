@@ -47,25 +47,6 @@
                         </div>
                     </div>
 
-                    {{-- Unit --}}
-                    <div>
-                        <label class="block text-xs text-gray-400 mb-1.5">Unit</label>
-                        <div class="relative">
-                            <select name="unit_id"
-                                    class="appearance-none border border-gray-200 rounded-lg pl-3 pr-8 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
-                                <option value="">Semua Unit</option>
-                                @foreach ($units as $unit)
-                                    <option value="{{ $unit->id }}" {{ (string) $unitId === (string) $unit->id ? 'selected' : '' }}>
-                                        {{ $unit->nama_unit }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <svg class="w-4 h-4 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
-                            </svg>
-                        </div>
-                    </div>
-
                     {{-- Cari Pegawai --}}
                     <div class="flex-1 min-w-[200px]">
                         <label class="block text-xs text-gray-400 mb-1.5 invisible">Cari</label>
@@ -83,7 +64,7 @@
                         Terapkan
                     </button>
 
-                    @if ($tanggal || $unitId || $search)
+                    @if ($tanggal || $search)
                         <a href="{{ route('admin.absensi.semua') }}"
                            class="text-sm font-semibold text-gray-500 hover:text-gray-700 px-2 py-2">
                             Reset
@@ -110,7 +91,6 @@
                                 <th class="text-left font-medium px-5 py-3">Tanggal</th>
                                 <th class="text-left font-medium px-5 py-3">NIP</th>
                                 <th class="text-left font-medium px-5 py-3">Nama Pegawai</th>
-                                <th class="text-left font-medium px-5 py-3">Unit</th>
                                 <th class="text-left font-medium px-5 py-3">Jam Masuk</th>
                                 <th class="text-left font-medium px-5 py-3">Jam Pulang</th>
                                 <th class="text-left font-medium px-5 py-3">Status</th>
@@ -121,7 +101,6 @@
                         <tbody class="divide-y divide-gray-100">
                             @forelse ($absensis as $absensi)
                                 @php
-                                    $unit = $absensi->user?->penempatanUnit?->first()?->jenisUnit;
                                     $no = ($absensis->currentPage() - 1) * $absensis->perPage() + $loop->iteration;
                                 @endphp
                                 <tr class="hover:bg-gray-50/60 transition-colors" x-data="{ confirmOpen: false }">
@@ -129,7 +108,6 @@
                                     <td class="px-5 py-3 text-gray-500">{{ optional($absensi->tanggal)->format('d/m/Y') }}</td>
                                     <td class="px-5 py-3 text-gray-500">{{ $absensi->user->nip ?? '-' }}</td>
                                     <td class="px-5 py-3 font-medium text-gray-700">{{ $absensi->user->nama ?? '-' }}</td>
-                                    <td class="px-5 py-3 text-gray-500">{{ $unit->nama_unit ?? '-' }}</td>
                                     <td class="px-5 py-3 text-gray-500">{{ $absensi->jam_masuk ? \Carbon\Carbon::parse($absensi->jam_masuk)->format('H:i') : '-' }}</td>
                                     <td class="px-5 py-3 text-gray-500">{{ $absensi->jam_pulang ? \Carbon\Carbon::parse($absensi->jam_pulang)->format('H:i') : '-' }}</td>
                                     <td class="px-5 py-3">
@@ -197,7 +175,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="10" class="px-5 py-8 text-center text-gray-400">Belum ada data absensi.</td>
+                                    <td colspan="9" class="px-5 py-8 text-center text-gray-400">Belum ada data absensi.</td>
                                 </tr>
                             @endforelse
                         </tbody>
