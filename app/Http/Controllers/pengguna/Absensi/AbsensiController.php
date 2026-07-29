@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Pengguna\Absensi;
 
 use App\Http\Controllers\Controller;
 use App\Models\Absensi;
+use App\Models\JamKerja;
 use App\Models\LokasiAbsensi;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -20,9 +22,6 @@ class AbsensiController extends Controller
             ->whereDate('tanggal', now()->toDateString())
             ->first();
 
-        // NOTE: sebelumnya 'absen.index' -> tidak sesuai konvensi folder
-        // 'pengguna.*' yang dipakai di route lain. Sesuaikan kembali kalau
-        // nama file view kamu memang berbeda.
         return view('pengguna.absensi.index', compact('absensiHariIni'));
     }
 
@@ -31,16 +30,11 @@ class AbsensiController extends Controller
      */
     public function create()
     {
-        // NOTE: sebelumnya 'absen.face-recognition' -> disesuaikan agar
-        // konsisten dengan konvensi 'pengguna.*'.
         return view('pengguna.absensi.face-recognition');
     }
 
     /**
      * Simpan hasil absen dari capture wajah.
-     *
-     * Otomatis menentukan ini absen masuk atau pulang berdasarkan
-     * data absensi hari ini milik user yang sedang login.
      */
     public function store(Request $request)
     {
@@ -51,7 +45,8 @@ class AbsensiController extends Controller
         ]);
 
         $user  = $request->user();
-        $today = now()->toDateString();
+        $now   = now();
+        $today = $now->toDateString();
 
         // 1. Pastikan titik user ada di dalam radius salah satu lokasi absensi.
         $lokasi = $this->cariLokasiSesuai($validated['latitude'], $validated['longitude']);
@@ -60,7 +55,14 @@ class AbsensiController extends Controller
             return back()->with('error', 'Anda berada di luar radius lokasi absensi. Pastikan berada di area kerja saat absen.');
         }
 
-        // 2. Cek apakah user sudah punya record absensi hari ini.
+        // 2. Ambil jam kerja untuk hari ini.
+        $jamKerja = $this->getJamKerjaHariIni($now);
+
+        if (! $jamKerja) {
+            return back()->with('error', 'Hari ini bukan hari kerja, absensi tidak dapat dilakukan.');
+        }
+
+        // 3. Cek apakah user sudah punya record absensi hari ini.
         $absensi = Absensi::where('user_id', $user->id)
             ->whereDate('tanggal', $today)
             ->first();
@@ -74,69 +76,81 @@ class AbsensiController extends Controller
         $fotoPath = $this->simpanFoto($validated['photo'], $user->id, $tipe);
 
         if ($tipe === 'masuk') {
+            $status = $this->tentukanStatusMasuk($now, $jamKerja);
+
             Absensi::create([
                 'user_id'           => $user->id,
                 'lokasi_absensi_id' => $lokasi->id,
                 'tanggal'           => $today,
-                'jam_masuk'         => now()->toTimeString(),
+                'jam_masuk'         => $now->toTimeString(),
                 'latitude'          => $validated['latitude'],
                 'longitude'         => $validated['longitude'],
                 'foto_masuk'        => $fotoPath,
-                'status'            => 'Hadir',
+                'status'            => $status,
             ]);
+
+            $pesan = $status === 'Terlambat'
+                ? 'Absen masuk berhasil dicatat pukul ' . $now->format('H:i') . ', namun Anda tercatat terlambat.'
+                : 'Absen masuk berhasil dicatat pukul ' . $now->format('H:i');
 
             return redirect()
                 ->route('pengguna.home')
-                ->with('success', 'Absen masuk berhasil dicatat pukul ' . now()->format('H:i'));
+                ->with('success', $pesan);
         }
 
         $absensi->update([
-            'jam_pulang'  => now()->toTimeString(),
+            'jam_pulang'  => $now->toTimeString(),
             'foto_pulang' => $fotoPath,
         ]);
 
         return redirect()
             ->route('pengguna.home')
-            ->with('success', 'Absen pulang berhasil dicatat pukul ' . now()->format('H:i'));
+            ->with('success', 'Absen pulang berhasil dicatat pukul ' . $now->format('H:i'));
+    }
+
+    public function show(string $id) {}
+    public function edit(string $id) {}
+    public function update(Request $request, string $id) {}
+    public function destroy(string $id) {}
+
+    /**
+     * Ambil data jam_kerja yang aktif untuk hari yang sesuai tanggal $now.
+     * Asumsi kolom `hari` berisi nama hari dalam Bahasa Indonesia: Senin, Selasa, ... Minggu.
+     */
+    private function getJamKerjaHariIni(Carbon $now): ?JamKerja
+    {
+        $namaHariList = [
+            0 => 'Minggu',
+            1 => 'Senin',
+            2 => 'Selasa',
+            3 => 'Rabu',
+            4 => 'Kamis',
+            5 => 'Jumat',
+            6 => 'Sabtu',
+        ];
+
+        $namaHari = $namaHariList[$now->dayOfWeek];
+
+        return JamKerja::where('hari', $namaHari)
+            ->where('status', true)
+            ->first();
     }
 
     /**
-     * Display the specified resource.
+     * Tentukan status kehadiran (Hadir / Terlambat) berdasarkan jam_masuk
+     * dan toleransi_terlambat (dalam menit) dari jam_kerja.
      */
-    public function show(string $id)
+    private function tentukanStatusMasuk(Carbon $now, JamKerja $jamKerja): string
     {
-        //
-    }
+        $batasMasuk = Carbon::createFromTimeString($jamKerja->jam_masuk->format('H:i:s'), $now->timezone)
+            ->setDateFrom($now)
+            ->addMinutes((int) $jamKerja->toleransi_terlambat);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return $now->greaterThan($batasMasuk) ? 'Terlambat' : 'Hadir';
     }
 
     /**
      * Cari lokasi absensi yang mencakup titik koordinat user (dalam radius meter-nya).
-     *
-     * Asumsi: tabel lokasi_absensi punya kolom `latitude`, `longitude`, `radius` (meter).
-     * Sesuaikan nama kolomnya kalau di project kamu berbeda.
      */
     private function cariLokasiSesuai(float $lat, float $lng): ?LokasiAbsensi
     {
@@ -151,12 +165,9 @@ class AbsensiController extends Controller
         return null;
     }
 
-    /**
-     * Hitung jarak dua koordinat pakai formula Haversine, hasil dalam meter.
-     */
     private function hitungJarakMeter(float $lat1, float $lng1, float $lat2, float $lng2): float
     {
-        $radiusBumi = 6371000; // meter
+        $radiusBumi = 6371000;
 
         $lat1Rad   = deg2rad($lat1);
         $lat2Rad   = deg2rad($lat2);
@@ -170,14 +181,9 @@ class AbsensiController extends Controller
         return $radiusBumi * $c;
     }
 
-    /**
-     * Decode foto base64 (hasil canvas.toDataURL) lalu simpan ke storage.
-     */
     private function simpanFoto(string $base64, int $userId, string $tipe): string
     {
         if (! str_contains($base64, ',')) {
-            // Jaga-jaga kalau string base64 tidak mengandung header data URI
-            // (misal "data:image/jpeg;base64,xxxx"), supaya tidak error saat explode.
             $decoded = base64_decode($base64);
         } else {
             [, $data] = explode(',', $base64, 2);
