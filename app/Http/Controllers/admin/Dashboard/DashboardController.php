@@ -29,8 +29,8 @@ class DashboardController extends Controller
     {
         Carbon::setLocale('id');
 
-        $today     = Carbon::today();
-        $startWeek = $today->copy()->subDays(6); // total 7 kolom termasuk besok
+        $today      = Carbon::today();
+        $startWeek  = $today->copy()->subDays(6); // total 7 kolom termasuk besok
         $tahunAktif = $today->year;
 
         // ================= TOTAL PEGAWAI =================
@@ -53,19 +53,19 @@ class DashboardController extends Controller
         $alphaHariIni     = $absensiToday->where('status', self::STATUS_ALPHA)->count();
 
         // "Hadir" pada card & donut menggabungkan hadir tepat waktu + terlambat
-        $hadirTotal      = $hadirHariIni + $terlambatHariIni;
+        $hadirTotal       = $hadirHariIni + $terlambatHariIni;
         $izinSakitHariIni = $izinHariIni + $sakitHariIni;
 
         $persen = fn (int $jumlah) => $totalPegawai > 0
             ? round(($jumlah / $totalPegawai) * 100, 1)
             : 0;
 
-        $persenHadir      = $persen($hadirTotal);
-        $persenTerlambat  = $persen($terlambatHariIni);
-        $persenIzinSakit  = $persen($izinSakitHariIni);
-        $persenIzin       = $persen($izinHariIni);
-        $persenSakit      = $persen($sakitHariIni);
-        $persenAlpha      = $persen($alphaHariIni);
+        $persenHadir     = $persen($hadirTotal);
+        $persenTerlambat = $persen($terlambatHariIni);
+        $persenIzinSakit = $persen($izinSakitHariIni);
+        $persenIzin      = $persen($izinHariIni);
+        $persenSakit     = $persen($sakitHariIni);
+        $persenAlpha     = $persen($alphaHariIni);
 
         // ================= GRAFIK: KEHADIRAN 7 HARI TERAKHIR =================
         $rekapMingguan = Absensi::selectRaw('tanggal, COUNT(*) as total')
@@ -100,19 +100,17 @@ class DashboardController extends Controller
         // ================= PENGAJUAN IZIN MENUNGGU PERSETUJUAN =================
         $pengajuanPending = PengajuanIzin::where('status', 'pending')->count();
 
-        // ================= STATISTIK ABSENSI BULANAN (TAHUN INI) =================
-        $rekapBulanan = Absensi::selectRaw('MONTH(tanggal) as bulan, COUNT(*) as total')
-            ->whereYear('tanggal', $tahunAktif)
-            ->whereIn('status', [self::STATUS_HADIR, self::STATUS_TERLAMBAT])
-            ->groupBy('bulan')
-            ->pluck('total', 'bulan');
-
-        $namaBulan = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
-        $bulananLabels = $namaBulan;
-        $bulananData   = [];
-        for ($b = 1; $b <= 12; $b++) {
-            $bulananData[] = $b > $today->month ? null : (int) ($rekapBulanan[$b] ?? 0);
-        }
+        // ================= TOP 5 PEGAWAI TERAJIN BULAN INI =================
+        // Diukur dari jumlah hadir tepat waktu (bukan terlambat) terbanyak bulan ini
+        $topRajin = Absensi::with(['user.unit'])
+            ->selectRaw('user_id, COUNT(*) as total')
+            ->where('status', self::STATUS_HADIR)
+            ->whereMonth('tanggal', $today->month)
+            ->whereYear('tanggal', $today->year)
+            ->groupBy('user_id')
+            ->orderByDesc('total')
+            ->limit(5)
+            ->get();
 
         // ================= TOP 5 PEGAWAI TERLAMBAT BULAN INI =================
         $topTerlambat = Absensi::with(['user.unit'])
@@ -146,8 +144,7 @@ class DashboardController extends Controller
             'jamKerja',
             'pengajuanPending',
             'tahunAktif',
-            'bulananLabels',
-            'bulananData',
+            'topRajin',
             'topTerlambat'
         ));
     }

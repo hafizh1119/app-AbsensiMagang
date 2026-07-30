@@ -48,26 +48,29 @@ class AbsensiController extends Controller
         $now   = now();
         $today = $now->toDateString();
 
-        // 1. Pastikan titik user ada di dalam radius salah satu lokasi absensi.
         $lokasi = $this->cariLokasiSesuai($validated['latitude'], $validated['longitude']);
-
         if (! $lokasi) {
             return back()->with('error', 'Anda berada di luar radius lokasi absensi. Pastikan berada di area kerja saat absen.');
         }
 
-        // 2. Ambil jam kerja untuk hari ini.
         $jamKerja = $this->getJamKerjaHariIni($now);
-
         if (! $jamKerja) {
             return back()->with('error', 'Hari ini bukan hari kerja, absensi tidak dapat dilakukan.');
         }
 
-        // 3. Cek apakah user sudah punya record absensi hari ini.
         $absensi = Absensi::where('user_id', $user->id)
             ->whereDate('tanggal', $today)
             ->first();
 
-        // Sudah absen masuk & pulang -> tidak bisa absen lagi hari ini.
+        // Kalau hari ini sudah ditandai izin/cuti/sakit yang tidak wajib absen, tolak.
+        if ($absensi && $absensi->pengajuan_izin_id) {
+            $pengajuanIzin = $absensi->pengajuanIzin()->with('jenisIzin')->first();
+
+            if ($pengajuanIzin && ! $pengajuanIzin->jenisIzin->wajib_absen) {
+                return back()->with('error', 'Anda tercatat ' . $pengajuanIzin->jenisIzin->nama_izin . ' pada tanggal ini, tidak perlu melakukan absen.');
+            }
+        }
+
         if ($absensi && $absensi->jam_masuk && $absensi->jam_pulang) {
             return back()->with('error', 'Anda sudah melakukan absen masuk dan pulang hari ini.');
         }
@@ -78,24 +81,35 @@ class AbsensiController extends Controller
         if ($tipe === 'masuk') {
             $status = $this->tentukanStatusMasuk($now, $jamKerja);
 
-            Absensi::create([
-                'user_id'           => $user->id,
+            // Kalau ada izin terlambat yang sudah disetujui untuk hari ini, pertahankan statusnya
+            // (tidak dihitung "terlambat" biasa walau jam masuk lewat batas toleransi).
+            if ($absensi && $absensi->pengajuan_izin_id) {
+                $status = $absensi->status;
+            }
+
+            $data = [
                 'lokasi_absensi_id' => $lokasi->id,
-                'tanggal'           => $today,
                 'jam_masuk'         => $now->toTimeString(),
                 'latitude'          => $validated['latitude'],
                 'longitude'         => $validated['longitude'],
                 'foto_masuk'        => $fotoPath,
                 'status'            => $status,
-            ]);
+            ];
 
-            $pesan = $status === 'Terlambat'
+            if ($absensi) {
+                $absensi->update($data);
+            } else {
+                Absensi::create(array_merge($data, [
+                    'user_id' => $user->id,
+                    'tanggal' => $today,
+                ]));
+            }
+
+            $pesan = $status === 'terlambat'
                 ? 'Absen masuk berhasil dicatat pukul ' . $now->format('H:i') . ', namun Anda tercatat terlambat.'
                 : 'Absen masuk berhasil dicatat pukul ' . $now->format('H:i');
 
-            return redirect()
-                ->route('pengguna.home')
-                ->with('success', $pesan);
+            return redirect()->route('pengguna.home')->with('success', $pesan);
         }
 
         $absensi->update([
@@ -103,9 +117,7 @@ class AbsensiController extends Controller
             'foto_pulang' => $fotoPath,
         ]);
 
-        return redirect()
-            ->route('pengguna.home')
-            ->with('success', 'Absen pulang berhasil dicatat pukul ' . $now->format('H:i'));
+        return redirect()->route('pengguna.home')->with('success', 'Absen pulang berhasil dicatat pukul ' . $now->format('H:i'));
     }
 
     public function show(string $id) {}

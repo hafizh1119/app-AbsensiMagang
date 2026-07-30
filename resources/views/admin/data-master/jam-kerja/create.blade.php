@@ -134,7 +134,7 @@
             </div>
 
         </main>
-
+    @include('admin.components.footer')
     </div>
 
 </div>

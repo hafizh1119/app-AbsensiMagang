@@ -24,11 +24,13 @@
                 $persenIzin       = $ringkasan['total'] > 0 ? round($ringkasan['izin']        / $ringkasan['total'] * 100, 2) : 0;
 
                 $statusStyle = [
-                    'Hadir'       => 'bg-emerald-50 text-emerald-600',
-                    'Terlambat'   => 'bg-amber-50 text-amber-600',
-                    'Belum Absen' => 'bg-purple-50 text-purple-600',
-                    'Izin'        => 'bg-blue-50 text-blue-600',
-                    'Sakit'       => 'bg-blue-50 text-blue-600',
+                    'Hadir'          => 'bg-emerald-50 text-emerald-600',
+                    'Terlambat'      => 'bg-amber-50 text-amber-600',
+                    'Belum Absen'    => 'bg-purple-50 text-purple-600',
+                    'Izin'           => 'bg-blue-50 text-blue-600',
+                    'Sakit'          => 'bg-blue-50 text-blue-600',
+                    'Cuti'           => 'bg-indigo-50 text-indigo-600',
+                    'Izin Terlambat' => 'bg-orange-50 text-orange-600',
                 ];
 
                 // Titik potong conic-gradient buat donat chart (kumulatif persen)
@@ -236,7 +238,7 @@
             </div>
 
         </main>
-
+        @include('admin.components.footer')
     </div>
 
 </div>

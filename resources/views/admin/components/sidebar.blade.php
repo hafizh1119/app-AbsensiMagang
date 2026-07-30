@@ -6,7 +6,7 @@
             {{-- Logo polos, tanpa lingkaran/background di belakangnya --}}
             <img src="{{ asset('icon/logo.svg') }}" alt="Logo" class="shrink-0 w-10 h-10 object-contain">
             <div class="min-w-0">
-                <p class="text-white font-bold text-sm leading-tight">ABSENSI PEGAWAI</p>
+                <p class="text-white font-bold text-xs tracking-tight leading-tight whitespace-nowrap">ABSENSI PEGAWAI KONTRAK</p>
                 <p class="text-white/80 text-[11px] leading-snug">Dinas Koperasi UKM</p>
                 <p class="text-white/80 text-[11px] leading-snug">Provinsi Jawa Tengah</p>
             </div>
@@ -49,7 +49,7 @@
                 {{ request()->routeIs('admin.data-master.unit*') ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-500 hover:bg-emerald-50 hover:text-emerald-700' }}">
                     Unit
                 </a>
-                
+
                 {{-- Jenis Izin --}}
                 <a href="{{ route('admin.data-master.jenis-izin') }}"
                 class="block px-3 py-2 rounded-lg text-sm transition-colors duration-150
@@ -90,9 +90,10 @@
             </button>
 
             <div x-show="open" x-collapse class="mt-1 ml-11 space-y-1">
+                {{-- "edit" & "destroy" adalah aksi milik daftar Semua Absensi, jadi ikut dihitung aktif di sini --}}
                 <a href="{{ route('admin.absensi.semua') }}"
                    class="block px-3 py-2 rounded-lg text-sm transition-colors duration-150
-                   {{ request()->routeIs('admin.absensi.semua') ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-500 hover:bg-emerald-50 hover:text-emerald-700' }}">Semua Absensi</a>
+                   {{ request()->routeIs(['admin.absensi.semua', 'admin.absensi.edit']) ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-500 hover:bg-emerald-50 hover:text-emerald-700' }}">Semua Absensi</a>
                 <a href="{{ route('admin.absensi.hari-ini') }}"
                    class="block px-3 py-2 rounded-lg text-sm transition-colors duration-150
                    {{ request()->routeIs('admin.absensi.hari-ini') ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-500 hover:bg-emerald-50 hover:text-emerald-700' }}">Absensi Hari Ini</a>
@@ -120,12 +121,13 @@
 
             <div x-show="open" x-collapse class="mt-1 ml-11 space-y-1">
                 {{-- Semua Pengajuan --}}
+                {{-- show/approve/reject dibuka dari daftar semua pengajuan, jadi ikut dihitung aktif di sini --}}
                 <a href="{{ route('admin.izin.semua') }}"
                 class="block px-3 py-2 rounded-lg text-sm transition-colors duration-150
-                {{ request()->routeIs('admin.izin.semua') ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-500 hover:bg-emerald-50 hover:text-emerald-700' }}">
+                {{ request()->routeIs(['admin.izin.semua', 'admin.izin.show', 'admin.izin.approve', 'admin.izin.reject']) ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-500 hover:bg-emerald-50 hover:text-emerald-700' }}">
                     Semua Pengajuan
                 </a>
-                
+
                 {{-- Menunggu Persetujuan --}}
                 <a href="{{ route('admin.izin.menunggu') }}"
                 class="block px-3 py-2 rounded-lg text-sm transition-colors duration-150
@@ -164,12 +166,14 @@
             </button>
 
             <div x-show="open" x-collapse class="mt-1 ml-11 space-y-1">
+                {{-- edit user ikut dihitung aktif di sub-menu Pegawai --}}
                 <a href="{{ route('admin.manajemen.user') }}"
                    class="block px-3 py-2 rounded-lg text-sm transition-colors duration-150
-                   {{ request()->routeIs('admin.manajemen.user') ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-500 hover:bg-emerald-50 hover:text-emerald-700' }}">Pegawai</a>
+                   {{ request()->routeIs(['admin.manajemen.user', 'admin.manajemen.user.edit']) ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-500 hover:bg-emerald-50 hover:text-emerald-700' }}">Pegawai</a>
+                {{-- create/edit admin ikut dihitung aktif di sub-menu Super Admin --}}
                 <a href="{{ route('admin.manajemen.admin') }}"
                    class="block px-3 py-2 rounded-lg text-sm transition-colors duration-150
-                   {{ request()->routeIs('admin.manajemen.admin') ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-500 hover:bg-emerald-50 hover:text-emerald-700' }}">Super Admin</a>
+                   {{ request()->routeIs(['admin.manajemen.admin', 'admin.manajemen.admin.create', 'admin.manajemen.admin.edit']) ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-500 hover:bg-emerald-50 hover:text-emerald-700' }}">Super Admin</a>
             </div>
         </div>
 

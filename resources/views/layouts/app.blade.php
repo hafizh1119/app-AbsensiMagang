@@ -11,14 +11,20 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+    {{-- Chart.js: taruh di head supaya PASTI ter-load sebelum script chart di @stack('scripts') dijalankan --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+
     @stack('styles')
 </head>
 
 <body class="bg-gray-100 min-h-screen">
 
     @yield('content')
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
+    {{-- Alpine.js: plugin (Collapse) WAJIB dimuat SEBELUM core Alpine --}}
     <script src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
     @stack('scripts')
 </body>
 </html>

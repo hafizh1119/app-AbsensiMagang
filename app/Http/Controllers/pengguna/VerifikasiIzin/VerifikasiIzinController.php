@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Pengguna\VerifikasiIzin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Absensi; 
 use App\Models\PengajuanIzin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -89,7 +90,7 @@ class VerifikasiIzinController extends Controller
             'tanggal_persetujuan' => 'required|date',
         ]);
 
-        $pengajuan = PengajuanIzin::findOrFail($id);
+        $pengajuan = PengajuanIzin::with('jenisIzin')->findOrFail($id);
 
         $pengajuan->update([
             'status'              => 'disetujui',
@@ -97,32 +98,47 @@ class VerifikasiIzinController extends Controller
             'tanggal_persetujuan' => $request->tanggal_persetujuan,
         ]);
 
+        $this->terapkanKeAbsensi($pengajuan);
+
         return redirect()
-            ->route('verifikasi.index')
+            ->route('pengguna.verifikasi.index')
             ->with('success', 'Pengajuan izin berhasil disetujui.');
     }
 
     /**
-     * Tolak pengajuan izin.
+     * Terapkan hasil persetujuan izin ke tabel absensi untuk setiap tanggal
+     * dalam rentang tanggal_mulai - tanggal_selesai.
      */
-    public function reject(Request $request, string $id)
+    private function terapkanKeAbsensi(PengajuanIzin $pengajuan): void
     {
-        $request->validate([
-            'tanggal_persetujuan' => 'required|date',
-            'catatan'             => 'required|string|max:500',
-        ]);
+        $jenisIzin = $pengajuan->jenisIzin;
 
-        $pengajuan = PengajuanIzin::findOrFail($id);
+        $tanggal = $pengajuan->tanggal_mulai->copy();
+        $akhir   = $pengajuan->tanggal_selesai->copy();
 
-        $pengajuan->update([
-            'status'              => 'ditolak',
-            'disetujui_oleh'      => Auth::id(),
-            'tanggal_persetujuan' => $request->tanggal_persetujuan,
-            'catatan'             => $request->catatan,
-        ]);
+        while ($tanggal->lte($akhir)) {
+            $absensi = Absensi::firstOrNew([
+                'user_id' => $pengajuan->user_id,
+                'tanggal' => $tanggal->toDateString(),
+            ]);
 
-        return redirect()
-            ->route('verifikasi.index')
-            ->with('success', 'Pengajuan izin berhasil ditolak.');
+            $absensi->status            = $jenisIzin->kategori; // 'izin_terlambat', 'cuti', 'sakit', 'izin'
+            $absensi->pengajuan_izin_id = $pengajuan->id;
+            $absensi->keterangan        = $jenisIzin->nama_izin . ($pengajuan->alasan ? ' - ' . $pengajuan->alasan : '');
+
+            if (! $jenisIzin->wajib_absen) {
+                // Cuti/sakit: tidak perlu absen fisik, kosongkan jam supaya tidak ketuker data lama
+                $absensi->jam_masuk  = null;
+                $absensi->jam_pulang = null;
+            }
+
+            if (! $absensi->exists) {
+                $absensi->lokasi_absensi_id = null; // belum ada lokasi karena belum absen fisik
+            }
+
+            $absensi->save();
+
+            $tanggal->addDay();
+        }
     }
 }

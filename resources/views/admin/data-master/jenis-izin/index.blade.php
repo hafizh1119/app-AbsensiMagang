@@ -107,16 +107,38 @@
                                 <th class="text-left font-medium px-4 py-3">Nama Jenis Izin</th>
                                 <th class="text-left font-medium px-4 py-3">Deskripsi</th>
                                 <th class="text-left font-medium px-4 py-3">Kuota / Tahun</th>
+                                <th class="text-left font-medium px-4 py-3">Kategori Absensi</th>
+                                <th class="text-left font-medium px-4 py-3">Wajib Absen</th>
                                 <th class="text-center font-medium px-4 py-3">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
                             @forelse ($jenisIzin as $row)
+                                @php
+                                    $kategoriLabel = [
+                                        'izin'           => 'Izin',
+                                        'sakit'          => 'Sakit',
+                                        'cuti'           => 'Cuti',
+                                        'izin_terlambat' => 'Izin Terlambat',
+                                    ];
+                                @endphp
                                 <tr class="hover:bg-gray-50/60 transition-colors" x-data="{ confirmOpen: false, editOpen: false }">
                                     <td class="px-4 py-3 text-gray-500">{{ $loop->iteration }}</td>
                                     <td class="px-4 py-3 text-gray-700 font-medium">{{ $row->nama_izin }}</td>
                                     <td class="px-4 py-3 text-gray-500">{{ $row->deskripsi ?: '-' }}</td>
                                     <td class="px-4 py-3 text-gray-500">{{ $row->kuota }} Hari</td>
+                                    <td class="px-4 py-3 text-gray-500">
+                                        <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full bg-blue-50 text-blue-600">
+                                            {{ $kategoriLabel[$row->kategori] ?? $row->kategori }}
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-3 text-gray-500">
+                                        @if ($row->wajib_absen)
+                                            <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full bg-emerald-50 text-emerald-600">Ya</span>
+                                        @else
+                                            <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full bg-gray-100 text-gray-500">Tidak</span>
+                                        @endif
+                                    </td>
                                     <td class="px-4 py-3 text-center">
                                         <div class="flex items-center justify-center gap-2">
 
@@ -164,6 +186,27 @@
                                                             <label class="block text-xs font-medium text-gray-500 mb-1.5">Kuota per Tahun (Hari)</label>
                                                             <input type="number" name="kuota" value="{{ $row->kuota }}" min="0" max="365" required
                                                                    class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                                        </div>
+
+                                                        <div>
+                                                            <label class="block text-xs font-medium text-gray-500 mb-1.5">Kategori Absensi</label>
+                                                            <select name="kategori" required
+                                                                    class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                                                <option value="izin" @selected($row->kategori === 'izin')>Izin</option>
+                                                                <option value="sakit" @selected($row->kategori === 'sakit')>Sakit</option>
+                                                                <option value="cuti" @selected($row->kategori === 'cuti')>Cuti</option>
+                                                                <option value="izin_terlambat" @selected($row->kategori === 'izin_terlambat')>Izin Terlambat</option>
+                                                            </select>
+                                                            <p class="text-xs text-gray-400 mt-1">Menentukan status apa yang tercatat di absensi saat pengajuan jenis izin ini disetujui.</p>
+                                                        </div>
+
+                                                        <div>
+                                                            <label class="block text-xs font-medium text-gray-500 mb-1.5">Wajib Absen Fisik?</label>
+                                                            <select name="wajib_absen" required
+                                                                    class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                                                <option value="1" @selected($row->wajib_absen)>Ya, tetap wajib absen masuk/pulang</option>
+                                                                <option value="0" @selected(!$row->wajib_absen)>Tidak, langsung dianggap izin penuh hari</option>
+                                                            </select>
                                                         </div>
 
                                                         <div>
@@ -231,7 +274,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="px-4 py-8 text-center text-sm text-gray-400">
+                                    <td colspan="7" class="px-4 py-8 text-center text-sm text-gray-400">
                                         Belum ada data jenis izin.
                                     </td>
                                 </tr>
@@ -248,7 +291,7 @@
             </div>
 
         </main>
-
+    @include('admin.components.footer')
         {{-- Modal Tambah Jenis Izin --}}
         <div x-show="createOpen" x-transition.opacity style="display: none;"
              class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
@@ -281,6 +324,37 @@
                         <input type="number" name="kuota" placeholder="Contoh: 12" min="0" max="365" required
                                class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500">
                         <p class="text-xs text-gray-400 mt-1">Jatah hari yang didapat tiap pegawai per tahun untuk jenis izin ini.</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Kategori Absensi</label>
+                        <select name="kategori" required
+                                class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <option value="izin">Izin</option>
+                            <option value="sakit">Sakit</option>
+                            <option value="cuti">Cuti</option>
+                            <option value="izin_terlambat">Izin Terlambat</option>
+                        </select>
+                        <p class="text-xs text-gray-400 mt-1">Menentukan status apa yang tercatat di absensi saat pengajuan jenis izin ini disetujui.</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Wajib Absen Fisik?</label>
+                        <select name="wajib_absen" required
+                                class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <option value="1">Ya, tetap wajib absen masuk/pulang</option>
+                            <option value="0" selected>Tidak, langsung dianggap izin penuh hari</option>
+                        </select>
+                        <p class="text-xs text-gray-400 mt-1">Contoh "Izin Terlambat" pilih Ya, contoh "Cuti"/"Sakit" pilih Tidak.</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Status</label>
+                        <select name="status" required
+                                class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <option value="1" selected>Aktif</option>
+                            <option value="0">Tidak Aktif</option>
+                        </select>
                     </div>
 
                     <div class="flex items-center gap-3 pt-2">

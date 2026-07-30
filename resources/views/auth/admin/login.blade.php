@@ -27,7 +27,7 @@
                         </svg>
                     </div>
                     <div>
-                        <p class="text-white font-bold text-sm">Absensi Pegawai</p>
+                        <p class="text-white font-bold text-sm">Absensi Pegawai Kontrak</p>
                         <p class="text-emerald-300/80 text-[10px] font-medium">Dinas Koperasi Prov Jawa Tengah</p>
                     </div>
                 </div>
@@ -41,7 +41,7 @@
             </div>
 
             <div class="relative z-10">
-                <p class="text-emerald-300/50 text-[10px]">&copy; 2026 Dinas Koperasi UKM Prov. Jateng</p>
+                <p class="text-emerald-300/50 text-[10px]">&copy; Dibuat oleh Muhammad Hanif &middot; Udinus &middot; 2026</p>
             </div>
         </div>
 
@@ -122,20 +122,6 @@
                         @enderror
                     </div>
 
-                    {{-- Remember Me & Lupa Password --}}
-                    <div class="flex items-center justify-between">
-                        <label class="flex items-center gap-2 cursor-pointer select-none">
-                            <input type="checkbox"
-                                   name="remember"
-                                   value="1"
-                                   class="w-4 h-4 text-emerald-700 border-gray-300 rounded focus:ring-emerald-600 accent-emerald-700">
-                            <span class="text-sm text-gray-600">Ingat saya</span>
-                        </label>
-                        <a href="#" class="text-sm font-medium text-emerald-700 hover:text-emerald-800 hover:underline transition">
-                            Lupa Password?
-                        </a>
-                    </div>
-
                     {{-- Tombol Masuk --}}
                     <button type="submit"
                             class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-semibold py-3.5 px-4 rounded-xl transition duration-200 shadow-lg shadow-emerald-700/20 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]">
@@ -153,19 +139,6 @@
                     </div>
                 </div>
 
-                {{-- Info Keamanan --}}
-                <div class="flex items-center justify-center gap-6 text-xs text-gray-400">
-                    <span class="flex items-center gap-1">
-                        <svg class="w-4 h-4 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
-                        </svg>
-                        Data Aman
-                    </span>
-                    <span>•</span>
-                    <span>SSL Enkripsi</span>
-                    <span>•</span>
-                    <span>Support 24/7</span>
-                </div>
             </div>
         </div>
     </div>

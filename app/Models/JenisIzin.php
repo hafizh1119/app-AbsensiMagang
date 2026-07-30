@@ -14,11 +14,16 @@ class JenisIzin extends Model
         'nama_izin',
         'deskripsi',
         'kuota',
+        'kategori',
+        'wajib_absen',
+        'status',
     ];
 
     protected function casts(): array
     {
-        return [];
+        return [
+            'wajib_absen' => 'boolean',
+        ];
     }
 
     public function pengajuanIzin()

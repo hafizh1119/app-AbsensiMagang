@@ -13,6 +13,7 @@ class Absensi extends Model
     protected $fillable = [
         'user_id',
         'lokasi_absensi_id',
+        'pengajuan_izin_id', 
         'tanggal',
         'jam_masuk',
         'jam_pulang',
@@ -43,5 +44,10 @@ class Absensi extends Model
     public function lokasiAbsensi()
     {
         return $this->belongsTo(LokasiAbsensi::class);
+    }
+
+    public function pengajuanIzin()
+    {
+        return $this->belongsTo(PengajuanIzin::class);
     }
 }

@@ -25,12 +25,14 @@
 
             @php
                 $statusStyle = [
-                    'hadir'       => 'bg-emerald-50 text-emerald-600',
-                    'terlambat'   => 'bg-amber-50 text-amber-600',
-                    'izin'        => 'bg-blue-50 text-blue-600',
-                    'sakit'       => 'bg-blue-50 text-blue-600',
-                    'tidak_hadir' => 'bg-rose-50 text-rose-500',
-                    'alpha'       => 'bg-rose-50 text-rose-500',
+                    'hadir'          => 'bg-emerald-50 text-emerald-600',
+                    'terlambat'      => 'bg-amber-50 text-amber-600',
+                    'izin'           => 'bg-blue-50 text-blue-600',
+                    'sakit'          => 'bg-blue-50 text-blue-600',
+                    'cuti'           => 'bg-purple-50 text-purple-600',
+                    'izin_terlambat' => 'bg-orange-50 text-orange-600',
+                    'tidak_hadir'    => 'bg-rose-50 text-rose-500',
+                    'alpha'          => 'bg-rose-50 text-rose-500',
                 ];
             @endphp
 
@@ -192,9 +194,9 @@
             </div>
 
         </main>
-
+    @include('admin.components.footer')
     </div>
-
+    
 </div>
 
 @endsection

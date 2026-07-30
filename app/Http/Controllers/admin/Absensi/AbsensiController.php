@@ -39,8 +39,8 @@ class AbsensiController extends Controller
         $tanggalValue = $request->input('tanggal', now()->toDateString());
         $cari         = $request->input('cari');
 
-        // Ringkasan dihitung dari SELURUH pegawai aktif, tidak terpengaruh filter tabel.
-        $semuaPegawai   = User::where('role', 'pegawai')->where('status', 'aktif')->pluck('id');
+        $rolesAbsensi = ['pegawai', 'admin_unit'];
+        $semuaPegawai = User::whereIn('role', $rolesAbsensi)->where('status', 'aktif')->pluck('id');
         $totalPegawai   = $semuaPegawai->count();
         $absensiHariIni = Absensi::whereDate('tanggal', $tanggalValue)
             ->whereIn('user_id', $semuaPegawai)
@@ -50,7 +50,10 @@ class AbsensiController extends Controller
 
         $hadir      = $statusCounts->get('hadir', 0);
         $terlambat  = $statusCounts->get('terlambat', 0);
-        $izin       = $statusCounts->get('izin', 0) + $statusCounts->get('sakit', 0);
+        $izin       = $statusCounts->get('izin', 0)
+            + $statusCounts->get('sakit', 0)
+            + $statusCounts->get('cuti', 0)
+            + $statusCounts->get('izin_terlambat', 0);
         $belumAbsen = max($totalPegawai - $absensiHariIni->count(), 0);
 
         $ringkasan = [
@@ -64,7 +67,7 @@ class AbsensiController extends Controller
         // Daftar pegawai untuk tabel, dengan filter cari nama.
         $absensiHariIniByUser = $absensiHariIni->keyBy('user_id');
 
-        $users = User::where('role', 'pegawai')
+        $users = User::whereIn('role', $rolesAbsensi)
             ->where('status', 'aktif')
             ->when($cari, fn ($q) => $q->where('nama', 'like', "%{$cari}%"))
             ->orderBy('nama')
@@ -102,11 +105,13 @@ class AbsensiController extends Controller
         }
 
         return match (strtolower($status)) {
-            'hadir'     => 'Hadir',
-            'terlambat' => 'Terlambat',
-            'izin'      => 'Izin',
-            'sakit'     => 'Sakit',
-            default     => ucwords(str_replace('_', ' ', $status)),
+            'hadir'          => 'Hadir',
+            'terlambat'      => 'Terlambat',
+            'izin'           => 'Izin',
+            'sakit'          => 'Sakit',
+            'cuti'           => 'Cuti',
+            'izin_terlambat' => 'Izin Terlambat',
+            default          => ucwords(str_replace('_', ' ', $status)),
         };
     }
 
@@ -137,7 +142,9 @@ class AbsensiController extends Controller
             'total'     => $totalPegawai,
             'hadir'     => $statusCounts->get('hadir', 0),
             'terlambat' => $statusCounts->get('terlambat', 0),
-            'izin'      => $statusCounts->get('izin', 0),
+            'izin'      => $statusCounts->get('izin', 0)
+                + $statusCounts->get('cuti', 0)
+                + $statusCounts->get('izin_terlambat', 0),
             'sakit'     => $statusCounts->get('sakit', 0),
             'alpha'     => $statusCounts->get('alpha', 0) + $statusCounts->get('tidak_hadir', 0),
         ];
