@@ -1,59 +1,136 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<div align="center">
+    <img src="icon/diskop.svg" alt="Logo Dinas Koperasi Provinsi Jawa Tengah" width="120">
+    <h1>Sistem Absensi Peserta Magang</h1>
+    <p><strong>Dinas Koperasi Usaha Kecil dan Menengah Provinsi Jawa Tengah</strong></p>
+    <p>Aplikasi manajemen absensi dan izin untuk peserta magang</p>
+</div>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+---
 
-## About Laravel
+## 📋 Daftar Isi
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- [Tentang Aplikasi](#-tentang-aplikasi)
+- [Fitur Utama](#-fitur-utama)
+- [Peran Pengguna](#-peran-pengguna)
+- [Teknologi yang Digunakan](#-teknologi-yang-digunakan)
+- [Instalasi](#-instalasi)
+- [Struktur Database](#-struktur-database)
+- [Hak Akses](#-hak-akses)
+- [Screenshot](#-screenshot)
+- [Kontak](#-kontak)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🏢 Tentang Aplikasi
 
-## Learning Laravel
+**Sistem Absensi Peserta Magang** adalah aplikasi berbasis web yang dikembangkan untuk mengelola kehadiran dan pengajuan izin peserta magang di **Dinas Koperasi Usaha Kecil dan Menengah Provinsi Jawa Tengah**.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+Aplikasi ini dirancang untuk:
+- Mencatat absensi masuk dan pulang peserta magang
+- Mengelola pengajuan izin (sakit, cuti, izin pribadi, dll)
+- Memantau rekapitulasi kehadiran
+- Mengelola data unit, peserta, dan jenis izin
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 🚀 Fitur Utama
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 👤 Sisi Peserta Magang
+| Fitur | Deskripsi |
+|-------|-----------|
+| ✅ **Absensi Harian** | Absen masuk dan pulang dengan deteksi lokasi berbasis GPS |
+| ✅ **Riwayat Absensi** | Melihat histori kehadiran harian |
+| ✅ **Pengajuan Izin** | Mengajukan izin (sakit, cuti, izin pribadi, dll) |
+| ✅ **Riwayat Izin** | Melihat status pengajuan izin |
+| ✅ **Verifikasi Izin** | (Admin Unit) Menyetujui/menolak pengajuan izin |
 
-### Premium Partners
+### 👑 Sisi Super Admin
+| Modul | Deskripsi |
+|-------|-----------|
+| 📊 **Dashboard** | Ringkasan data absensi harian, grafik kehadiran, statistik |
+| 📁 **Data Master** | Kelola Unit, Jenis Izin, Peserta Magang, Jam Kerja |
+| 📅 **Data Absensi** | Lihat semua absensi, absensi hari ini, rekap bulanan |
+| 📄 **Pengajuan Izin** | Kelola semua pengajuan dan yang menunggu persetujuan |
+| 📍 **Lokasi Kantor** | Atur titik lokasi absensi dengan radius |
+| 👥 **Manajemen Akses** | Kelola akun Super Admin dan role pengguna |
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+---
 
-## Contributing
+## 👥 Peran Pengguna
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+| Role | Deskripsi |
+|------|-----------|
+| **Super Admin** | Mengelola semua data, verifikasi izin, dan konfigurasi sistem |
+| **Admin Unit** | Memverifikasi pengajuan izin di unitnya |
+| **Peserta** | Melakukan absensi dan mengajukan izin |
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 🛠 Teknologi yang Digunakan
 
-## Security Vulnerabilities
+### Backend
+- **Framework**: Laravel 11
+- **PHP**: ^8.2
+- **Database**: MySQL / MariaDB
+- **Authentication**: Laravel Breeze / Jetstream
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Frontend
+- **CSS Framework**: Tailwind CSS 3.x
+- **JavaScript**: Alpine.js 3.x
+- **Chart**: Chart.js 4.x
+- **Maps**: Leaflet.js + OpenStreetMap
+- **Icons**: Custom SVG
 
-## License
+### Tools
+- **Version Control**: Git & GitHub
+- **Package Manager**: Composer & NPM
+- **Development**: Vite
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## 💻 Instalasi
+
+### Prasyarat
+- PHP ^8.2
+- Composer
+- Node.js & NPM
+- MySQL / MariaDB
+
+### Langkah Instalasi
+
+```bash
+# 1. Clone repository
+git clone https://github.com/username/sistem-absensi-magang.git
+cd sistem-absensi-magang
+
+# 2. Install dependencies PHP
+composer install
+
+# 3. Install dependencies JavaScript
+npm install
+
+# 4. Copy file environment
+cp .env.example .env
+
+# 5. Generate application key
+php artisan key:generate
+
+# 6. Konfigurasi database di .env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=absensi_magang
+DB_USERNAME=root
+DB_PASSWORD=
+
+# 7. Jalankan migrasi database
+php artisan migrate
+
+# 8. Jalankan seeder (opsional)
+php artisan db:seed
+
+# 9. Build assets
+npm run build
+
+# 10. Jalankan server
+php artisan serve
