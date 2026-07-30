@@ -15,7 +15,7 @@
 
     {{-- Flash message --}}
     @if (session('success'))
-        <div class="max-w-sm mx-auto w-full mb-2 bg-emerald-50 text-emerald-700 text-sm font-medium px-4 py-2.5 rounded-xl border border-emerald-100">
+        <div class="max-w-sm mx-auto w-full mb-2 bg-sky-50 text-blue-700 text-sm font-medium px-4 py-2.5 rounded-xl border border-sky-100">
             {{ session('success') }}
         </div>
     @endif
@@ -42,7 +42,7 @@
 
         {{-- Overlay oval panduan wajah --}}
         <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div id="face-oval" class="w-40 h-52 rounded-[50%] border-[3px] border-emerald-400 transition-colors duration-300"></div>
+            <div id="face-oval" class="w-40 h-52 rounded-[50%] border-[3px] border-sky-400 transition-colors duration-300"></div>
         </div>
 
         {{-- Bracket sudut kamera --}}
@@ -123,12 +123,12 @@
     </div>
 
     {{-- Status Deteksi --}}
-    <div id="status-box" class="flex items-center gap-3 bg-emerald-50 border border-emerald-100 rounded-2xl px-4 py-2.5 mt-3 max-w-sm mx-auto">
-        <svg id="status-spinner" class="w-5 h-5 text-emerald-600 animate-spin shrink-0" fill="none" viewBox="0 0 24 24">
+    <div id="status-box" class="flex items-center gap-3 bg-sky-50 border border-sky-100 rounded-2xl px-4 py-2.5 mt-3 max-w-sm mx-auto">
+        <svg id="status-spinner" class="w-5 h-5 text-blue-600 animate-spin shrink-0" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
         </svg>
-        <span id="status-text" class="text-sm font-semibold text-emerald-700">Memuat model deteksi wajah...</span>
+        <span id="status-text" class="text-sm font-semibold text-blue-700">Memuat model deteksi wajah...</span>
     </div>
 
     {{-- Form kirim hasil capture, terkirim otomatis begitu wajah cocok & lokasi valid --}}
@@ -177,20 +177,20 @@
 
     function markChecklist(active) {
         [check1, check2, check3].forEach(el => {
-            el.classList.toggle('bg-emerald-500', active);
+            el.classList.toggle('bg-blue-600', active);
             el.classList.toggle('bg-gray-200', !active);
         });
     }
 
     function markLocationChecklist(active) {
-        check4.classList.toggle('bg-emerald-500', active);
+        check4.classList.toggle('bg-blue-600', active);
         check4.classList.toggle('bg-gray-200', !active);
     }
 
     function setStatus(text, tone) {
         statusText.textContent = text;
-        statusBox.classList.remove('bg-emerald-50', 'border-emerald-100', 'bg-amber-50', 'border-amber-100', 'bg-red-50', 'border-red-100');
-        statusText.classList.remove('text-emerald-700', 'text-amber-700', 'text-red-600');
+        statusBox.classList.remove('bg-sky-50', 'border-sky-100', 'bg-amber-50', 'border-amber-100', 'bg-red-50', 'border-red-100');
+        statusText.classList.remove('text-blue-700', 'text-amber-700', 'text-red-600');
 
         if (tone === 'amber') {
             statusBox.classList.add('bg-amber-50', 'border-amber-100');
@@ -199,8 +199,8 @@
             statusBox.classList.add('bg-red-50', 'border-red-100');
             statusText.classList.add('text-red-600');
         } else {
-            statusBox.classList.add('bg-emerald-50', 'border-emerald-100');
-            statusText.classList.add('text-emerald-700');
+            statusBox.classList.add('bg-sky-50', 'border-sky-100');
+            statusText.classList.add('text-blue-700');
         }
     }
 
@@ -276,8 +276,8 @@
 
             if (detection) {
                 stableFrames++;
-                faceOval.classList.remove('border-emerald-400');
-                faceOval.classList.add('border-emerald-500');
+                faceOval.classList.remove('border-sky-400');
+                faceOval.classList.add('border-blue-600');
                 markChecklist(true);
 
                 if (stableFrames >= REQUIRED_STABLE_FRAMES) {
@@ -290,8 +290,8 @@
                 // Wajah tidak/kepotong dari frame -> reset progres
                 stableFrames = 0;
                 faceReady = false;
-                faceOval.classList.remove('border-emerald-500');
-                faceOval.classList.add('border-emerald-400');
+                faceOval.classList.remove('border-blue-600');
+                faceOval.classList.add('border-sky-400');
                 markChecklist(false);
                 if (!locationFailed) {
                     setStatus('Arahkan wajah ke kamera...');

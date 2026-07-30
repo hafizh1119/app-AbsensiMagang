@@ -29,7 +29,7 @@
             <div class="flex items-center justify-between mb-5">
                 <div>
                     <div class="flex items-center gap-1.5 text-xs text-gray-400 mb-1.5">
-                        <a href="{{ route('admin.lokasi-kantor') }}" class="hover:text-emerald-600">Lokasi Kantor</a>
+                        <a href="{{ route('admin.lokasi-kantor') }}" class="hover:text-sky-600">Lokasi Kantor</a>
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
                         </svg>
@@ -69,7 +69,7 @@
                                         <line x1="21" y1="21" x2="16.65" y2="16.65"/>
                                     </svg>
                                     <input type="text" id="mapSearchInput" autocomplete="off" placeholder="Cari alamat atau tempat..."
-                                           class="w-full bg-white border border-gray-200 rounded-lg pl-9 pr-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                           class="w-full bg-white border border-gray-200 rounded-lg pl-9 pr-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
                                     <div id="mapSearchResults"
                                          class="hidden absolute left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-56 overflow-y-auto text-sm"></div>
                                 </div>
@@ -97,10 +97,10 @@
                                         <label class="text-xs font-medium text-gray-500">Radius (meter)</label>
                                         <input type="range" id="radiusRange" min="20" max="1000" step="10"
                                                value="{{ old('radius', $default['radius']) }}"
-                                               class="w-full mt-2 accent-emerald-600">
+                                               class="w-full mt-2 accent-sky-500">
                                         <div class="flex items-center justify-between text-xs text-gray-500 mt-1">
                                             <span>20 m</span>
-                                            <span id="radiusValueLabel" class="font-semibold text-emerald-600"></span>
+                                            <span id="radiusValueLabel" class="font-semibold text-sky-600"></span>
                                             <span>1000 m</span>
                                         </div>
                                     </div>
@@ -125,7 +125,7 @@
                             <div>
                                 <label class="block text-xs text-gray-400 mb-1.5">Nama Lokasi <span class="text-rose-500">*</span></label>
                                 <input type="text" name="nama" value="{{ old('nama') }}" placeholder="Contoh: Kantor Cabang Bidang UMKM"
-                                       class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 @error('nama') border-rose-400 @enderror">
+                                       class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('nama') border-rose-400 @enderror">
                                 @error('nama')
                                     <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
                                 @enderror
@@ -135,7 +135,7 @@
                             <div>
                                 <label class="block text-xs text-gray-400 mb-1.5">Alamat</label>
                                 <textarea name="alamat" id="detailAlamat" rows="2" placeholder="Otomatis terisi saat memilih titik di peta"
-                                          class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none @error('alamat') border-rose-400 @enderror">{{ old('alamat') }}</textarea>
+                                          class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-sky-500 resize-none @error('alamat') border-rose-400 @enderror">{{ old('alamat') }}</textarea>
                                 @error('alamat')
                                     <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
                                 @enderror
@@ -183,7 +183,7 @@
                         Batal
                     </a>
                     <button type="submit"
-                            class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-5 py-2.5 rounded-lg shadow-sm">
+                            class="flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold px-5 py-2.5 rounded-lg shadow-sm transition">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                         </svg>
@@ -259,10 +259,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // ---- Lingkaran radius ----
     var circle = L.circle([initialLat, initialLng], {
         radius: initialRadius,
-        color: '#059669',
+        color: '#0ea5e9',
         weight: 2,
         dashArray: '6 6',
-        fillColor: '#059669',
+        fillColor: '#0ea5e9',
         fillOpacity: 0.12
     }).addTo(map);
 

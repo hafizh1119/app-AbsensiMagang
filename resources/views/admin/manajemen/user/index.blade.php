@@ -18,7 +18,7 @@
         <main class="p-6">
 
             @if (session('success'))
-                <div class="mb-4 flex items-center gap-3 bg-emerald-50 border border-emerald-100 text-emerald-600 text-sm rounded-xl px-4 py-3">
+                <div class="mb-4 flex items-center gap-3 bg-sky-50 border border-sky-100 text-sky-600 text-sm rounded-xl px-4 py-3">
                     {{ session('success') }}
                 </div>
             @endif
@@ -41,8 +41,8 @@
                         <p class="text-2xl font-bold text-gray-800">{{ $totalUser }}</p>
                         <p class="text-xs text-gray-400 mt-1">Orang</p>
                     </div>
-                    <div class="w-11 h-11 rounded-xl bg-emerald-50 flex items-center justify-center">
-                        <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <div class="w-11 h-11 rounded-xl bg-sky-50 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-sky-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-8a4 4 0 11-8 0 4 4 0 018 0zm6 3a4 4 0 11-8 0 4 4 0 018 0z"/>
                         </svg>
                     </div>
@@ -77,7 +77,7 @@
                             <div class="relative">
                                 <input type="text" name="q" value="{{ request('q') }}"
                                        placeholder="Cari nama, NIP, atau email..."
-                                       class="w-64 border border-gray-200 rounded-lg pl-9 pr-3 py-2 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                       class="w-64 border border-gray-200 rounded-lg pl-9 pr-3 py-2 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-sky-500">
                                 <svg class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                     <circle cx="11" cy="11" r="7"/>
                                     <path stroke-linecap="round" d="M21 21l-4.35-4.35"/>
@@ -90,7 +90,7 @@
                             <label class="block text-xs text-gray-400 mb-1.5">Pilih Unit / Divisi</label>
                             <div class="relative">
                                 <select name="unit_id"
-                                        class="appearance-none w-48 border border-gray-200 rounded-lg pl-3 pr-8 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                        class="appearance-none w-48 border border-gray-200 rounded-lg pl-3 pr-8 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-sky-500">
                                     <option value="">Semua Unit</option>
                                     @foreach ($units as $unit)
                                         <option value="{{ $unit->id }}" {{ request('unit_id') == $unit->id ? 'selected' : '' }}>
@@ -105,7 +105,7 @@
                         </div>
 
                         {{-- Filter --}}
-                        <button type="submit" class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition duration-150 shadow-sm">
+                        <button type="submit" class="flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition duration-150 shadow-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 4h18l-7 9v6l-4 2v-8L3 4z"/>
                             </svg>
@@ -151,7 +151,7 @@
                                         @php
                                             $roleColors = [
                                                 'admin_unit' => 'bg-violet-50 text-violet-600',
-                                                'pegawai'    => 'bg-emerald-50 text-emerald-600',
+                                                'pegawai'    => 'bg-sky-50 text-sky-600',
                                             ];
                                             $roleColor = $roleColors[$user->role] ?? 'bg-gray-100 text-gray-600';
                                         @endphp
@@ -163,7 +163,7 @@
                                         <div class="flex items-center justify-center gap-1.5">
                                             <a href="{{ route('admin.manajemen.user.edit', $user->id) }}"
                                                title="Edit Role"
-                                               class="w-7 h-7 flex items-center justify-center rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-600 transition">
+                                               class="w-7 h-7 flex items-center justify-center rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-600 transition">
                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
                                                 </svg>

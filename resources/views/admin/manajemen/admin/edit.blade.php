@@ -21,7 +21,7 @@
             <div class="flex items-center justify-between mb-5">
                 <div>
                     <div class="flex items-center gap-1.5 text-xs text-gray-400 mb-1.5">
-                        <a href="{{ route('admin.manajemen.admin') }}" class="hover:text-emerald-600">Manajemen Admin</a>
+                        <a href="{{ route('admin.manajemen.admin') }}" class="hover:text-sky-600">Manajemen Admin</a>
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
                         </svg>
@@ -51,7 +51,7 @@
                     <div class="md:col-span-2">
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Admin <span class="text-rose-500">*</span></label>
                         <input type="text" name="nama" value="{{ old('nama', $admin->nama) }}" placeholder="Masukkan nama lengkap admin"
-                               class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 @error('nama') border-rose-400 @enderror">
+                               class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('nama') border-rose-400 @enderror">
                         @error('nama')
                             <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
                         @enderror
@@ -61,7 +61,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">NIP <span class="text-rose-500">*</span></label>
                         <input type="text" name="nip" value="{{ old('nip', $admin->nip) }}" placeholder="Masukkan NIP"
-                               class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 @error('nip') border-rose-400 @enderror">
+                               class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('nip') border-rose-400 @enderror">
                         @error('nip')
                             <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
                         @enderror
@@ -71,7 +71,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">Jabatan <span class="text-rose-500">*</span></label>
                         <input type="text" name="jabatan" value="{{ old('jabatan', $admin->jabatan) }}" placeholder="Masukkan jabatan"
-                               class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 @error('jabatan') border-rose-400 @enderror">
+                               class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('jabatan') border-rose-400 @enderror">
                         @error('jabatan')
                             <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
                         @enderror
@@ -81,7 +81,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">Email <span class="text-rose-500">*</span></label>
                         <input type="email" name="email" value="{{ old('email', $admin->email) }}" placeholder="nama@kopjateng.go.id"
-                               class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 @error('email') border-rose-400 @enderror">
+                               class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('email') border-rose-400 @enderror">
                         @error('email')
                             <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
                         @enderror
@@ -91,7 +91,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">Password Baru</label>
                         <input type="password" name="password" placeholder="Kosongkan jika tidak diubah"
-                               class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 @error('password') border-rose-400 @enderror">
+                               class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('password') border-rose-400 @enderror">
                         <p class="text-xs text-gray-400 mt-1">Biarkan kosong jika tidak ingin mengganti password.</p>
                         @error('password')
                             <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
@@ -102,7 +102,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">Konfirmasi Password Baru</label>
                         <input type="password" name="password_confirmation" placeholder="Ulangi password baru"
-                               class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                               class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-sky-500">
                     </div>
 
                 </div>
@@ -114,7 +114,7 @@
                         Batal
                     </a>
                     <button type="submit"
-                            class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition duration-150 shadow-sm">
+                            class="flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition duration-150 shadow-sm">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                         </svg>

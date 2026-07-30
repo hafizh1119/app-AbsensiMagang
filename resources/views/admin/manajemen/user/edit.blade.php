@@ -65,7 +65,7 @@
                             <label class="block text-xs font-medium text-gray-500 mb-1.5">Role</label>
                             <div class="relative max-w-sm">
                                 <select name="role"
-                                        class="appearance-none w-full bg-white border border-gray-200 rounded-lg pl-3 pr-8 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 @error('role') border-rose-400 @enderror">
+                                        class="appearance-none w-full bg-white border border-gray-200 rounded-lg pl-3 pr-8 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('role') border-rose-400 @enderror">
                                     @foreach ($roles as $role)
                                         <option value="{{ $role }}" {{ old('role', $user->role) === $role ? 'selected' : '' }}>
                                             {{ ucfirst(str_replace('_', ' ', $role)) }}
@@ -88,7 +88,7 @@
                             Batal
                         </a>
                         <button type="submit"
-                                class="text-sm font-semibold px-5 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition">
+                                class="text-sm font-semibold px-5 py-2.5 rounded-lg bg-sky-500 hover:bg-sky-600 text-white shadow-sm transition">
                             Simpan Role
                         </button>
                     </div>

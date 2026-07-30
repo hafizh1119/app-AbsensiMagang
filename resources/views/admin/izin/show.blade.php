@@ -34,7 +34,7 @@
             @endphp
 
             @if(session('success'))
-                <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm rounded-xl px-4 py-3 mb-4">
+                <div class="bg-sky-50 border border-sky-200 text-sky-700 text-sm rounded-xl px-4 py-3 mb-4">
                     {{ session('success') }}
                 </div>
             @endif
@@ -53,8 +53,8 @@
                 {{-- Header --}}
                 <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100">
                     <div class="flex items-center gap-3">
-                        <div class="shrink-0 w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <div class="shrink-0 w-10 h-10 rounded-lg bg-sky-50 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-sky-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                                 <path d="M14 2v6h6"></path>
                             </svg>
@@ -111,7 +111,7 @@
                         <span class="text-sm text-right">
                             @if($pengajuan->lampiran)
                                 <a href="{{ asset($pengajuan->lampiran) }}" target="_blank"
-                                   class="inline-flex items-center gap-1.5 text-emerald-600 hover:underline">
+                                   class="inline-flex items-center gap-1.5 text-sky-600 hover:underline">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                                         <path d="M14 2v6h6"></path>
@@ -161,7 +161,7 @@
                         <div class="max-w-xs mb-4">
                             <label class="block text-xs text-gray-400 mb-1.5">Tanggal Persetujuan</label>
                             <input type="date" id="tanggal_persetujuan_input" value="{{ now()->format('Y-m-d') }}"
-                                   class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                   class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-sky-500">
                             <p class="text-xs text-gray-400 mt-1.5">Isi sesuai tanggal keputusan yang sebenarnya jika berbeda dari hari ini.</p>
                         </div>
 

@@ -18,7 +18,7 @@
 
             {{-- Flash message --}}
             @if (session('success'))
-                <div class="mb-4 flex items-center gap-2 bg-emerald-50 text-emerald-700 text-sm font-medium px-4 py-3 rounded-xl border border-emerald-100">
+                <div class="mb-4 flex items-center gap-2 bg-sky-50 text-sky-700 text-sm font-medium px-4 py-3 rounded-xl border border-sky-100">
                     {{ session('success') }}
                 </div>
             @endif
@@ -35,7 +35,7 @@
                     <p class="text-sm text-gray-400 mt-1">Kelola data jenis izin yang tersedia</p>
                 </div>
                 <button type="button" @click="createOpen = true"
-                   class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow-sm">
+                   class="flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow-sm transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <line x1="12" y1="5" x2="12" y2="19"/>
                         <line x1="5" y1="12" x2="19" y2="12"/>
@@ -47,7 +47,7 @@
             {{-- Kartu Statistik --}}
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-5">
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-full flex items-center justify-center shrink-0 bg-emerald-50 text-emerald-600">
+                    <div class="w-12 h-12 rounded-full flex items-center justify-center shrink-0 bg-sky-50 text-sky-600">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                         </svg>
@@ -85,7 +85,7 @@
                                 <line x1="21" y1="21" x2="16.65" y2="16.65"/>
                             </svg>
                             <input type="text" placeholder="Cari nama jenis izin..."
-                                   class="w-full bg-white border border-gray-200 rounded-lg pl-9 pr-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                   class="w-full bg-white border border-gray-200 rounded-lg pl-9 pr-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500">
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
@@ -134,7 +134,7 @@
                                     </td>
                                     <td class="px-4 py-3 text-gray-500">
                                         @if ($row->wajib_absen)
-                                            <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full bg-emerald-50 text-emerald-600">Ya</span>
+                                            <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full bg-sky-50 text-sky-600">Ya</span>
                                         @else
                                             <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full bg-gray-100 text-gray-500">Tidak</span>
                                         @endif
@@ -144,7 +144,7 @@
 
                                             {{-- Tombol Edit --}}
                                             <button type="button" @click="editOpen = true"
-                                                    class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition">
+                                                    class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-600 text-white transition">
                                                 Edit
                                             </button>
 
@@ -173,25 +173,25 @@
                                                         <div>
                                                             <label class="block text-xs font-medium text-gray-500 mb-1.5">Nama Jenis Izin</label>
                                                             <input type="text" name="nama_izin" value="{{ $row->nama_izin }}" required
-                                                                   class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                                                   class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-sky-500">
                                                         </div>
 
                                                         <div>
                                                             <label class="block text-xs font-medium text-gray-500 mb-1.5">Deskripsi</label>
                                                             <textarea name="deskripsi" rows="2"
-                                                                      class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">{{ $row->deskripsi }}</textarea>
+                                                                      class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-sky-500">{{ $row->deskripsi }}</textarea>
                                                         </div>
 
                                                         <div>
                                                             <label class="block text-xs font-medium text-gray-500 mb-1.5">Kuota per Tahun (Hari)</label>
                                                             <input type="number" name="kuota" value="{{ $row->kuota }}" min="0" max="365" required
-                                                                   class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                                                   class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-sky-500">
                                                         </div>
 
                                                         <div>
                                                             <label class="block text-xs font-medium text-gray-500 mb-1.5">Kategori Absensi</label>
                                                             <select name="kategori" required
-                                                                    class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                                                    class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-sky-500">
                                                                 <option value="izin" @selected($row->kategori === 'izin')>Izin</option>
                                                                 <option value="sakit" @selected($row->kategori === 'sakit')>Sakit</option>
                                                                 <option value="cuti" @selected($row->kategori === 'cuti')>Cuti</option>
@@ -203,7 +203,7 @@
                                                         <div>
                                                             <label class="block text-xs font-medium text-gray-500 mb-1.5">Wajib Absen Fisik?</label>
                                                             <select name="wajib_absen" required
-                                                                    class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                                                    class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-sky-500">
                                                                 <option value="1" @selected($row->wajib_absen)>Ya, tetap wajib absen masuk/pulang</option>
                                                                 <option value="0" @selected(!$row->wajib_absen)>Tidak, langsung dianggap izin penuh hari</option>
                                                             </select>
@@ -212,7 +212,7 @@
                                                         <div>
                                                             <label class="block text-xs font-medium text-gray-500 mb-1.5">Status</label>
                                                             <select name="status" required
-                                                                    class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                                                    class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-sky-500">
                                                                 <option value="1" @selected($row->status)>Aktif</option>
                                                                 <option value="0" @selected(!$row->status)>Tidak Aktif</option>
                                                             </select>
@@ -224,7 +224,7 @@
                                                                 Batal
                                                             </button>
                                                             <button type="submit"
-                                                                    class="flex-1 text-sm font-semibold px-4 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition">
+                                                                    class="flex-1 text-sm font-semibold px-4 py-2.5 rounded-lg bg-sky-500 hover:bg-sky-600 text-white transition">
                                                                 Simpan
                                                             </button>
                                                         </div>
@@ -310,26 +310,26 @@
                     <div>
                         <label class="block text-xs font-medium text-gray-500 mb-1.5">Nama Jenis Izin</label>
                         <input type="text" name="nama_izin" placeholder="Contoh: Cuti Tahunan" required
-                               class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                               class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500">
                     </div>
 
                     <div>
                         <label class="block text-xs font-medium text-gray-500 mb-1.5">Deskripsi</label>
                         <textarea name="deskripsi" rows="2" placeholder="Deskripsi singkat jenis izin"
-                                  class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
+                                  class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500"></textarea>
                     </div>
 
                     <div>
                         <label class="block text-xs font-medium text-gray-500 mb-1.5">Kuota per Tahun (Hari)</label>
                         <input type="number" name="kuota" placeholder="Contoh: 12" min="0" max="365" required
-                               class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                               class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500">
                         <p class="text-xs text-gray-400 mt-1">Jatah hari yang didapat tiap pegawai per tahun untuk jenis izin ini.</p>
                     </div>
 
                     <div>
                         <label class="block text-xs font-medium text-gray-500 mb-1.5">Kategori Absensi</label>
                         <select name="kategori" required
-                                class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-sky-500">
                             <option value="izin">Izin</option>
                             <option value="sakit">Sakit</option>
                             <option value="cuti">Cuti</option>
@@ -341,7 +341,7 @@
                     <div>
                         <label class="block text-xs font-medium text-gray-500 mb-1.5">Wajib Absen Fisik?</label>
                         <select name="wajib_absen" required
-                                class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-sky-500">
                             <option value="1">Ya, tetap wajib absen masuk/pulang</option>
                             <option value="0" selected>Tidak, langsung dianggap izin penuh hari</option>
                         </select>
@@ -351,7 +351,7 @@
                     <div>
                         <label class="block text-xs font-medium text-gray-500 mb-1.5">Status</label>
                         <select name="status" required
-                                class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-sky-500">
                             <option value="1" selected>Aktif</option>
                             <option value="0">Tidak Aktif</option>
                         </select>
@@ -363,7 +363,7 @@
                             Batal
                         </button>
                         <button type="submit"
-                                class="flex-1 text-sm font-semibold px-4 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition">
+                                class="flex-1 text-sm font-semibold px-4 py-2.5 rounded-lg bg-sky-500 hover:bg-sky-600 text-white transition">
                             Simpan
                         </button>
                     </div>

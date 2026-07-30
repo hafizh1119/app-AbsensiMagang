@@ -18,7 +18,7 @@
         <main class="p-6">
 
             @if (session('success'))
-                <div class="mb-4 flex items-center gap-3 bg-emerald-50 border border-emerald-100 text-emerald-600 text-sm rounded-xl px-4 py-3">
+                <div class="mb-4 flex items-center gap-3 bg-sky-50 border border-sky-100 text-sky-600 text-sm rounded-xl px-4 py-3">
                     {{ session('success') }}
                 </div>
             @endif
@@ -30,7 +30,7 @@
             @endif
 
             {{-- Halaman ini KHUSUS mengelola akun dengan role 'admin' di database,
-                 yang ditampilkan ke pengguna sebagai "Super Admin".
+                 yang ditampilkan kepada pengguna sebagai "Super Admin".
                  Akun dengan role 'admin_unit' TIDAK ditampilkan/dikelola di sini. --}}
 
             {{-- Header Halaman --}}
@@ -40,7 +40,7 @@
                     <p class="text-sm text-gray-400 mt-0.5">Kelola akun Super Admin sistem absensi</p>
                 </div>
                 <a href="{{ route('admin.manajemen.admin.create') }}"
-                class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-4 py-2.5 rounded-lg transition duration-150 shadow-sm">
+                class="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold px-4 py-2.5 rounded-lg transition duration-150 shadow-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
                     </svg>
@@ -58,8 +58,8 @@
                         <p class="text-2xl font-bold text-gray-800">{{ $totalAdmin }}</p>
                         <p class="text-xs text-gray-400 mt-1">Akun</p>
                     </div>
-                    <div class="w-11 h-11 rounded-xl bg-emerald-50 flex items-center justify-center">
-                        <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <div class="w-11 h-11 rounded-xl bg-sky-50 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-sky-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 2l7 3v6c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V5l7-3z"/>
                         </svg>
                     </div>
@@ -108,7 +108,7 @@
                             <div class="relative">
                                 <input type="text" name="q" value="{{ request('q') }}"
                                        placeholder="Cari nama atau email..."
-                                       class="w-64 border border-gray-200 rounded-lg pl-9 pr-3 py-2 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                       class="w-64 border border-gray-200 rounded-lg pl-9 pr-3 py-2 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-sky-500">
                                 <svg class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                     <circle cx="11" cy="11" r="7"/>
                                     <path stroke-linecap="round" d="M21 21l-4.35-4.35"/>
@@ -120,7 +120,7 @@
                         <div>
                             <label class="block text-xs text-gray-400 mb-1.5">Status</label>
                             <div class="relative">
-                                <select name="status" class="appearance-none w-36 border border-gray-200 rounded-lg pl-3 pr-8 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                <select name="status" class="appearance-none w-36 border border-gray-200 rounded-lg pl-3 pr-8 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-sky-500">
                                     <option value="">Semua Status</option>
                                     <option value="aktif" {{ request('status') === 'aktif' ? 'selected' : '' }}>Aktif</option>
                                     <option value="nonaktif" {{ request('status') === 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
@@ -132,7 +132,7 @@
                         </div>
 
                         {{-- Filter --}}
-                        <button type="submit" class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition duration-150 shadow-sm">
+                        <button type="submit" class="flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition duration-150 shadow-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 4h18l-7 9v6l-4 2v-8L3 4z"/>
                             </svg>
@@ -179,7 +179,7 @@
                                     </td>
                                     <td class="px-3 py-2">
                                         <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full
-                                            {{ $admin->status === 'aktif' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-500' }}">
+                                            {{ $admin->status === 'aktif' ? 'bg-sky-50 text-sky-600' : 'bg-rose-50 text-rose-500' }}">
                                             {{ ucfirst($admin->status ?? '-') }}
                                         </span>
                                     </td>
@@ -187,7 +187,7 @@
                                         <div class="flex items-center justify-center gap-1.5">
                                             <a href="{{ route('admin.manajemen.admin.edit', $admin->id) }}"
                                             title="Edit"
-                                            class="w-7 h-7 flex items-center justify-center rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-600 transition">
+                                            class="w-7 h-7 flex items-center justify-center rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-600 transition">
                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
                                                 </svg>

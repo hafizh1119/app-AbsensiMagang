@@ -42,7 +42,7 @@
                         <p class="text-2xl font-bold text-gray-800">{{ $totalMenunggu }}</p>
                         <p class="text-xs text-gray-400">Pengajuan</p>
                     </div>
-                    <svg class="w-9 h-9 text-emerald-500 shrink-0" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">
+                    <svg class="w-9 h-9 text-sky-500 shrink-0" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 2h12M6 22h12"/>
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 2c0 5 4 6 6 8-2 2-6 3-6 8M18 2c0 5-4 6-6 8 2 2 6 3 6 8"/>
                     </svg>
@@ -142,7 +142,7 @@
                                             <form action="{{ route('admin.izin.approve', $row->id) }}" method="POST" class="inline">
                                                 @csrf
                                                 <button type="submit" title="Setujui"
-                                                        class="inline-flex items-center justify-center w-7 h-7 rounded-full text-emerald-500 hover:bg-emerald-50 transition">
+                                                        class="inline-flex items-center justify-center w-7 h-7 rounded-full text-sky-500 hover:bg-sky-50 transition">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M20 6 9 17l-5-5"/>
                                                     </svg>

@@ -13,7 +13,7 @@
 
         <div class="relative flex-1">
             <select name="bulan" onchange="this.form.submit()"
-                    class="w-full appearance-none bg-white border border-gray-200 rounded-xl pl-3 pr-9 py-2.5 text-sm font-medium text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    class="w-full appearance-none bg-white border border-gray-200 rounded-xl pl-3 pr-9 py-2.5 text-sm font-medium text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                 @php
                     $namaBulan = [
                         1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
@@ -32,7 +32,7 @@
 
         <div class="relative flex-1">
             <select name="tahun" onchange="this.form.submit()"
-                    class="w-full appearance-none bg-white border border-gray-200 rounded-xl pl-3 pr-9 py-2.5 text-sm font-medium text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    class="w-full appearance-none bg-white border border-gray-200 rounded-xl pl-3 pr-9 py-2.5 text-sm font-medium text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                 @foreach (range(now()->year, now()->year - 3) as $tahunOpsi)
                     <option value="{{ $tahunOpsi }}" {{ $tahun == $tahunOpsi ? 'selected' : '' }}>{{ $tahunOpsi }}</option>
                 @endforeach
@@ -43,7 +43,7 @@
         </div>
 
         <button type="button"
-                class="shrink-0 w-11 h-11 flex items-center justify-center bg-white border border-gray-200 rounded-xl shadow-sm hover:bg-gray-50">
+                class="shrink-0 w-11 h-11 flex items-center justify-center bg-white border border-gray-200 rounded-xl shadow-sm hover:bg-sky-50 transition-colors duration-200">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                 <rect x="3" y="4" width="18" height="18" rx="2"></rect>
                 <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -66,13 +66,13 @@
                     <div class="flex items-center gap-8">
                         <div>
                             <p class="text-xs text-gray-400 mb-0.5">Masuk</p>
-                            <p class="text-sm font-semibold {{ $item['masuk'] ? 'text-emerald-600' : 'text-gray-400' }}">
+                            <p class="text-sm font-semibold {{ $item['masuk'] ? 'text-blue-600' : 'text-gray-400' }}">
                                 {{ $item['masuk'] ?? '-' }}
                             </p>
                         </div>
                         <div>
                             <p class="text-xs text-gray-400 mb-0.5">Pulang</p>
-                            <p class="text-sm font-semibold {{ $item['pulang'] ? 'text-emerald-600' : 'text-gray-400' }}">
+                            <p class="text-sm font-semibold {{ $item['pulang'] ? 'text-blue-600' : 'text-gray-400' }}">
                                 {{ $item['pulang'] ?? '-' }}
                             </p>
                         </div>
@@ -81,7 +81,7 @@
 
                 <div class="flex items-center gap-2 shrink-0">
                     @if ($item['status'] === 'hadir')
-                        <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 text-xs font-medium">Hadir</span>
+                        <span class="px-3 py-1 rounded-full bg-sky-50 text-blue-600 text-xs font-medium">Hadir</span>
                     @elseif ($item['status'] === 'terlambat')
                         <span class="px-3 py-1 rounded-full bg-amber-50 text-amber-600 text-xs font-medium">Terlambat</span>
                     @else

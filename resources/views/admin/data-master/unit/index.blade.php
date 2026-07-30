@@ -36,8 +36,8 @@
 
             @if (session('success'))
                 <div id="toastSuccess"
-                     class="fixed top-5 right-5 z-[9999] flex items-center gap-3 bg-white border border-emerald-100 shadow-lg rounded-xl px-4 py-3 pr-5">
-                    <span class="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 shrink-0">
+                     class="fixed top-5 right-5 z-[9999] flex items-center gap-3 bg-white border border-sky-100 shadow-lg rounded-xl px-4 py-3 pr-5">
+                    <span class="flex items-center justify-center w-8 h-8 rounded-full bg-sky-50 text-sky-600 shrink-0">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                         </svg>
@@ -78,7 +78,7 @@
                     <p class="text-sm text-gray-400 mt-1">Kelola data jenis unit atau divisi di lingkungan dinas</p>
                 </div>
                 <button type="button" @click="openCreate()"
-                        class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow-sm">
+                        class="flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow-sm transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <line x1="12" y1="5" x2="12" y2="19"/>
                         <line x1="5" y1="12" x2="19" y2="12"/>
@@ -93,7 +93,7 @@
                     <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex items-center gap-4">
                         <div class="w-12 h-12 rounded-full flex items-center justify-center shrink-0
                             {{ match($stat['color']) {
-                                'emerald' => 'bg-emerald-50 text-emerald-600',
+                                'emerald' => 'bg-sky-50 text-sky-600',
                                 'blue'    => 'bg-blue-50 text-blue-600',
                                 'amber'   => 'bg-amber-50 text-amber-600',
                                 'rose'    => 'bg-rose-50 text-rose-500',
@@ -137,7 +137,7 @@
                                 <line x1="21" y1="21" x2="16.65" y2="16.65"/>
                             </svg>
                             <input type="text" placeholder="Cari nama unit atau kode..."
-                                   class="w-full bg-white border border-gray-200 rounded-lg pl-9 pr-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                   class="w-full bg-white border border-gray-200 rounded-lg pl-9 pr-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500">
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
@@ -173,7 +173,7 @@
                                         <div class="flex items-center justify-center gap-2">
                                             <button type="button"
                                                     @click="openEdit(@js($row))"
-                                                    class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition">
+                                                    class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-600 text-white transition">
                                                 Edit
                                             </button>
 
@@ -243,7 +243,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
                             </svg>
                         </button>
-                        <button type="button" class="w-8 h-8 flex items-center justify-center rounded-lg bg-emerald-600 text-white text-sm font-semibold">1</button>
+                        <button type="button" class="w-8 h-8 flex items-center justify-center rounded-lg bg-sky-500 text-white text-sm font-semibold">1</button>
                         <button type="button" class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100" disabled>
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
@@ -276,7 +276,7 @@
                         <div>
                             <label class="block text-xs text-gray-400 mb-1.5">Nama Unit <span class="text-rose-500">*</span></label>
                             <input type="text" name="nama_unit" x-model="form.nama_unit" placeholder="Contoh: Struktural"
-                                   class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 @error('nama_unit') border-rose-400 @enderror">
+                                   class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('nama_unit') border-rose-400 @enderror">
                             @error('nama_unit')
                                 <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
                             @enderror
@@ -285,7 +285,7 @@
                         <div>
                             <label class="block text-xs text-gray-400 mb-1.5">Deskripsi</label>
                             <textarea name="deskripsi" x-model="form.deskripsi" rows="3" placeholder="Deskripsi singkat jenis unit ini"
-                                      class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none @error('deskripsi') border-rose-400 @enderror"></textarea>
+                                      class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-sky-500 resize-none @error('deskripsi') border-rose-400 @enderror"></textarea>
                             @error('deskripsi')
                                 <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
                             @enderror
@@ -297,7 +297,7 @@
                                 Batal
                             </button>
                             <button type="submit"
-                                    class="flex-1 text-sm font-semibold px-4 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition">
+                                    class="flex-1 text-sm font-semibold px-4 py-2.5 rounded-lg bg-sky-500 hover:bg-sky-600 text-white transition">
                                 Simpan
                             </button>
                         </div>
@@ -329,7 +329,7 @@
                         <div>
                             <label class="block text-xs text-gray-400 mb-1.5">Nama Unit <span class="text-rose-500">*</span></label>
                             <input type="text" name="nama_unit" x-model="form.nama_unit" placeholder="Contoh: Struktural"
-                                   class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 @error('nama_unit') border-rose-400 @enderror">
+                                   class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('nama_unit') border-rose-400 @enderror">
                             @error('nama_unit')
                                 <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
                             @enderror
@@ -338,7 +338,7 @@
                         <div>
                             <label class="block text-xs text-gray-400 mb-1.5">Deskripsi</label>
                             <textarea name="deskripsi" x-model="form.deskripsi" rows="3" placeholder="Deskripsi singkat jenis unit ini"
-                                      class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none @error('deskripsi') border-rose-400 @enderror"></textarea>
+                                      class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-sky-500 resize-none @error('deskripsi') border-rose-400 @enderror"></textarea>
                             @error('deskripsi')
                                 <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
                             @enderror
@@ -350,7 +350,7 @@
                                 Batal
                             </button>
                             <button type="submit"
-                                    class="flex-1 text-sm font-semibold px-4 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition">
+                                    class="flex-1 text-sm font-semibold px-4 py-2.5 rounded-lg bg-sky-500 hover:bg-sky-600 text-white transition">
                                 Simpan Perubahan
                             </button>
                         </div>

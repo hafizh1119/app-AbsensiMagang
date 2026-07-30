@@ -51,11 +51,11 @@
                 {{-- Total Pegawai --}}
                 <div class="stat-card fade-up" style="--d:60ms">
                     <div class="flex items-center gap-3">
-                        <div class="w-11 h-11 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-500 text-xl">👥</div>
+                        <div class="w-11 h-11 rounded-xl bg-sky-50 flex items-center justify-center text-sky-500 text-xl">👥</div>
                         <span class="text-sm text-gray-500">Total Pegawai</span>
                     </div>
                     <div class="mt-3 text-3xl font-bold text-gray-900 counter" data-value="{{ $totalPegawai ?? 0 }}">0</div>
-                    <div class="mt-2 text-xs text-emerald-500 font-medium flex items-center gap-1">
+                    <div class="mt-2 text-xs text-sky-500 font-medium flex items-center gap-1">
                         <span>↑</span> {{ $pegawaiBaruBulanIni ?? 0 }} pegawai bulan ini
                     </div>
                 </div>
@@ -63,15 +63,15 @@
                 {{-- Hadir Hari Ini --}}
                 <div class="stat-card fade-up" style="--d:120ms">
                     <div class="flex items-center gap-3">
-                        <div class="w-11 h-11 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-500 text-xl">📅</div>
+                        <div class="w-11 h-11 rounded-xl bg-sky-50 flex items-center justify-center text-sky-500 text-xl">📅</div>
                         <span class="text-sm text-gray-500">Hadir Hari Ini</span>
                     </div>
                     <div class="mt-3 text-3xl font-bold text-gray-900 counter" data-value="{{ $hadirHariIni ?? 0 }}">0</div>
                     <div class="mt-2">
-                        <div class="w-full h-1.5 bg-emerald-100 rounded-full overflow-hidden">
-                            <div class="h-full bg-emerald-500 rounded-full progress-bar" data-width="{{ $persenHadir ?? 0 }}"></div>
+                        <div class="w-full h-1.5 bg-sky-100 rounded-full overflow-hidden">
+                            <div class="h-full bg-sky-500 rounded-full progress-bar" data-width="{{ $persenHadir ?? 0 }}"></div>
                         </div>
-                        <span class="text-xs text-emerald-500 font-medium">{{ $persenHadir ?? 0 }}% dari total pegawai</span>
+                        <span class="text-xs text-sky-500 font-medium">{{ $persenHadir ?? 0 }}% dari total pegawai</span>
                     </div>
                 </div>
 
@@ -88,11 +88,11 @@
                 {{-- Izin / Sakit Hari Ini --}}
                 <div class="stat-card fade-up" style="--d:240ms">
                     <div class="flex items-center gap-3">
-                        <div class="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center text-blue-500 text-xl">🧑‍⚕️</div>
+                        <div class="w-11 h-11 rounded-xl bg-sky-50 flex items-center justify-center text-sky-500 text-xl">🧑‍⚕️</div>
                         <span class="text-sm text-gray-500">Izin / Sakit Hari Ini</span>
                     </div>
                     <div class="mt-3 text-3xl font-bold text-gray-900 counter" data-value="{{ $izinSakitHariIni ?? 0 }}">0</div>
-                    <div class="mt-2 text-xs text-blue-500 font-medium">{{ $persenIzinSakit ?? 0 }}% dari total pegawai</div>
+                    <div class="mt-2 text-xs text-sky-500 font-medium">{{ $persenIzinSakit ?? 0 }}% dari total pegawai</div>
                 </div>
             </div>
 
@@ -115,13 +115,13 @@
                                 <button type="button"
                                         @click="mode = 'minggu'; open = false; window.switchKehadiranChart('minggu')"
                                         class="w-full text-left px-3 py-2 text-sm hover:bg-gray-50"
-                                        :class="mode === 'minggu' ? 'text-emerald-600 font-medium' : 'text-gray-600'">
+                                        :class="mode === 'minggu' ? 'text-sky-600 font-medium' : 'text-gray-600'">
                                     1 Minggu
                                 </button>
                                 <button type="button"
                                         @click="mode = 'bulan'; open = false; window.switchKehadiranChart('bulan')"
                                         class="w-full text-left px-3 py-2 text-sm hover:bg-gray-50"
-                                        :class="mode === 'bulan' ? 'text-emerald-600 font-medium' : 'text-gray-600'">
+                                        :class="mode === 'bulan' ? 'text-sky-600 font-medium' : 'text-gray-600'">
                                     1 Bulan
                                 </button>
                             </div>
@@ -148,7 +148,7 @@
                     {{-- Legend --}}
                     <div class="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-gray-100">
                         <div class="flex items-center gap-2">
-                            <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+                            <span class="w-3 h-3 rounded-full bg-sky-500 inline-block"></span>
                             <span class="text-xs text-gray-600">Hadir</span>
                             <span class="text-xs font-semibold text-gray-800 ml-auto">{{ $hadirHariIni ?? 0 }}</span>
                         </div>
@@ -158,7 +158,7 @@
                             <span class="text-xs font-semibold text-gray-800 ml-auto">{{ $izinHariIni ?? 0 }}</span>
                         </div>
                         <div class="flex items-center gap-2">
-                            <span class="w-3 h-3 rounded-full bg-blue-500 inline-block"></span>
+                            <span class="w-3 h-3 rounded-full bg-sky-400 inline-block"></span>
                             <span class="text-xs text-gray-600">Sakit</span>
                             <span class="text-xs font-semibold text-gray-800 ml-auto">{{ $sakitHariIni ?? 0 }}</span>
                         </div>
@@ -204,7 +204,7 @@
                                         @php
                                             $badge = match($row->status) {
                                                 'terlambat' => 'bg-amber-50 text-amber-500',
-                                                'hadir', 'tepat_waktu' => 'bg-emerald-50 text-emerald-500',
+                                                'hadir', 'tepat_waktu' => 'bg-sky-50 text-sky-500',
                                                 default => 'bg-gray-50 text-gray-500',
                                             };
                                             $label = match($row->status) {
@@ -235,7 +235,7 @@
                 <div class="stat-card fade-up h-full flex flex-col" style="--d:480ms">
                     <h2 class="font-semibold text-gray-900 mb-4">Jam Kerja Hari Ini</h2>
                     <div class="flex justify-center mb-4">
-                        <div class="w-14 h-14 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500 text-2xl">🕒</div>
+                        <div class="w-14 h-14 rounded-full bg-sky-50 flex items-center justify-center text-sky-500 text-2xl">🕒</div>
                     </div>
                     <ul class="space-y-3 text-sm flex-1">
                         <li class="flex items-center justify-between pb-2 border-b border-gray-50">
@@ -244,7 +244,7 @@
                         </li>
                         <li class="flex items-center justify-between pb-2 border-b border-gray-50">
                             <span class="text-gray-500">Jam Masuk</span>
-                            <span class="font-semibold text-emerald-600">
+                            <span class="font-semibold text-sky-600">
                                 {{ $jamKerja ? \Carbon\Carbon::parse($jamKerja->jam_masuk)->format('H:i') : '07:30' }}
                             </span>
                         </li>
@@ -261,7 +261,7 @@
                     </ul>
                     <div class="mt-4 pt-3 border-t border-gray-100">
                         <p class="text-xs text-gray-400 flex items-center gap-1.5">
-                            <span class="text-emerald-500">●</span>
+                            <span class="text-sky-500">●</span>
                             @if($jamKerja)
                                 Jadwal berlaku untuk hari ini ({{ $jamKerja->hari ?? now()->translatedFormat('l') }})
                             @else
@@ -270,7 +270,7 @@
                         </p>
                     </div>
                     <div class="mt-3">
-                        <a href="{{ $safeRoute('admin.data-master.jam-kerja') }}" class="text-xs text-emerald-600 font-medium hover:underline flex items-center gap-1">
+                        <a href="{{ $safeRoute('admin.data-master.jam-kerja') }}" class="text-xs text-sky-600 font-medium hover:underline flex items-center gap-1">
                             Kelola Jam Kerja
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
@@ -296,19 +296,19 @@
                         <h3 class="font-semibold text-gray-900 mb-3">Menu Cepat</h3>
                         <div class="grid grid-cols-2 gap-3 flex-1">
                             <a href="{{ $safeRoute('admin.data-master.pegawai.create') }}" class="quick-btn justify-center">
-                                <span class="text-emerald-500 text-lg">＋</span>
+                                <span class="text-sky-500 text-lg">＋</span>
                                 <span class="text-xs">Tambah Pegawai</span>
                             </a>
                             <a href="{{ $safeRoute('admin.data-master.jam-kerja') }}" class="quick-btn justify-center">
-                                <span class="text-emerald-500 text-lg">🕒</span>
+                                <span class="text-sky-500 text-lg">🕒</span>
                                 <span class="text-xs">Jam Kerja</span>
                             </a>
                             <a href="{{ $safeRoute('admin.lokasi-kantor.create') }}" class="quick-btn justify-center">
-                                <span class="text-emerald-500 text-lg">📍</span>
+                                <span class="text-sky-500 text-lg">📍</span>
                                 <span class="text-xs">Tambah Lokasi</span>
                             </a>
                             <a href="{{ $safeRoute('admin.data-master.jenis-izin') }}" class="quick-btn justify-center">
-                                <span class="text-emerald-500 text-lg">📄</span>
+                                <span class="text-sky-500 text-lg">📄</span>
                                 <span class="text-xs">Jenis Izin</span>
                             </a>
                         </div>
@@ -342,8 +342,8 @@
                                     <span class="text-gray-400 text-xs shrink-0">{{ $item->total }}x</span>
                                 </div>
                                 <span class="text-xs text-gray-400">{{ $item->user->unit->nama_unit ?? '-' }}</span>
-                                <div class="w-full h-1.5 bg-emerald-50 rounded-full mt-1 overflow-hidden">
-                                    <div class="h-full bg-emerald-500 rounded-full progress-bar" data-width="{{ round(($item->total / $maxRajin) * 100) }}"></div>
+                                <div class="w-full h-1.5 bg-sky-50 rounded-full mt-1 overflow-hidden">
+                                    <div class="h-full bg-sky-500 rounded-full progress-bar" data-width="{{ round(($item->total / $maxRajin) * 100) }}"></div>
                                 </div>
                             </div>
                         </li>
@@ -407,11 +407,11 @@
     .stat-card:hover { box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06); transform: translateY(-2px); }
 
     .pill-btn {
-        font-size: .75rem; font-weight: 600; color: #10b981;
-        background: #ecfdf5; padding: .4rem .85rem; border-radius: .65rem;
+        font-size: .75rem; font-weight: 600; color: #0ea5e9;
+        background: #f0f9ff; padding: .4rem .85rem; border-radius: .65rem;
         transition: background .2s ease;
     }
-    .pill-btn:hover { background: #d1fae5; }
+    .pill-btn:hover { background: #e0f2fe; }
 
     .dropdown-btn {
         font-size: .75rem; color: #64748b; border: 1px solid #e2e8f0;
@@ -426,7 +426,7 @@
         display: flex; flex-direction: column; gap: .35rem; align-items: flex-start;
         transition: all .2s ease;
     }
-    .quick-btn:hover { border-color: #a7f3d0; background: #f0fdf4; transform: translateY(-1px); }
+    .quick-btn:hover { border-color: #bae6fd; background: #f0f9ff; transform: translateY(-1px); }
     .quick-btn span { font-size: 1.1rem; }
 
     .progress-bar { width: 0; transition: width 1s cubic-bezier(.22,1,.36,1); }
@@ -483,14 +483,14 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
-    const emerald = '#10b981';
-    const colors  = ['#10b981', '#fbbf24', '#3b82f6', '#f87171'];
+    const sky = '#0ea5e9';
+    const colors  = ['#0ea5e9', '#fbbf24', '#38bdf8', '#f87171'];
 
-    // ---- Helper: gradient hijau untuk area line chart ----
+    // ---- Helper: gradient biru untuk area line chart ----
     function buildGradient(ctx) {
         const g = ctx.createLinearGradient(0, 0, 0, 220);
-        g.addColorStop(0, 'rgba(16,185,129,0.25)');
-        g.addColorStop(1, 'rgba(16,185,129,0)');
+        g.addColorStop(0, 'rgba(14,165,233,0.25)');
+        g.addColorStop(1, 'rgba(14,165,233,0)');
         return g;
     }
 
@@ -516,13 +516,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 labels: dataMinggu.labels,
                 datasets: [{
                     data: dataMinggu.data,
-                    borderColor: emerald,
+                    borderColor: sky,
                     backgroundColor: buildGradient(ctxBar),
                     fill: true,
                     tension: 0.4,
                     spanGaps: true,
                     pointBackgroundColor: '#fff',
-                    pointBorderColor: emerald,
+                    pointBorderColor: sky,
                     pointBorderWidth: 2,
                     pointRadius: 4,
                     pointHoverRadius: 6,
@@ -600,13 +600,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 labels: @json($bulananLabelsJs),
                 datasets: [{
                     data: @json($bulananDataJs),
-                    borderColor: emerald,
+                    borderColor: sky,
                     backgroundColor: buildGradient(ctxLine),
                     fill: true,
                     tension: 0.4,
                     spanGaps: true,
                     pointBackgroundColor: '#fff',
-                    pointBorderColor: emerald,
+                    pointBorderColor: sky,
                     pointBorderWidth: 2,
                     pointRadius: 4,
                     pointHoverRadius: 6,

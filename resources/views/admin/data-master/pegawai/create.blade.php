@@ -48,7 +48,7 @@
                             </div>
 
                             <div>
-                                <label class="cursor-pointer text-xs font-semibold text-emerald-600 hover:text-emerald-700 border border-emerald-200 hover:bg-emerald-50 px-3.5 py-2 rounded-lg transition inline-block">
+                                <label class="cursor-pointer text-xs font-semibold text-sky-600 hover:text-sky-700 border border-sky-200 hover:bg-sky-50 px-3.5 py-2 rounded-lg transition inline-block">
                                     Unggah Foto
                                     <input type="file" name="foto" accept="image/*" class="hidden"
                                            @change="preview = URL.createObjectURL($event.target.files[0])">
@@ -73,15 +73,15 @@
                             <div class="md:col-span-2">
                                 <label class="block text-xs font-medium text-gray-500 mb-1.5">Nama Lengkap</label>
                                 <input type="text" name="nama" value="{{ old('nama') }}" placeholder="Masukkan nama lengkap"
-                                       class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 @error('nama') border-rose-400 @enderror">
+                                       class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('nama') border-rose-400 @enderror">
                                 @error('nama') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
 
-                            {{-- NIP --}}
+                            {{-- No. Identitas --}}
                             <div>
-                                <label class="block text-xs font-medium text-gray-500 mb-1.5">NIP</label>
+                                <label class="block text-xs font-medium text-gray-500 mb-1.5">No. Peserta</label>
                                 <input type="text" name="nip" value="{{ old('nip') }}" placeholder="Nomor Induk Pegawai"
-                                       class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 @error('nip') border-rose-400 @enderror">
+                                       class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('nip') border-rose-400 @enderror">
                                 @error('nip') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
 
@@ -90,7 +90,7 @@
                                 <label class="block text-xs font-medium text-gray-500 mb-1.5">Unit / Divisi</label>
                                 <div class="relative">
                                     <select name="unit_id"
-                                            class="appearance-none w-full bg-white border border-gray-200 rounded-lg pl-3 pr-8 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 @error('unit_id') border-rose-400 @enderror">
+                                            class="appearance-none w-full bg-white border border-gray-200 rounded-lg pl-3 pr-8 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('unit_id') border-rose-400 @enderror">
                                         <option value="">Pilih Unit / Divisi</option>
                                         @foreach ($units ?? [] as $unit)
                                             <option value="{{ $unit->id }}" {{ old('unit_id') == $unit->id ? 'selected' : '' }}>
@@ -109,7 +109,7 @@
                             <div>
                                 <label class="block text-xs font-medium text-gray-500 mb-1.5">Jabatan</label>
                                 <input type="text" name="jabatan" value="{{ old('jabatan') }}" placeholder="Contoh: Staf Keuangan"
-                                       class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 @error('jabatan') border-rose-400 @enderror">
+                                       class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('jabatan') border-rose-400 @enderror">
                                 @error('jabatan') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
 
@@ -117,7 +117,7 @@
                             <div>
                                 <label class="block text-xs font-medium text-gray-500 mb-1.5">Email</label>
                                 <input type="email" name="email" value="{{ old('email') }}" placeholder="nama@instansi.go.id"
-                                       class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 @error('email') border-rose-400 @enderror">
+                                       class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('email') border-rose-400 @enderror">
                                 @error('email') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
 
@@ -126,7 +126,7 @@
                                 <label class="block text-xs font-medium text-gray-500 mb-1.5">Password</label>
                                 <div class="relative">
                                     <input :type="show ? 'text' : 'password'" name="password" placeholder="Minimal 8 karakter"
-                                           class="w-full bg-white border border-gray-200 rounded-lg px-3 pr-10 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 @error('password') border-rose-400 @enderror">
+                                           class="w-full bg-white border border-gray-200 rounded-lg px-3 pr-10 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('password') border-rose-400 @enderror">
                                     <button type="button" @click="show = !show"
                                             class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
                                         <svg x-show="!show" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -145,7 +145,7 @@
                             <div>
                                 <label class="block text-xs font-medium text-gray-500 mb-1.5">Tempat Lahir</label>
                                 <input type="text" name="tempat_lahir" value="{{ old('tempat_lahir') }}" placeholder="Contoh: Semarang"
-                                       class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 @error('tempat_lahir') border-rose-400 @enderror">
+                                       class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('tempat_lahir') border-rose-400 @enderror">
                                 @error('tempat_lahir') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
 
@@ -153,7 +153,7 @@
                             <div>
                                 <label class="block text-xs font-medium text-gray-500 mb-1.5">Tanggal Lahir</label>
                                 <input type="date" name="tanggal_lahir" value="{{ old('tanggal_lahir') }}"
-                                       class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 @error('tanggal_lahir') border-rose-400 @enderror">
+                                       class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('tanggal_lahir') border-rose-400 @enderror">
                                 @error('tanggal_lahir') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
 
@@ -161,7 +161,7 @@
                             <div>
                                 <label class="block text-xs font-medium text-gray-500 mb-1.5">Kewarganegaraan</label>
                                 <input type="text" name="kewarganegaraan" value="{{ old('kewarganegaraan', 'Indonesia') }}" placeholder="Contoh: Indonesia"
-                                       class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 @error('kewarganegaraan') border-rose-400 @enderror">
+                                       class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('kewarganegaraan') border-rose-400 @enderror">
                                 @error('kewarganegaraan') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
 
@@ -170,7 +170,7 @@
                                 <label class="block text-xs font-medium text-gray-500 mb-1.5">Status Kewarganegaraan</label>
                                 <div class="relative">
                                     <select name="status_kewarganegaraan"
-                                            class="appearance-none w-full bg-white border border-gray-200 rounded-lg pl-3 pr-8 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 @error('status_kewarganegaraan') border-rose-400 @enderror">
+                                            class="appearance-none w-full bg-white border border-gray-200 rounded-lg pl-3 pr-8 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('status_kewarganegaraan') border-rose-400 @enderror">
                                         <option value="">Pilih Status</option>
                                         <option value="WNI" {{ old('status_kewarganegaraan') === 'WNI' ? 'selected' : '' }}>WNI</option>
                                         <option value="WNA" {{ old('status_kewarganegaraan') === 'WNA' ? 'selected' : '' }}>WNA</option>
@@ -186,7 +186,7 @@
                             <div>
                                 <label class="block text-xs font-medium text-gray-500 mb-1.5">No. HP</label>
                                 <input type="tel" name="no_hp" value="{{ old('no_hp') }}" placeholder="Contoh: 08123456789"
-                                       class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 @error('no_hp') border-rose-400 @enderror">
+                                       class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('no_hp') border-rose-400 @enderror">
                                 @error('no_hp') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
 
@@ -194,7 +194,7 @@
                             <div class="md:col-span-2">
                                 <label class="block text-xs font-medium text-gray-500 mb-1.5">Alamat</label>
                                 <textarea name="alamat" rows="3" placeholder="Masukkan alamat lengkap"
-                                          class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none @error('alamat') border-rose-400 @enderror">{{ old('alamat') }}</textarea>
+                                          class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 resize-none @error('alamat') border-rose-400 @enderror">{{ old('alamat') }}</textarea>
                                 @error('alamat') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
 
@@ -210,7 +210,7 @@
                         Batal
                     </a>
                     <button type="submit"
-                            class="text-sm font-semibold px-5 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition">
+                            class="text-sm font-semibold px-5 py-2.5 rounded-lg bg-sky-500 hover:bg-sky-600 text-white shadow-sm transition">
                         Simpan Pegawai
                     </button>
                 </div>

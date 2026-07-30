@@ -60,7 +60,7 @@
                                 <path stroke-linecap="round" d="M21 21l-3.5-3.5"/>
                             </svg>
                             <input type="text" name="cari" value="{{ request('cari') }}" placeholder="Ketik nama pegawai..."
-                                   class="w-full border border-gray-200 rounded-lg pl-9 pr-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                   class="w-full border border-gray-200 rounded-lg pl-9 pr-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-sky-500">
                         </div>
                     </div>
 
@@ -68,7 +68,7 @@
                     <div class="w-full sm:w-48">
                         <label class="block text-xs text-gray-400 mb-1.5">Tanggal</label>
                         <input type="date" name="tanggal" value="{{ request('tanggal', $tanggalValue) }}"
-                               class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                               class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-sky-500">
                     </div>
 
                     {{-- Tombol Aksi --}}
@@ -78,7 +78,7 @@
                             Terapkan
                         </button>
                         <a href="{{ url()->current() }}"
-                           class="w-9 h-9 flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:text-emerald-600 hover:border-emerald-300 transition"
+                           class="w-9 h-9 flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:text-sky-600 hover:border-sky-300 transition"
                            title="Reset Filter">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
@@ -109,10 +109,10 @@
                     <div>
                         <p class="text-sm text-gray-400">Hadir</p>
                         <p class="text-2xl font-extrabold text-gray-800 mt-1">{{ $ringkasan['hadir'] }}</p>
-                        <p class="text-xs text-emerald-500 mt-0.5">{{ number_format($persenHadir, 2) }}%</p>
+                        <p class="text-xs text-sky-500 mt-0.5">{{ number_format($persenHadir, 2) }}%</p>
                     </div>
-                    <div class="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
-                        <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                    <div class="w-12 h-12 rounded-full bg-sky-50 flex items-center justify-center shrink-0">
+                        <svg class="w-6 h-6 text-sky-600" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                     </div>
@@ -195,7 +195,7 @@
                     <div class="flex items-center justify-center">
                         <div class="relative w-40 h-40 rounded-full"
                              style="background: conic-gradient(
-                                #10b981 0% {{ $c1 }}%,
+                                #0ea5e9 0% {{ $c1 }}%,
                                 #f59e0b {{ $c1 }}% {{ $c2 }}%,
                                 #a855f7 {{ $c2 }}% {{ $c3 }}%,
                                 #3b82f6 {{ $c3 }}% 100%
@@ -210,7 +210,7 @@
                     <div class="mt-6 space-y-3">
                         <div class="flex items-center justify-between text-sm">
                             <span class="flex items-center gap-2 text-gray-600">
-                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Hadir
+                                <span class="w-2.5 h-2.5 rounded-full bg-sky-500"></span> Hadir
                             </span>
                             <span class="text-gray-500">{{ $ringkasan['hadir'] }} ({{ number_format($persenHadir, 2) }}%)</span>
                         </div>

@@ -39,7 +39,7 @@
                     <p class="text-sm text-gray-400 mt-0.5">Perbarui jadwal jam kerja hari {{ $jamKerja->hari }}.</p>
                 </div>
                 <p class="text-xs text-gray-400">
-                    Dashboard / <a href="{{ route('admin.data-master.jam-kerja') }}" class="hover:text-emerald-600">Jam Kerja</a> /
+                    Dashboard / <a href="{{ route('admin.data-master.jam-kerja') }}" class="hover:text-sky-600">Jam Kerja</a> /
                     <span class="text-gray-600 font-medium">Edit</span>
                 </p>
             </div>
@@ -57,7 +57,7 @@
                         <label class="w-40 shrink-0 text-sm font-medium text-gray-700">Hari</label>
                         <div class="relative flex-1">
                             <select name="hari"
-                                    class="w-full appearance-none border border-gray-200 rounded-lg pl-3 pr-9 py-2.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                    class="w-full appearance-none border border-gray-200 rounded-lg pl-3 pr-9 py-2.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-sky-500">
                                 @foreach ($hariTersedia as $hari)
                                     <option value="{{ $hari }}" @selected(old('hari', $jamKerja->hari) === $hari)>{{ $hari }}</option>
                                 @endforeach
@@ -74,12 +74,12 @@
                         <div class="flex items-center gap-6">
                             <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
                                 <input type="radio" name="status" value="aktif" x-model="status"
-                                       class="w-4 h-4 text-emerald-600 focus:ring-emerald-500">
+                                       class="w-4 h-4 text-sky-600 focus:ring-sky-500">
                                 Aktif
                             </label>
                             <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
                                 <input type="radio" name="status" value="libur" x-model="status"
-                                       class="w-4 h-4 text-emerald-600 focus:ring-emerald-500">
+                                       class="w-4 h-4 text-sky-600 focus:ring-sky-500">
                                 Libur
                             </label>
                         </div>
@@ -95,7 +95,7 @@
                             <label class="w-40 shrink-0 text-sm font-medium text-gray-700">Jam Masuk</label>
                             <input type="time" name="jam_masuk"
                                    value="{{ old('jam_masuk', optional($jamKerja->jam_masuk)->format('H:i')) }}"
-                                   class="flex-1 border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                   class="flex-1 border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-sky-500">
                         </div>
 
                         {{-- Jam Pulang --}}
@@ -103,7 +103,7 @@
                             <label class="w-40 shrink-0 text-sm font-medium text-gray-700">Jam Pulang</label>
                             <input type="time" name="jam_pulang"
                                    value="{{ old('jam_pulang', optional($jamKerja->jam_pulang)->format('H:i')) }}"
-                                   class="flex-1 border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                   class="flex-1 border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-sky-500">
                         </div>
 
                         {{-- Toleransi Terlambat --}}
@@ -111,7 +111,7 @@
                             <label class="w-40 shrink-0 text-sm font-medium text-gray-700">Toleransi Terlambat<br>(Menit)</label>
                             <input type="number" name="toleransi_terlambat" min="0"
                                    value="{{ old('toleransi_terlambat', $jamKerja->toleransi_terlambat) }}"
-                                   class="flex-1 border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                   class="flex-1 border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-sky-500">
                         </div>
 
                         {{-- Info Box --}}
@@ -131,7 +131,7 @@
                             Batal
                         </a>
                         <button type="submit"
-                                class="text-sm font-semibold px-5 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition">
+                                class="text-sm font-semibold px-5 py-2.5 rounded-lg bg-sky-500 hover:bg-sky-600 text-white shadow-sm transition">
                             Simpan Perubahan
                         </button>
                     </div>

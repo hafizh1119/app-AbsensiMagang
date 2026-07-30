@@ -35,14 +35,14 @@
                             <label class="block text-xs text-gray-400 mb-1.5">Tanggal</label>
                             <div class="relative">
                                 <input type="date" name="tanggal" value="{{ request('tanggal') }}"
-                                       class="w-36 border border-gray-200 rounded-lg pl-3 pr-9 py-2 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                       class="w-36 border border-gray-200 rounded-lg pl-3 pr-9 py-2 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-sky-500">
                             </div>
                         </div>
 
                         {{-- Unit --}}
                         <div>
                             <label class="block text-xs text-gray-400 mb-1.5">Unit</label>
-                            <select name="unit" class="appearance-none w-36 border border-gray-200 rounded-lg pl-3 pr-8 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <select name="unit" class="appearance-none w-36 border border-gray-200 rounded-lg pl-3 pr-8 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-sky-500">
                                 <option>Semua Unit</option>
                                 @foreach($unitList as $unit)
                                     <option value="{{ $unit }}" @selected(request('unit') == $unit)>{{ $unit }}</option>
@@ -53,7 +53,7 @@
                         {{-- Jenis Izin --}}
                         <div>
                             <label class="block text-xs text-gray-400 mb-1.5">Jenis Izin</label>
-                            <select name="jenis" class="appearance-none w-36 border border-gray-200 rounded-lg pl-3 pr-8 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <select name="jenis" class="appearance-none w-36 border border-gray-200 rounded-lg pl-3 pr-8 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-sky-500">
                                 <option>Semua Jenis</option>
                                 @foreach($jenisIzinList as $jenis)
                                     <option value="{{ $jenis }}" @selected(request('jenis') == $jenis)>{{ $jenis }}</option>
@@ -64,7 +64,7 @@
                         {{-- Status --}}
                         <div>
                             <label class="block text-xs text-gray-400 mb-1.5">Status</label>
-                            <select name="status" class="appearance-none w-36 border border-gray-200 rounded-lg pl-3 pr-8 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <select name="status" class="appearance-none w-36 border border-gray-200 rounded-lg pl-3 pr-8 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-sky-500">
                                 <option value="">Semua Status</option>
                                 <option value="Disetujui" @selected(request('status') == 'Disetujui')>Disetujui</option>
                                 <option value="Menunggu" @selected(request('status') == 'Menunggu')>Menunggu</option>
@@ -73,7 +73,7 @@
                         </div>
 
                         {{-- Filter --}}
-                        <button type="submit" class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition duration-150 shadow-sm">
+                        <button type="submit" class="flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition duration-150 shadow-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 4h18l-7 9v6l-4 2v-8L3 4z"/>
                             </svg>
@@ -97,8 +97,8 @@
                         </button>
                         <div x-show="open" x-cloak x-transition
                              class="absolute right-0 mt-2 w-40 bg-white rounded-xl shadow-lg border border-gray-100 py-1.5 z-40">
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-600 hover:bg-emerald-50 hover:text-emerald-700">Export Excel</a>
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-600 hover:bg-emerald-50 hover:text-emerald-700">Export PDF</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-600 hover:bg-sky-50 hover:text-sky-700">Export Excel</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-600 hover:bg-sky-50 hover:text-sky-700">Export PDF</a>
                         </div>
                     </div>
                 </div>

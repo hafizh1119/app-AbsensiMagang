@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>@yield('title', 'Absensi Pegawai')</title>
+    <title>@yield('title', 'Absensi Peserta Magang')</title>
 
-    <link rel="icon" type="image/svg+xml" href="{{ asset('icon/logo.svg') }}">
-    <link rel="alternate icon" href="{{ asset('icon/logo.svg') }}">
+    {{-- Favicon menggunakan diskop.svg --}}
+    <link rel="icon" type="image/svg+xml" href="{{ asset('icon/diskop.svg') }}">
+    <link rel="shortcut icon" href="{{ asset('icon/diskop.svg') }}">
+    <link rel="apple-touch-icon" href="{{ asset('icon/diskop.svg') }}">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 

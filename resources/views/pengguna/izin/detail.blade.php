@@ -15,7 +15,7 @@
     {{-- Status Badge --}}
     <div class="mb-4">
         @if ($statusLower === 'disetujui')
-            <span class="inline-block px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-600 text-xs font-semibold">Disetujui</span>
+            <span class="inline-block px-3 py-1.5 rounded-full bg-sky-50 text-sky-600 text-xs font-semibold">Disetujui</span>
         @elseif ($statusLower === 'ditolak')
             <span class="inline-block px-3 py-1.5 rounded-full bg-red-50 text-red-500 text-xs font-semibold">Ditolak</span>
         @else
@@ -81,8 +81,8 @@
             <p class="text-sm font-semibold text-gray-800 mb-2">Lampiran</p>
             <div class="flex items-center justify-between bg-white rounded-2xl shadow-sm px-5 py-4">
                 <div class="flex items-center gap-3 min-w-0">
-                    <div class="shrink-0 w-9 h-9 rounded-lg bg-emerald-50 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <div class="shrink-0 w-9 h-9 rounded-lg bg-sky-50 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 text-sky-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                             <path d="M14 2v6h6"></path>
                         </svg>
@@ -93,7 +93,7 @@
                         </p>
                     </div>
                 </div>
-                <a href="{{ asset($pengajuan->lampiran) }}" target="_blank" class="shrink-0 text-emerald-600 hover:text-emerald-700">
+                <a href="{{ asset($pengajuan->lampiran) }}" target="_blank" class="shrink-0 text-sky-600 hover:text-sky-700">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M12 3v12"></path>
                         <path d="M7 10l5 5 5-5"></path>
@@ -126,12 +126,12 @@
             <span class="text-sm text-amber-700">Pengajuan Anda sedang dalam proses persetujuan.</span>
         </div>
     @elseif ($statusLower === 'disetujui')
-        <div class="flex items-center gap-2 bg-emerald-50 rounded-2xl px-4 py-3">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 text-emerald-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <div class="flex items-center gap-2 bg-sky-50 rounded-2xl px-4 py-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 text-sky-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="9"></circle>
                 <polyline points="8 12 11 15 16 9"></polyline>
             </svg>
-            <span class="text-sm text-emerald-700">Pengajuan Anda telah disetujui.</span>
+            <span class="text-sm text-sky-700">Pengajuan Anda telah disetujui.</span>
         </div>
     @else
         <div class="flex items-center gap-2 bg-red-50 rounded-2xl px-4 py-3">

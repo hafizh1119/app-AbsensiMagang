@@ -7,8 +7,8 @@
 <div class="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-6 text-center">
 
     {{-- Icon Sukses --}}
-    <div class="w-20 h-20 rounded-full bg-emerald-50 flex items-center justify-center mb-5">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <div class="w-20 h-20 rounded-full bg-sky-50 flex items-center justify-center mb-5">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-sky-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M20 6 9 17l-5-5"></path>
         </svg>
     </div>
@@ -25,11 +25,11 @@
     {{-- Tombol Aksi --}}
     <div class="w-full max-w-sm space-y-3">
         <a href="{{ route('pengguna.izin.detail', $pengajuan->id) }}"
-           class="block w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-2xl py-3.5 shadow-sm transition">
+           class="block w-full text-center bg-sky-500 hover:bg-sky-600 text-white font-semibold rounded-2xl py-3.5 shadow-sm transition">
             Lihat Detail
         </a>
         <a href="{{ route('pengguna.home') }}"
-           class="block w-full text-center border-2 border-emerald-600 text-emerald-600 font-semibold rounded-2xl py-3.5">
+           class="block w-full text-center border-2 border-sky-500 text-sky-500 font-semibold rounded-2xl py-3.5 hover:bg-sky-50 transition">
             Kembali ke Beranda
         </a>
     </div>

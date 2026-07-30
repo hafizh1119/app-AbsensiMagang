@@ -9,8 +9,8 @@
 
                 {{-- Dashboard --}}
                 <a href="{{ url('/pengguna/home') }}"
-                   class="flex flex-col items-center justify-center text-xs
-                   {{ request()->is('pengguna/home') ? 'text-emerald-600' : 'text-gray-500' }}">
+                   class="flex flex-col items-center justify-center text-xs transition-colors duration-200
+                   {{ request()->is('pengguna/home') ? 'text-blue-600' : 'text-gray-500 hover:text-sky-500' }}">
 
                     <svg class="w-6 h-6 mb-1" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/>
@@ -22,8 +22,8 @@
 
                 {{-- Jadwal --}}
                 <a href="{{ url('/pengguna/jadwal') }}"
-                   class="flex flex-col items-center justify-center text-xs
-                   {{ request()->is('pengguna/jadwal') ? 'text-emerald-600' : 'text-gray-500' }}">
+                   class="flex flex-col items-center justify-center text-xs transition-colors duration-200
+                   {{ request()->is('pengguna/jadwal') ? 'text-blue-600' : 'text-gray-500 hover:text-sky-500' }}">
 
                     <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <rect x="3" y="4" width="18" height="18" rx="2"/>
@@ -39,8 +39,8 @@
 
                 {{-- Izin --}}
                 <a href="{{ route('pengguna.izin.index') }}"
-                class="flex flex-col items-center justify-center text-xs
-                {{ request()->routeIs('pengguna.izin*') ? 'text-emerald-600' : 'text-gray-500' }}">
+                class="flex flex-col items-center justify-center text-xs transition-colors duration-200
+                {{ request()->routeIs('pengguna.izin*') ? 'text-blue-600' : 'text-gray-500 hover:text-sky-500' }}">
 
                     <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V9l-6-6H9z"/>
@@ -53,8 +53,8 @@
 
                 {{-- Profil --}}
                 <a href="{{ route('pengguna.profil') }}"
-                   class="flex flex-col items-center justify-center text-xs
-                   {{ request()->is('pengguna/profil') ? 'text-emerald-600' : 'text-gray-500' }}">
+                   class="flex flex-col items-center justify-center text-xs transition-colors duration-200
+                   {{ request()->is('pengguna/profil') ? 'text-blue-600' : 'text-gray-500 hover:text-sky-500' }}">
 
                     <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -73,7 +73,7 @@
         <a href="{{ route('pengguna.absensi') }}"
            class="absolute left-1/2 -translate-x-1/2 -top-8">
 
-            <div class="w-18 h-18 rounded-full bg-emerald-600 shadow-xl border-[6px] border-white flex items-center justify-center hover:scale-105 transition">
+            <div class="w-18 h-18 rounded-full bg-gradient-to-br from-sky-400 to-blue-600 shadow-xl shadow-blue-500/30 border-[6px] border-white flex items-center justify-center hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/40 transition-all duration-200">
 
                 <svg class="w-8 h-8 text-white"
                      fill="none"
@@ -93,7 +93,7 @@
 
             </div>
 
-            <p class="text-center text-[11px] font-semibold text-emerald-700 mt-1">
+            <p class="text-center text-[11px] font-semibold text-blue-600 mt-1">
                 Absensi
             </p>
 

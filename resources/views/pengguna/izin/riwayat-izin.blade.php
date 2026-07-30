@@ -18,7 +18,7 @@
 
             @foreach ($tabs as $key => $label)
                 <a href="{{ route('pengguna.izin.riwayat', ['status' => $key]) }}"
-                   class="flex-1 text-center py-3 text-sm font-semibold border-b-2 {{ $activeTab === $key ? 'text-gray-900 border-emerald-600' : 'text-gray-400 border-transparent' }}">
+                   class="flex-1 text-center py-3 text-sm font-semibold border-b-2 {{ $activeTab === $key ? 'text-gray-900 border-blue-600' : 'text-gray-400 border-transparent' }}">
                     {{ $label }}
                 </a>
             @endforeach
@@ -52,10 +52,10 @@
 
                 {{-- Icon --}}
                 <div class="shrink-0 w-10 h-10 rounded-full flex items-center justify-center
-                            {{ $icon === 'sakit' ? 'bg-emerald-50' : ($icon === 'terlambat' ? 'bg-amber-50' : 'bg-red-50') }}">
+                            {{ $icon === 'sakit' ? 'bg-sky-50' : ($icon === 'terlambat' ? 'bg-amber-50' : 'bg-red-50') }}">
 
                     @if ($icon === 'sakit')
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"></path>
                             <polyline points="7.5 12 10 12 11 10 13 14 14 12 16.5 12"></polyline>
                         </svg>
@@ -87,7 +87,7 @@
                 {{-- Status --}}
                 <div class="shrink-0">
                     @if ($statusLower === 'disetujui')
-                        <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 text-xs font-medium whitespace-nowrap">Disetujui</span>
+                        <span class="px-3 py-1 rounded-full bg-sky-50 text-blue-600 text-xs font-medium whitespace-nowrap">Disetujui</span>
                     @elseif ($statusLower === 'ditolak')
                         <span class="px-3 py-1 rounded-full bg-red-50 text-red-500 text-xs font-medium whitespace-nowrap">Ditolak</span>
                     @else

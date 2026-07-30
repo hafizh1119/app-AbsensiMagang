@@ -14,7 +14,7 @@
 
         $statusStyle = [
             'menunggu'  => 'bg-amber-50 text-amber-600',
-            'disetujui' => 'bg-emerald-50 text-emerald-600',
+            'disetujui' => 'bg-sky-50 text-sky-600',
             'ditolak'   => 'bg-red-50 text-red-500',
         ];
 
@@ -26,7 +26,7 @@
     @endphp
 
     @if(session('success'))
-        <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm rounded-xl px-4 py-3 mb-4">
+        <div class="bg-sky-50 border border-sky-200 text-sky-700 text-sm rounded-xl px-4 py-3 mb-4">
             {{ session('success') }}
         </div>
     @endif
@@ -120,15 +120,15 @@
             <a href="{{ asset($pengajuan->lampiran) }}" target="_blank"
                class="flex items-center justify-between bg-white rounded-2xl shadow-sm px-5 py-4 hover:bg-gray-50 transition">
                 <div class="flex items-center gap-3 min-w-0">
-                    <div class="shrink-0 w-9 h-9 rounded-lg bg-emerald-50 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <div class="shrink-0 w-9 h-9 rounded-lg bg-sky-50 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 text-sky-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                             <path d="M14 2v6h6"></path>
                         </svg>
                     </div>
                     <p class="text-sm font-medium text-gray-800 truncate">{{ basename($pengajuan->lampiran) }}</p>
                 </div>
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 text-emerald-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 text-sky-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M12 3v12"></path>
                     <path d="M7 10l5 5 5-5"></path>
                     <path d="M5 21h14"></path>
@@ -146,7 +146,7 @@
             <div class="mb-4">
                 <label class="block text-xs text-gray-400 mb-1.5">Tanggal Persetujuan</label>
                 <input type="date" id="tanggal_persetujuan_input" value="{{ now()->format('Y-m-d') }}"
-                       class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                       class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-sky-500">
                 <p class="text-xs text-gray-400 mt-1.5">Isi sesuai tanggal keputusan sebenarnya jika berbeda dari hari ini.</p>
             </div>
 
@@ -157,7 +157,7 @@
                     @csrf
                     <input type="hidden" name="tanggal_persetujuan" id="tanggal_persetujuan_approve">
                     <button type="submit"
-                            class="w-full text-center bg-emerald-600 text-white font-semibold rounded-2xl py-3.5">
+                            class="w-full text-center bg-sky-500 hover:bg-sky-600 text-white font-semibold rounded-2xl py-3.5 transition">
                         Setujui
                     </button>
                 </form>

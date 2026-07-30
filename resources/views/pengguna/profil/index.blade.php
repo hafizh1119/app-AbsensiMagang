@@ -7,10 +7,11 @@
 <div class="min-h-screen bg-gray-50">
 @include('pengguna.components.header', ['title' => 'Profil'])
     {{-- Header --}}
-    <div class="bg-gradient-to-br from-emerald-600 to-emerald-700 px-5 pt-5 pb-24 rounded-b-3xl relative overflow-hidden">
+    <div class="bg-gradient-to-br from-sky-400 via-blue-500 to-indigo-600 px-5 pt-5 pb-24 rounded-b-3xl relative overflow-hidden">
         {{-- Dekorasi lingkaran --}}
-        <div class="absolute -top-8 -right-10 w-32 h-32 rounded-full bg-white/10"></div>
+        <div class="absolute -top-8 -right-10 w-32 h-32 rounded-full bg-white/15"></div>
         <div class="absolute top-16 -right-4 w-16 h-16 rounded-full bg-white/10"></div>
+        <div class="absolute -bottom-10 -left-8 w-28 h-28 rounded-full bg-white/10"></div>
 
         {{-- Avatar --}}
         <div class="flex flex-col items-center mt-4 relative z-10">
@@ -39,7 +40,7 @@
         {{-- Alert sukses/gagal --}}
         <div class="px-5">
             @if (session('success'))
-                <div class="mb-4 rounded-xl bg-emerald-50 border border-emerald-200 px-4 py-2.5 text-sm text-emerald-700">
+                <div class="mb-4 rounded-xl bg-sky-50 border border-sky-200 px-4 py-2.5 text-sm text-sky-700">
                     {{ session('success') }}
                 </div>
             @endif
@@ -87,7 +88,7 @@
                 <div x-data="{ open: false }">
                     <button type="button" @click="open = !open" class="w-full flex items-center justify-between px-5 py-4 hover:bg-gray-50 transition">
                         <div class="flex items-center gap-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-emerald-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                                 <path d="M14 2v6h6"></path>
                                 <line x1="9" y1="13" x2="15" y2="13"></line>
@@ -154,7 +155,7 @@
                 <div x-data="{ open: false }">
                     <button type="button" @click="open = !open" class="w-full flex items-center justify-between px-5 py-4 hover:bg-gray-50 transition">
                         <div class="flex items-center gap-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-emerald-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                                 <rect x="4" y="11" width="16" height="10" rx="2"></rect>
                                 <path d="M8 11V7a4 4 0 0 1 8 0v4"></path>
                             </svg>
@@ -183,22 +184,22 @@
                             <div>
                                 <label class="block text-sm text-gray-600 mb-1">Password Lama</label>
                                 <input type="password" name="current_password"
-                                    class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600">
+                                    class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                             </div>
 
                             <div>
                                 <label class="block text-sm text-gray-600 mb-1">Password Baru</label>
                                 <input type="password" name="password"
-                                    class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600">
+                                    class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                             </div>
 
                             <div>
                                 <label class="block text-sm text-gray-600 mb-1">Konfirmasi Password Baru</label>
                                 <input type="password" name="password_confirmation"
-                                    class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600">
+                                    class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                             </div>
 
-                            <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white text-sm font-medium py-2 rounded-lg transition">
+                            <button type="submit" class="w-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white text-sm font-medium py-2 rounded-lg shadow-sm shadow-blue-500/30 transition">
                                 Simpan Password Baru
                             </button>
                         </form>

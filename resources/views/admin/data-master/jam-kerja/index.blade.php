@@ -18,7 +18,7 @@
         <main class="p-6">
 
             @if (session('success'))
-                <div class="mb-4 flex items-center gap-3 bg-emerald-50 border border-emerald-100 text-emerald-600 text-sm rounded-xl px-4 py-3">
+                <div class="mb-4 flex items-center gap-3 bg-sky-50 border border-sky-100 text-sky-600 text-sm rounded-xl px-4 py-3">
                     {{ session('success') }}
                 </div>
             @endif
@@ -31,13 +31,13 @@
 
             @php
                 $iconColor = [
-                    'emerald' => 'bg-emerald-50 text-emerald-600',
+                    'sky'     => 'bg-sky-50 text-sky-600',
                     'rose'    => 'bg-rose-50 text-rose-500',
                     'amber'   => 'bg-amber-50 text-amber-500',
                 ];
 
                 $statusStyle = [
-                    'Aktif' => 'bg-emerald-50 text-emerald-600',
+                    'Aktif' => 'bg-sky-50 text-sky-600',
                     'Libur' => 'bg-rose-50 text-rose-500',
                 ];
             @endphp
@@ -54,7 +54,7 @@
                         Dashboard / <span class="text-gray-600 font-medium">Jam Kerja</span>
                     </p>
                     <a href="{{ route('admin.data-master.jam-kerja.create') }}"
-                       class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow-sm transition">
+                       class="flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow-sm transition">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <line x1="12" y1="5" x2="12" y2="19"/>
                             <line x1="5" y1="12" x2="19" y2="12"/>

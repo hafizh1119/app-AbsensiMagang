@@ -18,8 +18,8 @@
 
             @if (session('success'))
                 <div id="toastSuccess"
-                     class="fixed top-5 right-5 z-[9999] flex items-center gap-3 bg-white border border-emerald-100 shadow-lg rounded-xl px-4 py-3 pr-5 transition-all duration-300 translate-x-0">
-                    <span class="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 shrink-0">
+                     class="fixed top-5 right-5 z-[9999] flex items-center gap-3 bg-white border border-sky-100 shadow-lg rounded-xl px-4 py-3 pr-5 transition-all duration-300 translate-x-0">
+                    <span class="flex items-center justify-center w-8 h-8 rounded-full bg-sky-50 text-sky-600 shrink-0">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                         </svg>
@@ -51,7 +51,7 @@
                     <p class="text-sm text-gray-400 mt-1">Kelola titik lokasi absensi pegawai</p>
                 </div>
                 <a href="{{ route('admin.lokasi-kantor.create') }}"
-                   class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow-sm">
+                   class="flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow-sm transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <line x1="12" y1="5" x2="12" y2="19"/>
                         <line x1="5" y1="12" x2="19" y2="12"/>
@@ -139,7 +139,7 @@
                                         <div class="flex items-center gap-2">
                                             <span class="font-medium text-gray-800">{{ $row['nama'] }}</span>
                                             @if ($row['utama'])
-                                                <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600">Utama</span>
+                                                <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-sky-50 text-sky-600">Utama</span>
                                             @endif
                                         </div>
                                     </td>
@@ -151,7 +151,7 @@
                                         <div class="flex items-center justify-center gap-1">
                                             <a href="{{ route('admin.lokasi-kantor.show', $row['id']) }}"
                                                title="Lihat Detail"
-                                               class="inline-flex items-center justify-center w-7 h-7 rounded-full text-gray-400 hover:bg-gray-100 hover:text-emerald-600 transition">
+                                               class="inline-flex items-center justify-center w-7 h-7 rounded-full text-gray-400 hover:bg-gray-100 hover:text-sky-600 transition">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
                                                     <circle cx="12" cy="12" r="3"/>
@@ -159,7 +159,7 @@
                                             </a>
                                             <a href="{{ route('admin.lokasi-kantor.edit', $row['id']) }}"
                                                title="Edit Lokasi"
-                                               class="inline-flex items-center justify-center w-7 h-7 rounded-full text-gray-400 hover:bg-gray-100 hover:text-emerald-600 transition">
+                                               class="inline-flex items-center justify-center w-7 h-7 rounded-full text-gray-400 hover:bg-gray-100 hover:text-sky-600 transition">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M11 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"/>
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
@@ -193,7 +193,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
                             </svg>
                         </button>
-                        <button type="button" class="w-8 h-8 flex items-center justify-center rounded-lg bg-emerald-600 text-white text-sm font-semibold">1</button>
+                        <button type="button" class="w-8 h-8 flex items-center justify-center rounded-lg bg-sky-500 text-white text-sm font-semibold">1</button>
                         <button type="button" class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100" disabled>
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>

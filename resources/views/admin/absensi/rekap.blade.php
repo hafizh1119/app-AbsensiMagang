@@ -54,7 +54,7 @@
                     <div>
                         <label class="block text-xs text-gray-400 mb-1.5">Periode</label>
                         <input type="month" name="periode" value="{{ $periodeInput }}"
-                               class="w-40 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                               class="w-40 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-sky-500">
                     </div>
 
                     {{-- Terapkan --}}
@@ -66,7 +66,7 @@
                     {{-- Export --}}
                     <div class="relative" x-data="{ open: false }" @click.outside="open = false">
                         <button type="button" @click="open = !open"
-                                class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition duration-150 shadow-sm">
+                                class="flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition duration-150 shadow-sm">
                             Export
                             <svg class="w-4 h-4 transition-transform duration-200" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
@@ -74,8 +74,8 @@
                         </button>
                         <div x-show="open" x-cloak x-transition
                              class="absolute right-0 mt-2 w-40 bg-white rounded-xl shadow-lg border border-gray-100 py-1.5 z-40">
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-600 hover:bg-emerald-50 hover:text-emerald-700">Export Excel</a>
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-600 hover:bg-emerald-50 hover:text-emerald-700">Export PDF</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-600 hover:bg-sky-50 hover:text-sky-700">Export Excel</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-600 hover:bg-sky-50 hover:text-sky-700">Export PDF</a>
                         </div>
                     </div>
                 </div>
@@ -109,14 +109,14 @@
 
                             @if(count($points) > 0)
                                 {{-- Area di bawah garis --}}
-                                <polygon points="{{ $areaPoints }}" fill="#10b981" fill-opacity="0.12"/>
+                                <polygon points="{{ $areaPoints }}" fill="#0ea5e9" fill-opacity="0.12"/>
 
                                 {{-- Garis kehadiran --}}
-                                <polyline points="{{ $polylinePoints }}" fill="none" stroke="#10b981" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+                                <polyline points="{{ $polylinePoints }}" fill="none" stroke="#0ea5e9" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
 
                                 {{-- Titik data --}}
                                 @foreach($points as $p)
-                                    <circle cx="{{ $p[0] }}" cy="{{ $p[1] }}" r="2" fill="#10b981"/>
+                                    <circle cx="{{ $p[0] }}" cy="{{ $p[1] }}" r="2" fill="#0ea5e9"/>
                                 @endforeach
                             @endif
                         </svg>

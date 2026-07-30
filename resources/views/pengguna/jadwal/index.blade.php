@@ -13,7 +13,7 @@
 
         <div class="relative flex-1">
             <select name="bulan" onchange="this.form.submit()"
-                    class="w-full appearance-none bg-white border border-gray-200 rounded-xl pl-3 pr-9 py-2.5 text-sm font-medium text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    class="w-full appearance-none bg-white border border-gray-200 rounded-xl pl-3 pr-9 py-2.5 text-sm font-medium text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                 @php
                     $namaBulanList = [
                         1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
@@ -32,7 +32,7 @@
 
         <div class="relative flex-1">
             <select name="tahun" onchange="this.form.submit()"
-                    class="w-full appearance-none bg-white border border-gray-200 rounded-xl pl-3 pr-9 py-2.5 text-sm font-medium text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    class="w-full appearance-none bg-white border border-gray-200 rounded-xl pl-3 pr-9 py-2.5 text-sm font-medium text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                 @foreach (range(now()->year - 1, now()->year + 1) as $tahunOpsi)
                     <option value="{{ $tahunOpsi }}" {{ $tahun == $tahunOpsi ? 'selected' : '' }}>{{ $tahunOpsi }}</option>
                 @endforeach
@@ -81,15 +81,15 @@
                 @endphp
 
                 <div class="aspect-square rounded-xl flex flex-col items-center justify-center relative
-                            {{ $isLibur ? 'bg-red-50' : 'bg-emerald-50' }}
-                            {{ $isHariIni ? 'ring-2 ring-emerald-600' : '' }}"
+                            {{ $isLibur ? 'bg-red-50' : 'bg-sky-50' }}
+                            {{ $isHariIni ? 'ring-2 ring-blue-600' : '' }}"
                      title="{{ $namaLibur ?? ($isLibur ? 'Libur' : 'Hari kerja') }}">
 
-                    <span class="text-sm font-semibold {{ $isLibur ? 'text-red-500' : 'text-emerald-700' }}">
+                    <span class="text-sm font-semibold {{ $isLibur ? 'text-red-500' : 'text-blue-700' }}">
                         {{ $tgl }}
                     </span>
 
-                    <span class="w-1 h-1 rounded-full mt-0.5 {{ $isLibur ? 'bg-red-400' : 'bg-emerald-500' }}"></span>
+                    <span class="w-1 h-1 rounded-full mt-0.5 {{ $isLibur ? 'bg-red-400' : 'bg-blue-500' }}"></span>
                 </div>
             @endfor
 
@@ -98,7 +98,7 @@
         {{-- Legenda --}}
         <div class="flex items-center gap-4 mt-4 pt-4 border-t border-gray-100">
             <div class="flex items-center gap-1.5">
-                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
                 <span class="text-xs text-gray-500">Hari Kerja</span>
             </div>
             <div class="flex items-center gap-1.5">
@@ -106,7 +106,7 @@
                 <span class="text-xs text-gray-500">Libur</span>
             </div>
             <div class="flex items-center gap-1.5">
-                <span class="w-3 h-3 rounded-md ring-2 ring-emerald-600"></span>
+                <span class="w-3 h-3 rounded-md ring-2 ring-blue-600"></span>
                 <span class="text-xs text-gray-500">Hari Ini</span>
             </div>
         </div>

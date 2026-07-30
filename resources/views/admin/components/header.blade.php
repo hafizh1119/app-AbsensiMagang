@@ -13,7 +13,7 @@
                 {{-- Profil Admin (statis, tanpa dropdown) --}}
                 <div class="flex items-center gap-2.5">
 
-                    <div class="w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold text-sm overflow-hidden shrink-0">
+                    <div class="w-9 h-9 rounded-full bg-sky-100 flex items-center justify-center text-sky-700 font-bold text-sm overflow-hidden shrink-0">
                         @if(auth()->check() && auth()->user()->foto)
                             <img src="{{ asset('storage/'.auth()->user()->foto) }}" alt="Foto Admin" class="w-full h-full object-cover">
                         @else

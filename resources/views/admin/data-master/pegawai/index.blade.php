@@ -17,7 +17,7 @@
         <main class="p-6">
 
             @if (session('success'))
-                <div class="mb-4 flex items-center gap-3 bg-emerald-50 border border-emerald-100 text-emerald-600 text-sm rounded-xl px-4 py-3">
+                <div class="mb-4 flex items-center gap-3 bg-sky-50 border border-sky-100 text-sky-600 text-sm rounded-xl px-4 py-3">
                     {{ session('success') }}
                 </div>
             @endif
@@ -26,7 +26,7 @@
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-xl font-bold text-gray-900">Data Pegawai</h2>
                 <a href="{{ route('admin.data-master.pegawai.create') }}"
-                   class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow-sm">
+                   class="flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow-sm transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <line x1="12" y1="5" x2="12" y2="19"/>
                         <line x1="5" y1="12" x2="19" y2="12"/>
@@ -45,7 +45,7 @@
                         <line x1="21" y1="21" x2="16.65" y2="16.65"/>
                     </svg>
                     <input type="text" placeholder="Cari pegawai..."
-                           class="w-full bg-white border border-gray-200 rounded-lg pl-9 pr-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                           class="w-full bg-white border border-gray-200 rounded-lg pl-9 pr-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500">
                 </div>
 
             </div>
@@ -58,7 +58,7 @@
                             <tr class="bg-gray-50 text-gray-400 text-xs">
                                 <th class="text-left font-medium px-4 py-3 w-10">No.</th>
                                 <th class="text-left font-medium px-4 py-3">Nama</th>
-                                <th class="text-left font-medium px-4 py-3">NIP</th>
+                                <th class="text-left font-medium px-4 py-3">No. Peserta</th>
                                 <th class="text-left font-medium px-4 py-3">Unit</th>
                                 <th class="text-left font-medium px-4 py-3">Jabatan</th>
                                 <th class="text-center font-medium px-4 py-3">Aksi</th>
@@ -79,7 +79,7 @@
                                                 Lihat
                                             </a>
                                             <a href="{{ route('admin.data-master.pegawai.edit', $row['id']) }}"
-                                            class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition">
+                                            class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-600 text-white transition">
                                                 Edit
                                             </a>
                                             <div x-data="{ confirmOpen: false }" class="inline">

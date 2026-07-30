@@ -33,7 +33,7 @@
             <div class="flex items-center justify-between mb-5">
                 <div>
                     <div class="flex items-center gap-1.5 text-xs text-gray-400 mb-1.5">
-                        <a href="{{ route('admin.lokasi-kantor') }}" class="hover:text-emerald-600">Lokasi Kantor</a>
+                        <a href="{{ route('admin.lokasi-kantor') }}" class="hover:text-sky-600">Lokasi Kantor</a>
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
                         </svg>
@@ -42,7 +42,7 @@
                     <div class="flex items-center gap-2">
                         <h2 class="text-2xl font-bold text-gray-900">{{ $lokasi->nama }}</h2>
                         @if ($lokasi->utama)
-                            <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600">Utama</span>
+                            <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-sky-50 text-sky-600">Utama</span>
                         @endif
                     </div>
                     <p class="text-sm text-gray-400 mt-1">Informasi lengkap titik lokasi absensi</p>
@@ -171,10 +171,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // ---- Lingkaran radius (statis) ----
     L.circle([lat, lng], {
         radius: radius,
-        color: '#059669',
+        color: '#0ea5e9',
         weight: 2,
         dashArray: '6 6',
-        fillColor: '#059669',
+        fillColor: '#0ea5e9',
         fillOpacity: 0.12
     }).addTo(map);
 

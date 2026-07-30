@@ -3,45 +3,46 @@
 @section('title', 'Login Admin')
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-emerald-100 relative overflow-hidden flex items-center justify-center p-4">
+<div class="min-h-screen bg-gradient-to-br from-sky-50 via-white to-sky-100 relative overflow-hidden flex items-center justify-center p-4">
 
     {{-- Dekorasi latar belakang --}}
-    <div class="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-emerald-200/40 blur-3xl"></div>
-    <div class="absolute -bottom-40 -left-40 w-96 h-96 rounded-full bg-emerald-300/30 blur-3xl"></div>
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-emerald-100/20 blur-3xl"></div>
+    <div class="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-sky-200/40 blur-3xl"></div>
+    <div class="absolute -bottom-40 -left-40 w-96 h-96 rounded-full bg-sky-300/30 blur-3xl"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-sky-100/20 blur-3xl"></div>
 
     {{-- Container Login --}}
-    <div class="relative w-full max-w-5xl bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl shadow-emerald-900/10 border border-white/50 overflow-hidden flex">
+    <div class="relative w-full max-w-5xl bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl shadow-sky-900/10 border border-white/50 overflow-hidden flex">
 
-        {{-- Side Kiri: Gambar & Branding --}}
-        <div class="hidden lg:flex lg:w-2/5 bg-gradient-to-br from-emerald-700 to-emerald-900 p-10 flex-col justify-between relative overflow-hidden">
+        {{-- Side Kiri: Branding --}}
+        <div class="hidden lg:flex lg:w-2/5 bg-gradient-to-br from-sky-200 to-sky-300 p-10 flex-col justify-between relative overflow-hidden">
             {{-- Dekorasi --}}
-            <div class="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-emerald-500/20 blur-2xl"></div>
-            <div class="absolute -bottom-20 -left-20 w-64 h-64 rounded-full bg-emerald-500/10 blur-2xl"></div>
+            <div class="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-sky-400/20 blur-2xl"></div>
+            <div class="absolute -bottom-20 -left-20 w-64 h-64 rounded-full bg-sky-400/10 blur-2xl"></div>
 
             <div class="relative z-10">
                 <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur flex items-center justify-center">
-                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <div class="w-12 h-12 rounded-2xl bg-white/30 backdrop-blur flex items-center justify-center">
+                        <svg class="w-7 h-7 text-sky-800" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2M5 21H3m4 0h10M9 7h1m4 0h1M9 11h1m4 0h1m-6 4h1m4 0h1"/>
                         </svg>
                     </div>
                     <div>
-                        <p class="text-white font-bold text-sm">Absensi Pegawai Kontrak</p>
-                        <p class="text-emerald-300/80 text-[10px] font-medium">Dinas Koperasi Prov Jawa Tengah</p>
+                        <p class="text-sky-800 font-bold text-sm">Absensi Peserta Magang</p>
+                        <p class="text-sky-700/80 text-[10px] font-medium">Dinas Koperasi Prov Jawa Tengah</p>
                     </div>
                 </div>
             </div>
 
-            <div class="relative z-10 space-y-4">
-                <div class="space-y-2">
-                    <h1 class="text-3xl font-bold text-white leading-tight">Selamat Datang<br>Kembali Admin!</h1>
-                    <p class="text-emerald-200/80 text-sm">Kelola data pegawai, absensi, dan izin dengan mudah</p>
-                </div>
+            {{-- Logo --}}
+            <div class="relative z-10 flex justify-center">
+                <img
+                    src="{{ asset('icon/diskop.svg') }}"
+                    alt="Logo Dinas Koperasi Provinsi Jawa Tengah"
+                    class="w-64 h-auto object-contain">
             </div>
 
             <div class="relative z-10">
-                <p class="text-emerald-300/50 text-[10px]">&copy; Dibuat oleh Muhammad Hanif &middot; Udinus &middot; 2026</p>
+                <p class="text-sky-700/60 text-[10px] text-center">&copy; Dibuat oleh Muhammad Hanif &middot; Udinus &middot; 2026</p>
             </div>
         </div>
 
@@ -51,9 +52,10 @@
 
                 {{-- Logo Mobile --}}
                 <div class="lg:hidden flex justify-center mb-6">
-                    <div class="w-20 h-20 rounded-full bg-white shadow-md flex items-center justify-center ring-4 ring-emerald-50">
-                        <img src="{{ asset('icon/logo.svg') }}" alt="Logo" class="w-16 h-16 object-contain">
-                    </div>
+                    <img
+                        src="{{ asset('icon/diskop.svg') }}"
+                        alt="Logo Dinas Koperasi Provinsi Jawa Tengah"
+                        class="w-56 h-auto object-contain">
                 </div>
 
                 <div class="text-center lg:text-left mb-8">
@@ -86,7 +88,7 @@
                                    name="email"
                                    value="{{ old('email') }}"
                                    placeholder="Masukkan email admin"
-                                   class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition @error('email') border-rose-400 @enderror">
+                                   class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition @error('email') border-rose-400 @enderror">
                         </div>
                         @error('email')
                             <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
@@ -108,7 +110,7 @@
                                    id="password"
                                    name="password"
                                    placeholder="Masukkan password Anda"
-                                   class="w-full pl-10 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition @error('password') border-rose-400 @enderror">
+                                   class="w-full pl-10 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition @error('password') border-rose-400 @enderror">
                             <button type="button" onclick="togglePassword()"
                                     class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition">
                                 <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -124,7 +126,7 @@
 
                     {{-- Tombol Masuk --}}
                     <button type="submit"
-                            class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-semibold py-3.5 px-4 rounded-xl transition duration-200 shadow-lg shadow-emerald-700/20 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]">
+                            class="w-full bg-sky-600 hover:bg-sky-700 text-white font-semibold py-3.5 px-4 rounded-xl transition duration-200 shadow-lg shadow-sky-600/20 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]">
                         Masuk ke Dashboard
                     </button>
                 </form>
