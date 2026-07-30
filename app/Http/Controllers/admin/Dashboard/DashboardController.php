@@ -8,7 +8,6 @@ use App\Models\JamKerja;
 use App\Models\PengajuanIzin;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -34,11 +33,12 @@ class DashboardController extends Controller
         $tahunAktif = $today->year;
 
         // ================= TOTAL PEGAWAI =================
-        $totalPegawai = User::where('role', 'pegawai')
+        $totalPegawai = User::whereIn('role', ['pegawai', 'admin_unit'])
             ->where('status', 'aktif')
             ->count();
 
-        $pegawaiBaruBulanIni = User::where('role', 'pegawai')
+        $pegawaiBaruBulanIni = User::whereIn('role', ['pegawai', 'admin_unit'])
+            ->where('status', 'aktif')
             ->whereMonth('created_at', $today->month)
             ->whereYear('created_at', $today->year)
             ->count();
