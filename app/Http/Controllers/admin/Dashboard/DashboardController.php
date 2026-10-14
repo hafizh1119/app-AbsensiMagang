@@ -94,8 +94,8 @@ class DashboardController extends Controller
         // ================= JAM KERJA HARI INI =================
         $namaHariIni = $today->translatedFormat('l'); // Senin, Selasa, dst
         $jamKerja = JamKerja::where('hari', $namaHariIni)
-            ->where('status', true)
-            ->first();
+        ->whereRaw('status = true')
+        ->first();
 
         // ================= PENGAJUAN IZIN MENUNGGU PERSETUJUAN =================
         $pengajuanPending = PengajuanIzin::where('status', 'pending')->count();
