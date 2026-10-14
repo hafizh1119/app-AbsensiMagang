@@ -21,7 +21,10 @@ return Application::configure(basePath: dirname(__DIR__))
                 ? route('admin.login')
                 : route('login');
         });
+
+        $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
-    })->create();
+    })  ->create()
+        ->useStoragePath('/tmp/storage');
