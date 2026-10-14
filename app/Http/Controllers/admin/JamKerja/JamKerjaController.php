@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\JamKerja;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -64,21 +63,25 @@ class JamKerjaController extends Controller
                 'jam_pulang' => $item->status ? optional($item->jam_pulang)->format('H:i') : null,
                 'toleransi'  => $item->status ? $item->toleransi_terlambat . ' Menit' : null,
                 'status'     => $item->status ? 'Aktif' : 'Libur',
+
+                // Data mentah untuk mengisi modal edit
+                'status_val'     => $item->status ? 'aktif' : 'libur',
+                'jam_masuk_val'  => optional($item->jam_masuk)->format('H:i'),
+                'jam_pulang_val' => optional($item->jam_pulang)->format('H:i'),
+                'toleransi_val'  => $item->toleransi_terlambat,
             ];
         });
 
-        return view('admin.data-master.jam-kerja.index', compact('jamKerja', 'stats'));
-    }
+        // Hari yang belum punya jadwal (untuk pilihan di modal tambah)
+        $semuaHari    = self::URUTAN_HARI;
+        $hariTersedia = array_values(array_diff(self::URUTAN_HARI, $semua->pluck('hari')->all()));
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(): View
-    {
-        $hariTerpakai  = JamKerja::pluck('hari')->all();
-        $hariTersedia  = array_values(array_diff(self::URUTAN_HARI, $hariTerpakai));
-
-        return view('admin.data-master.jam-kerja.create', compact('hariTersedia'));
+        return view('admin.data-master.jam-kerja.index', compact(
+            'jamKerja',
+            'stats',
+            'semuaHari',
+            'hariTersedia'
+        ));
     }
 
     /**
@@ -101,17 +104,6 @@ class JamKerjaController extends Controller
     public function show(JamKerja $jamKerja): View
     {
         return view('admin.data-master.jam-kerja.show', compact('jamKerja'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(JamKerja $jamKerja): View
-    {
-        $hariTerpakai = JamKerja::where('id', '!=', $jamKerja->id)->pluck('hari')->all();
-        $hariTersedia = array_values(array_diff(self::URUTAN_HARI, $hariTerpakai));
-
-        return view('admin.data-master.jam-kerja.edit', compact('jamKerja', 'hariTersedia'));
     }
 
     /**

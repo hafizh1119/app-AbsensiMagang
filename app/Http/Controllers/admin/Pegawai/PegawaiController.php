@@ -14,13 +14,10 @@ use Illuminate\View\View;
 class PegawaiController extends Controller
 {
     /**
-     * Folder tujuan penyimpanan foto pegawai, relatif terhadap public_path().
+     * Folder tujuan penyimpanan foto peserta, relatif terhadap public_path().
      */
     private const FOTO_FOLDER = 'foto-pegawai';
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index(): View
     {
         $users = User::with('unit')
@@ -30,33 +27,26 @@ class PegawaiController extends Controller
 
         $pegawai = $users->values()->map(function (User $user, int $index) {
             return [
-                'id'      => $user->id,
-                'no'      => $index + 1,
-                'nama'    => $user->nama,
-                'nip'     => $user->nip,
-                'unit'    => $user->unit->nama_unit ?? '-',
-                'jabatan' => $user->jabatan,
-                'role'    => $user->role,
-                'status'  => $user->status,
+                'id'     => $user->id,
+                'no'     => $index + 1,
+                'nama'   => $user->nama,
+                'nip'    => $user->nip,
+                'unit'   => $user->unit->nama_unit ?? '-',
+                'role'   => $user->role,
+                'status' => $user->status,
             ];
         });
 
         return view('admin.data-master.pegawai.index', compact('pegawai'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create(): View
     {
-        $units = JenisUnit::where('status', 'aktif')->orderBy('nama_unit')->get();
+        $units = JenisUnit::where('status', 'Aktif')->orderBy('nama_unit')->get();
 
         return view('admin.data-master.pegawai.create', compact('units'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request): RedirectResponse
     {
         $validated = $this->validateData($request);
@@ -73,7 +63,6 @@ class PegawaiController extends Controller
             'email'                  => $validated['email'],
             'password'               => $validated['password'],
             'role'                   => 'pegawai',
-            'jabatan'                => $validated['jabatan'],
             'tempat_lahir'           => $validated['tempat_lahir'],
             'tanggal_lahir'          => $validated['tanggal_lahir'],
             'kewarganegaraan'        => $validated['kewarganegaraan'],
@@ -86,12 +75,9 @@ class PegawaiController extends Controller
 
         return redirect()
             ->route('admin.data-master.pegawai')
-            ->with('success', 'Pegawai berhasil ditambahkan.');
+            ->with('success', 'Peserta berhasil ditambahkan.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(User $pegawai): View
     {
         $pegawai->load('unit');
@@ -99,19 +85,13 @@ class PegawaiController extends Controller
         return view('admin.data-master.pegawai.show', compact('pegawai'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(User $pegawai): View
     {
-        $units = JenisUnit::where('status', 'aktif')->orderBy('nama_unit')->get();
+        $units = JenisUnit::where('status', 'Aktif')->orderBy('nama_unit')->get();
 
         return view('admin.data-master.pegawai.edit', compact('pegawai', 'units'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, User $pegawai): RedirectResponse
     {
         $validated = $this->validateData($request, $pegawai->id);
@@ -120,6 +100,8 @@ class PegawaiController extends Controller
             // Hapus foto lama sebelum menyimpan yang baru.
             $this->hapusFoto($pegawai->foto);
             $validated['foto'] = $this->simpanFoto($request);
+        } else {
+            unset($validated['foto']);
         }
 
         if (empty($validated['password'])) {
@@ -130,12 +112,9 @@ class PegawaiController extends Controller
 
         return redirect()
             ->route('admin.data-master.pegawai')
-            ->with('success', 'Data pegawai berhasil diperbarui.');
+            ->with('success', 'Data peserta berhasil diperbarui.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(User $pegawai): RedirectResponse
     {
         $this->hapusFoto($pegawai->foto);
@@ -144,13 +123,9 @@ class PegawaiController extends Controller
 
         return redirect()
             ->route('admin.data-master.pegawai')
-            ->with('success', 'Pegawai berhasil dihapus.');
+            ->with('success', 'Peserta berhasil dihapus.');
     }
 
-    /**
-     * Simpan file foto yang diunggah langsung ke folder public/foto-pegawai
-     * dan kembalikan nama file yang tersimpan.
-     */
     private function simpanFoto(Request $request): string
     {
         $file = $request->file('foto');
@@ -167,9 +142,6 @@ class PegawaiController extends Controller
         return $fileName;
     }
 
-    /**
-     * Hapus file foto lama dari folder public/foto-pegawai jika ada.
-     */
     private function hapusFoto(?string $fileName): void
     {
         if (!$fileName) {
@@ -184,31 +156,28 @@ class PegawaiController extends Controller
     }
 
     /**
-     * Validasi input form tambah/edit pegawai.
+     * Validasi input form tambah/edit peserta.
      */
     private function validateData(Request $request, ?int $ignoreUserId = null): array
     {
         $isCreate = is_null($ignoreUserId);
 
         $validated = $request->validate([
-            'nama'                    => ['required', 'string', 'max:255'],
-            'nip'                     => ['required', 'string', 'max:50', 'unique:users,nip' . ($ignoreUserId ? ",{$ignoreUserId}" : '')],
-            'unit_id'                 => ['required', 'exists:jenis_unit,id'],
-            'jabatan'                 => ['required', 'string', 'max:255'],
-            'email'                   => ['required', 'email', 'max:255', 'unique:users,email' . ($ignoreUserId ? ",{$ignoreUserId}" : '')],
-            'password'                => [$isCreate ? 'required' : 'nullable', 'string', 'min:8'],
-            'tempat_lahir'            => ['required', 'string', 'max:255'],
-            'tanggal_lahir'           => ['required', 'date'],
-            'kewarganegaraan'         => ['required', 'string', 'max:255'],
-            'status_kewarganegaraan'  => ['required', 'in:WNI,WNA'],
-            'no_hp'                   => ['nullable', 'string', 'max:20'],
-            'alamat'                  => ['nullable', 'string'],
-            'foto'                    => ['nullable', 'image', 'max:2048'],
+            'nama'                   => ['required', 'string', 'max:255'],
+            'nip'                    => ['required', 'string', 'max:50', 'unique:users,nip' . ($ignoreUserId ? ",{$ignoreUserId}" : '')],
+            'unit_id'                => ['required', 'exists:jenis_unit,id'],
+            'email'                  => ['required', 'email', 'max:255', 'unique:users,email' . ($ignoreUserId ? ",{$ignoreUserId}" : '')],
+            'password'               => [$isCreate ? 'required' : 'nullable', 'string', 'min:8'],
+            'tempat_lahir'           => ['required', 'string', 'max:255'],
+            'tanggal_lahir'          => ['required', 'date'],
+            'kewarganegaraan'        => ['required', 'string', 'max:255'],
+            'status_kewarganegaraan' => ['required', 'in:WNI,WNA'],
+            'no_hp'                  => ['nullable', 'string', 'max:20'],
+            'alamat'                 => ['nullable', 'string'],
+            'foto'                   => ['nullable', 'image', 'max:2048'],
         ]);
 
-        if (!$isCreate && !empty($validated['password'])) {
-            $validated['password'] = Hash::make($validated['password']);
-        } elseif ($isCreate) {
+        if (!empty($validated['password'])) {
             $validated['password'] = Hash::make($validated['password']);
         }
 

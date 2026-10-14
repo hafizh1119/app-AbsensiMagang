@@ -6,25 +6,22 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('jenis_unit', function (Blueprint $table) {
+        Schema::create('lokasi_absensi', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_unit');
-            $table->text('deskripsi')->nullable();
+            $table->string('nama_lokasi');
+            $table->text('alamat');
+            $table->decimal('latitude', 10, 7);
+            $table->decimal('longitude', 10, 7);
+            $table->integer('radius')->default(100);
             $table->enum('status', ['aktif', 'nonaktif'])->default('aktif');
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('jenis_unit');
+        Schema::dropIfExists('lokasi_absensi');
     }
 };

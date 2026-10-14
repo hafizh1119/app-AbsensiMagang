@@ -17,75 +17,35 @@
 
         <main class="p-6">
 
-            @php
-                // Data contoh, ganti dengan data asli dari controller
-                $pengajuan = $pengajuan ?? collect([
-                    ['no' => 1, 'diajukan' => '24 Mei 2025 10:20', 'nama' => 'Siti Aminah',    'nip' => '198903252015032002', 'unit' => 'Bidang Koperasi',   'jenis' => 'Sakit',        'tanggal_izin' => '25 Mei 2025',              'durasi' => '1 Hari', 'alasan' => 'Demam dan flu',          'diajukan_kepada' => 'Kepala Bidang'],
-                    ['no' => 2, 'diajukan' => '23 Mei 2025 08:40', 'nama' => 'Rina Wulandari', 'nip' => '199001202016042004', 'unit' => 'Bidang Pembiayaan', 'jenis' => 'Cuti Tahunan', 'tanggal_izin' => '2 Jun 2025 - 6 Jun 2025',  'durasi' => '5 Hari', 'alasan' => 'Liburan sekolah anak',   'diajukan_kepada' => 'Kepala Bidang'],
-                    ['no' => 3, 'diajukan' => '22 Mei 2025 09:55', 'nama' => 'Ahmad Fauzi',    'nip' => '199307122019031006', 'unit' => 'Bidang UMKM',       'jenis' => 'Izin Pribadi', 'tanggal_izin' => '26 Mei 2025',              'durasi' => '1 Hari', 'alasan' => 'Urusan keluarga',        'diajukan_kepada' => 'Kepala Bidang'],
-                    ['no' => 4, 'diajukan' => '22 Mei 2025 11:30', 'nama' => 'Dewi Lestari',   'nip' => '199212062020122007', 'unit' => 'Sekretariat',       'jenis' => 'Sakit',        'tanggal_izin' => '23 Mei 2025 - 24 Mei 2025', 'durasi' => '2 Hari', 'alasan' => 'Cek kesehatan',          'diajukan_kepada' => 'Kepala Subbag'],
-                ]);
+            @if (session('success'))
+                <div class="mb-4 flex items-center gap-3 bg-sky-50 border border-sky-100 text-sky-600 text-sm rounded-xl px-4 py-3">
+                    {{ session('success') }}
+                </div>
+            @endif
 
-                $totalMenunggu = $totalMenunggu ?? $pengajuan->count();
-                $totalCuti     = $totalCuti     ?? $pengajuan->where('jenis', 'Cuti Tahunan')->count();
-                $totalSakit    = $totalSakit    ?? $pengajuan->where('jenis', 'Sakit')->count();
-                $totalPribadi  = $totalPribadi  ?? $pengajuan->where('jenis', 'Izin Pribadi')->count();
-            @endphp
+            @if ($errors->any())
+                <div class="mb-4 bg-rose-50 border border-rose-100 text-rose-600 text-sm rounded-xl px-4 py-3">
+                    @foreach ($errors->all() as $error)
+                        <p>{{ $error }}</p>
+                    @endforeach
+                </div>
+            @endif
 
             {{-- Ringkasan --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
 
                 {{-- Total Menunggu --}}
-                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex items-center justify-between">
-                    <div>
-                        <p class="text-xs text-gray-400 mb-1">Total Menunggu</p>
-                        <p class="text-2xl font-bold text-gray-800">{{ $totalMenunggu }}</p>
-                        <p class="text-xs text-gray-400">Pengajuan</p>
-                    </div>
-                    <svg class="w-9 h-9 text-sky-500 shrink-0" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 2h12M6 22h12"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 2c0 5 4 6 6 8-2 2-6 3-6 8M18 2c0 5-4 6-6 8 2 2 6 3 6 8"/>
-                    </svg>
+                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+                    <p class="text-xs text-gray-400 mb-1">Total Menunggu</p>
+                    <p class="text-3xl font-extrabold text-amber-500">{{ $totalMenunggu }}</p>
+                    <p class="text-xs text-gray-400 mt-1">Pengajuan menunggu persetujuan</p>
                 </div>
 
-                {{-- Cuti Tahunan --}}
-                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex items-center justify-between">
-                    <div>
-                        <p class="text-xs text-gray-400 mb-1">Cuti Tahunan</p>
-                        <p class="text-2xl font-bold text-gray-800">{{ $totalCuti }}</p>
-                        <p class="text-xs text-gray-400">Pengajuan</p>
-                    </div>
-                    <svg class="w-9 h-9 text-amber-500 shrink-0" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">
-                        <rect x="3" y="8" width="18" height="12" rx="2"/>
-                        <path stroke-linecap="round" d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                        <line x1="3" y1="13" x2="21" y2="13"/>
-                    </svg>
-                </div>
-
-                {{-- Izin Sakit --}}
-                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex items-center justify-between">
-                    <div>
-                        <p class="text-xs text-gray-400 mb-1">Izin Sakit</p>
-                        <p class="text-2xl font-bold text-gray-800">{{ $totalSakit }}</p>
-                        <p class="text-xs text-gray-400">Pengajuan</p>
-                    </div>
-                    <svg class="w-9 h-9 text-sky-500 shrink-0" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/>
-                        <polyline points="7.5 12 10 12 11 10 13 14 14 12 16.5 12" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </div>
-
-                {{-- Izin Pribadi --}}
-                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex items-center justify-between">
-                    <div>
-                        <p class="text-xs text-gray-400 mb-1">Izin Pribadi</p>
-                        <p class="text-2xl font-bold text-gray-800">{{ $totalPribadi }}</p>
-                        <p class="text-xs text-gray-400">Pengajuan</p>
-                    </div>
-                    <svg class="w-9 h-9 text-violet-500 shrink-0" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">
-                        <circle cx="12" cy="8" r="4"/>
-                        <path stroke-linecap="round" d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/>
-                    </svg>
+                {{-- Total Izin --}}
+                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+                    <p class="text-xs text-gray-400 mb-1">Total Izin</p>
+                    <p class="text-3xl font-extrabold text-sky-500">{{ $totalIzin }}</p>
+                    <p class="text-xs text-gray-400 mt-1">Seluruh pengajuan izin</p>
                 </div>
 
             </div>
@@ -98,67 +58,140 @@
                             <tr class="bg-gray-50 text-gray-400 text-xs">
                                 <th class="text-left font-medium px-3 py-2 w-8">No</th>
                                 <th class="text-left font-medium px-3 py-2">Tanggal Pengajuan</th>
-                                <th class="text-left font-medium px-3 py-2">Nama Pegawai</th>
-                                <th class="text-left font-medium px-3 py-2">NIP</th>
+                                <th class="text-left font-medium px-3 py-2">Nama Peserta</th>
+                                <th class="text-left font-medium px-3 py-2">No. Peserta</th>
                                 <th class="text-left font-medium px-3 py-2">Unit</th>
-                                <th class="text-left font-medium px-3 py-2">Jenis Izin</th>
+                                <th class="text-left font-medium px-3 py-2">Izin</th>
                                 <th class="text-left font-medium px-3 py-2 max-w-[130px]">Tanggal Izin</th>
                                 <th class="text-left font-medium px-3 py-2 w-14">Durasi</th>
                                 <th class="text-left font-medium px-3 py-2 max-w-[140px]">Alasan</th>
                                 <th class="text-left font-medium px-3 py-2">Diajukan Kepada</th>
-                                <th class="text-left font-medium px-3 py-2">Aksi</th>
+                                <th class="text-center font-medium px-3 py-2">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
                             @forelse($pengajuan as $row)
-                                <tr class="hover:bg-gray-50/60 transition-colors">
+                                @php
+                                    $tanggalIzin = $row->tanggal_mulai->format('d M Y');
+                                    if ($row->tanggal_selesai && !$row->tanggal_mulai->equalTo($row->tanggal_selesai)) {
+                                        $tanggalIzin .= ' - ' . $row->tanggal_selesai->format('d M Y');
+                                    }
+                                @endphp
+                                <tr class="hover:bg-gray-50/60 transition-colors"
+                                    x-data="{ approveOpen: false, rejectOpen: false }">
                                     <td class="px-3 py-2 text-gray-500">{{ $loop->iteration + ($pengajuan->currentPage() - 1) * $pengajuan->perPage() }}</td>
                                     <td class="px-3 py-2 text-gray-500">{{ $row->tanggal_pengajuan->format('d M Y H:i') }}</td>
                                     <td class="px-3 py-2 font-medium text-gray-700">{{ $row->user->nama ?? '-' }}</td>
                                     <td class="px-3 py-2 text-gray-500">{{ $row->user->nip ?? '-' }}</td>
                                     <td class="px-3 py-2 text-gray-500">{{ $row->user->unit->nama_unit ?? '-' }}</td>
-                                    <td class="px-3 py-2 text-gray-500">{{ $row->jenisIzin->nama_izin ?? '-' }}</td>
-                                    <td class="px-3 py-2 text-gray-500 max-w-[130px] whitespace-normal">
-                                        {{ $row->tanggal_mulai->format('d M Y') }}
-                                        @if($row->tanggal_selesai && !$row->tanggal_mulai->equalTo($row->tanggal_selesai))
-                                            - {{ $row->tanggal_selesai->format('d M Y') }}
-                                        @endif
+
+                                    {{-- Izin (card) --}}
+                                    <td class="px-3 py-2">
+                                        <span class="inline-block bg-sky-50 text-sky-600 border border-sky-100 rounded-lg px-3 py-1 text-xs font-semibold">
+                                            {{ $row->jenisIzin->nama_izin ?? '-' }}
+                                        </span>
                                     </td>
+
+                                    <td class="px-3 py-2 text-gray-500 max-w-[130px] whitespace-normal">{{ $tanggalIzin }}</td>
                                     <td class="px-3 py-2 text-gray-500">{{ $row->durasi }} Hari</td>
                                     <td class="px-3 py-2 text-gray-500 max-w-[140px] whitespace-normal">{{ $row->alasan }}</td>
                                     <td class="px-3 py-2 text-gray-500">{{ $row->penyetuju->nama ?? '-' }}</td>
-                                    <td class="px-3 py-2">
-                                        <div class="flex items-center gap-1">
-                                            {{-- Lihat Detail --}}
-                                            <a href="{{ route('admin.izin.show', $row->id) }}" title="Lihat Detail"
-                                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                                </svg>
+
+                                    {{-- Aksi (tombol teks + card popup, tanpa icon) --}}
+                                    <td class="px-3 py-2 text-center">
+                                        <div class="flex items-center justify-center gap-2">
+
+                                            <a href="{{ route('admin.izin.show', $row->id) }}"
+                                               class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-gray-500 hover:bg-gray-600 text-white transition">
+                                                Detail
                                             </a>
 
-                                            {{-- Setujui --}}
-                                            <form action="{{ route('admin.izin.approve', $row->id) }}" method="POST" class="inline">
-                                                @csrf
-                                                <button type="submit" title="Setujui"
-                                                        class="inline-flex items-center justify-center w-7 h-7 rounded-full text-sky-500 hover:bg-sky-50 transition">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M20 6 9 17l-5-5"/>
-                                                    </svg>
-                                                </button>
-                                            </form>
+                                            <button type="button" @click="approveOpen = true"
+                                                    class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-600 text-white transition">
+                                                Setujui
+                                            </button>
 
-                                            {{-- Tolak --}}
-                                            <form action="{{ route('admin.izin.reject', $row->id) }}" method="POST" class="inline">
-                                                @csrf
-                                                <button type="submit" title="Tolak"
-                                                        class="inline-flex items-center justify-center w-7 h-7 rounded-full text-rose-500 hover:bg-rose-50 transition">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M18 6 6 18M6 6l12 12"/>
-                                                    </svg>
-                                                </button>
-                                            </form>
+                                            <button type="button" @click="rejectOpen = true"
+                                                    class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-rose-500 hover:bg-rose-600 text-white transition">
+                                                Tolak
+                                            </button>
+
+                                            {{-- Card konfirmasi Setujui --}}
+                                            <div x-show="approveOpen"
+                                                 x-transition.opacity
+                                                 style="display: none;"
+                                                 class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+
+                                                <div x-show="approveOpen"
+                                                     x-transition:enter="transition ease-out duration-200"
+                                                     x-transition:enter-start="opacity-0 scale-95"
+                                                     x-transition:enter-end="opacity-100 scale-100"
+                                                     @click.outside="approveOpen = false"
+                                                     class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 text-left">
+
+                                                    <h3 class="text-base font-bold text-gray-900 mb-1">Setujui Pengajuan?</h3>
+                                                    <p class="text-sm text-gray-500 mb-4 whitespace-normal">
+                                                        Pengajuan {{ $row->jenisIzin->nama_izin ?? 'izin' }} dari
+                                                        <span class="font-semibold text-gray-700">{{ $row->user->nama ?? '-' }}</span>
+                                                        untuk tanggal {{ $tanggalIzin }} ({{ $row->durasi }} Hari) akan disetujui.
+                                                    </p>
+
+                                                    <div class="flex items-center gap-3">
+                                                        <button type="button" @click="approveOpen = false"
+                                                                class="flex-1 text-sm font-semibold px-4 py-2.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition">
+                                                            Batal
+                                                        </button>
+                                                        <form action="{{ route('admin.izin.approve', $row->id) }}" method="POST" class="flex-1">
+                                                            @csrf
+                                                            <button type="submit"
+                                                                    class="w-full text-sm font-semibold px-4 py-2.5 rounded-lg bg-sky-500 hover:bg-sky-600 text-white transition">
+                                                                Ya, Setujui
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {{-- Card Tolak (wajib isi catatan) --}}
+                                            <div x-show="rejectOpen"
+                                                 x-transition.opacity
+                                                 style="display: none;"
+                                                 class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+
+                                                <div x-show="rejectOpen"
+                                                     x-transition:enter="transition ease-out duration-200"
+                                                     x-transition:enter-start="opacity-0 scale-95"
+                                                     x-transition:enter-end="opacity-100 scale-100"
+                                                     @click.outside="rejectOpen = false"
+                                                     class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 text-left">
+
+                                                    <h3 class="text-base font-bold text-gray-900 mb-1">Tolak Pengajuan?</h3>
+                                                    <p class="text-sm text-gray-500 mb-4 whitespace-normal">
+                                                        Pengajuan dari
+                                                        <span class="font-semibold text-gray-700">{{ $row->user->nama ?? '-' }}</span>
+                                                        akan ditolak. Tulis alasan penolakan di bawah.
+                                                    </p>
+
+                                                    <form action="{{ route('admin.izin.reject', $row->id) }}" method="POST">
+                                                        @csrf
+                                                        <textarea name="catatan" rows="3" required
+                                                                  placeholder="Alasan penolakan"
+                                                                  class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-rose-400 resize-none mb-4"></textarea>
+
+                                                        <div class="flex items-center gap-3">
+                                                            <button type="button" @click="rejectOpen = false"
+                                                                    class="flex-1 text-sm font-semibold px-4 py-2.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition">
+                                                                Batal
+                                                            </button>
+                                                            <button type="submit"
+                                                                    class="flex-1 text-sm font-semibold px-4 py-2.5 rounded-lg bg-rose-500 hover:bg-rose-600 text-white transition">
+                                                                Tolak
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+
                                         </div>
                                     </td>
                                 </tr>
@@ -177,7 +210,7 @@
                         Menampilkan {{ $pengajuan->firstItem() ?? 0 }} - {{ $pengajuan->lastItem() ?? 0 }} dari {{ $pengajuan->total() }} data
                     </p>
                     <div class="flex items-center gap-1.5">
-                        {{ $pengajuan->links() }}
+                        {{ $pengajuan->onEachSide(1)->links() }}
                     </div>
                 </div>
             </div>

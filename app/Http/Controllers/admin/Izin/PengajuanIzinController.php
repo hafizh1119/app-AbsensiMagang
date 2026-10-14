@@ -7,6 +7,10 @@ use App\Models\PengajuanIzin;
 use App\Models\JenisIzin;
 use App\Models\JenisUnit;
 use Illuminate\Http\Request;
+use App\Exports\IzinExport;
+use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class PengajuanIzinController extends Controller
 {
@@ -55,26 +59,16 @@ class PengajuanIzinController extends Controller
         return view('admin.izin.semua', compact('pengajuan', 'jenisIzinList', 'unitList'));
     }
 
-    /**
+        /**
      * Halaman "Menunggu Persetujuan".
      */
     public function menunggu(Request $request)
     {
-        $base = PengajuanIzin::where('status', 'Menunggu');
+        // Pengajuan yang masih menunggu persetujuan
+        $totalMenunggu = PengajuanIzin::where('status', 'Menunggu')->count();
 
-        $totalMenunggu = (clone $base)->count();
-
-        $totalCuti = (clone $base)->whereHas('jenisIzin', function ($q) {
-            $q->where('nama_izin', 'Cuti Tahunan');
-        })->count();
-
-        $totalSakit = (clone $base)->whereHas('jenisIzin', function ($q) {
-            $q->where('nama_izin', 'Sakit');
-        })->count();
-
-        $totalPribadi = (clone $base)->whereHas('jenisIzin', function ($q) {
-            $q->where('nama_izin', 'Izin Pribadi');
-        })->count();
+        // Seluruh pengajuan izin (semua status)
+        $totalIzin = PengajuanIzin::count();
 
         $pengajuan = PengajuanIzin::with(['user.unit', 'jenisIzin'])
             ->where('status', 'Menunggu')
@@ -85,9 +79,7 @@ class PengajuanIzinController extends Controller
         return view('admin.izin.menunggu', compact(
             'pengajuan',
             'totalMenunggu',
-            'totalCuti',
-            'totalSakit',
-            'totalPribadi'
+            'totalIzin'
         ));
     }
 
@@ -134,6 +126,40 @@ class PengajuanIzinController extends Controller
         ]);
 
         return back()->with('success', 'Pengajuan izin ditolak.');
+    }
+
+    public function export(Request $request): BinaryFileResponse
+    {
+        $tanggal = $request->input('tanggal');
+        $unit    = $request->input('unit');
+        $jenis   = $request->input('jenis');
+
+        $data = PengajuanIzin::query()
+            ->with(['user.unit', 'jenisIzin'])
+            ->whereRaw('LOWER(status) = ?', ['disetujui'])
+            ->when($tanggal, fn ($q) => $q->whereDate('tanggal_pengajuan', $tanggal))
+            ->when($unit && !in_array($unit, ['Semua Unit'], true), function ($q) use ($unit) {
+                $q->whereHas('user.unit', fn ($s) => $s->where('nama_unit', $unit));
+            })
+            ->when($jenis && !in_array($jenis, ['Semua Jenis'], true), function ($q) use ($jenis) {
+                $q->whereHas('jenisIzin', fn ($s) => $s->where('nama_izin', $jenis));
+            })
+            ->orderByDesc('tanggal_pengajuan')
+            ->get();
+
+        $label = 'Pengajuan Disetujui';
+        if ($tanggal) {
+            $label .= ' - Tanggal ' . Carbon::parse($tanggal)->translatedFormat('d F Y');
+        }
+        if ($unit && $unit !== 'Semua Unit') {
+            $label .= ' - ' . $unit;
+        }
+
+        $tahun = (string) ($tanggal ? Carbon::parse($tanggal)->year : now()->year);
+
+        $namaFile = 'rekap-izin-disetujui-' . ($tanggal ?: 'semua-tanggal') . '.xlsx';
+
+        return Excel::download(new IzinExport($data, $label, $tahun), $namaFile);
     }
 
     /**

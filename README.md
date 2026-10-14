@@ -1,136 +1,148 @@
-<div align="center">
-    <img src="icon/diskop.svg" alt="Logo Dinas Koperasi Provinsi Jawa Tengah" width="120">
-    <h1>Sistem Absensi Peserta Magang</h1>
-    <p><strong>Dinas Koperasi Usaha Kecil dan Menengah Provinsi Jawa Tengah</strong></p>
-    <p>Aplikasi manajemen absensi dan izin untuk peserta magang</p>
-</div>
+# Panduan Instalasi Project Laravel
 
----
+Dokumentasi ini berisi langkah-langkah untuk menginstal dan menjalankan project Laravel di lingkungan lokal menggunakan Laragon.
 
-## 📋 Daftar Isi
+## Persyaratan
 
-- [Tentang Aplikasi](#-tentang-aplikasi)
-- [Fitur Utama](#-fitur-utama)
-- [Peran Pengguna](#-peran-pengguna)
-- [Teknologi yang Digunakan](#-teknologi-yang-digunakan)
-- [Instalasi](#-instalasi)
-- [Struktur Database](#-struktur-database)
-- [Hak Akses](#-hak-akses)
-- [Screenshot](#-screenshot)
-- [Kontak](#-kontak)
+Pastikan aplikasi berikut sudah terinstal di komputer:
 
----
-
-## 🏢 Tentang Aplikasi
-
-**Sistem Absensi Peserta Magang** adalah aplikasi berbasis web yang dikembangkan untuk mengelola kehadiran dan pengajuan izin peserta magang di **Dinas Koperasi Usaha Kecil dan Menengah Provinsi Jawa Tengah**.
-
-Aplikasi ini dirancang untuk:
-- Mencatat absensi masuk dan pulang peserta magang
-- Mengelola pengajuan izin (sakit, cuti, izin pribadi, dll)
-- Memantau rekapitulasi kehadiran
-- Mengelola data unit, peserta, dan jenis izin
-
----
-
-## 🚀 Fitur Utama
-
-### 👤 Sisi Peserta Magang
-| Fitur | Deskripsi |
-|-------|-----------|
-| ✅ **Absensi Harian** | Absen masuk dan pulang dengan deteksi lokasi berbasis GPS |
-| ✅ **Riwayat Absensi** | Melihat histori kehadiran harian |
-| ✅ **Pengajuan Izin** | Mengajukan izin (sakit, cuti, izin pribadi, dll) |
-| ✅ **Riwayat Izin** | Melihat status pengajuan izin |
-| ✅ **Verifikasi Izin** | (Admin Unit) Menyetujui/menolak pengajuan izin |
-
-### 👑 Sisi Super Admin
-| Modul | Deskripsi |
-|-------|-----------|
-| 📊 **Dashboard** | Ringkasan data absensi harian, grafik kehadiran, statistik |
-| 📁 **Data Master** | Kelola Unit, Jenis Izin, Peserta Magang, Jam Kerja |
-| 📅 **Data Absensi** | Lihat semua absensi, absensi hari ini, rekap bulanan |
-| 📄 **Pengajuan Izin** | Kelola semua pengajuan dan yang menunggu persetujuan |
-| 📍 **Lokasi Kantor** | Atur titik lokasi absensi dengan radius |
-| 👥 **Manajemen Akses** | Kelola akun Super Admin dan role pengguna |
-
----
-
-## 👥 Peran Pengguna
-
-| Role | Deskripsi |
-|------|-----------|
-| **Super Admin** | Mengelola semua data, verifikasi izin, dan konfigurasi sistem |
-| **Admin Unit** | Memverifikasi pengajuan izin di unitnya |
-| **Peserta** | Melakukan absensi dan mengajukan izin |
-
----
-
-## 🛠 Teknologi yang Digunakan
-
-### Backend
-- **Framework**: Laravel 11
-- **PHP**: ^8.2
-- **Database**: MySQL / MariaDB
-- **Authentication**: Laravel Breeze / Jetstream
-
-### Frontend
-- **CSS Framework**: Tailwind CSS 3.x
-- **JavaScript**: Alpine.js 3.x
-- **Chart**: Chart.js 4.x
-- **Maps**: Leaflet.js + OpenStreetMap
-- **Icons**: Custom SVG
-
-### Tools
-- **Version Control**: Git & GitHub
-- **Package Manager**: Composer & NPM
-- **Development**: Vite
-
----
-
-## 💻 Instalasi
-
-### Prasyarat
-- PHP ^8.2
+- PHP
 - Composer
-- Node.js & NPM
-- MySQL / MariaDB
+- MySQL/MariaDB
+- Laragon
+- Node.js dan npm (jika project menggunakan Vite/Inertia)
 
-### Langkah Instalasi
+## Langkah-langkah Instalasi
+
+### 1. Masuk ke Folder Project
+
+Buka terminal atau CMD, kemudian masuk ke folder project Laravel.
 
 ```bash
-# 1. Clone repository
-git clone https://github.com/username/sistem-absensi-magang.git
-cd sistem-absensi-magang
+cd nama-folder-project
+```
 
-# 2. Install dependencies PHP
+Sesuaikan `nama-folder-project` dengan nama folder project kamu.
+
+### 2. Install Dependensi PHP
+
+Jalankan perintah berikut untuk menginstal dependensi PHP berdasarkan file `composer.json`.
+
+```bash
 composer install
+```
 
-# 3. Install dependencies JavaScript
-npm install
+### 3. Salin File Environment
 
-# 4. Copy file environment
-cp .env.example .env
+Buat file `.env` berdasarkan file `.env.example`.
 
-# 5. Generate application key
+```bash
+copy .env.example .env
+```
+
+Perintah tersebut digunakan untuk membuat konfigurasi environment lokal.
+
+### 4. Generate Application Key
+
+Jalankan perintah berikut untuk membuat application key Laravel.
+
+```bash
 php artisan key:generate
+```
 
-# 6. Konfigurasi database di .env
+Application key digunakan Laravel untuk kebutuhan enkripsi aplikasi.
+
+### 5. Konfigurasi Database
+
+Buka file `.env`, kemudian sesuaikan konfigurasi database dengan pengaturan MySQL di Laragon.
+
+Contoh konfigurasi:
+
+```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=absensi_magang
+DB_DATABASE=nama_database
 DB_USERNAME=root
 DB_PASSWORD=
+```
 
-# 7. Jalankan migrasi database
+**Catatan:** Sesuaikan `DB_DATABASE`, `DB_USERNAME`, dan `DB_PASSWORD` dengan konfigurasi MySQL yang digunakan.
+
+Selanjutnya, buat database dengan nama yang sama seperti nilai `DB_DATABASE` melalui HeidiSQL atau phpMyAdmin.
+
+### 6. Jalankan Migrasi Database
+
+Jalankan perintah berikut untuk membuat tabel berdasarkan file migration dan menjalankan seeder jika tersedia.
+
+```bash
+php artisan migrate --seed
+```
+
+Jika project tidak memiliki seeder atau tidak ingin menjalankannya, gunakan:
+
+```bash
 php artisan migrate
+```
 
-# 8. Jalankan seeder (opsional)
-php artisan db:seed
+**Perhatian:** Jika database sudah berisi data penting, periksa terlebih dahulu file migration dan seeder sebelum menjalankan perintah.
 
-# 9. Build assets
-npm run build
+### 7. Install Dependensi Frontend
 
-# 10. Jalankan server
+Langkah ini diperlukan jika project memiliki file `package.json`, misalnya project yang menggunakan Vite, Vue, React, atau Inertia.js.
+
+Install dependensi frontend:
+
+```bash
+npm install
+```
+
+Jalankan Vite dalam mode development:
+
+```bash
+npm run dev
+```
+
+Biarkan terminal tersebut tetap berjalan selama aplikasi digunakan.
+
+### 8. Jalankan Server Laravel
+
+Buka terminal baru pada folder project yang sama, kemudian jalankan:
+
+```bash
 php artisan serve
+```
+
+Jika berhasil, Laravel biasanya menampilkan alamat server lokal:
+
+```text
+http://127.0.0.1:8000
+```
+
+Buka alamat tersebut di browser untuk mengakses aplikasi.
+
+## Ringkasan Perintah
+
+```bash
+composer install
+copy .env.example .env
+php artisan key:generate
+php artisan migrate --seed
+npm install
+npm run dev
+php artisan serve
+```
+
+**Catatan:** Konfigurasi database dilakukan melalui file `.env` sebelum menjalankan migrasi. Perintah `npm install` dan `npm run dev` hanya diperlukan jika project menggunakan frontend berbasis Node.js/Vite.
+
+## Troubleshooting
+
+- **Database connection error:** Periksa konfigurasi database di `.env` dan pastikan MySQL Laragon sedang berjalan.
+- **Application key missing:** Jalankan `php artisan key:generate`.
+- **Tabel belum tersedia:** Jalankan `php artisan migrate`.
+- **CSS atau JavaScript tidak tampil:** Pastikan `npm install` sudah selesai dan `npm run dev` masih berjalan.
+- **Dependensi PHP bermasalah:** Periksa versi PHP dan Composer yang digunakan, kemudian jalankan kembali `composer install`.
+
+## Selesai
+
+Jika semua langkah berhasil, aplikasi Laravel sudah dapat dijalankan secara lokal melalui browser.

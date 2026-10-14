@@ -33,15 +33,18 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
 
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('/absensi/semua', [AdminAbsensiController::class, 'index'])->name('absensi.semua');
-    Route::delete('/absensi/{id}', [AdminAbsensiController::class, 'destroy'])->name('absensi.destroy');
-    Route::get('/absensi/{id}/edit', [AdminAbsensiController::class, 'edit'])->name('absensi.edit');
-    Route::put('/absensi/{id}', [AdminAbsensiController::class, 'update'])->name('absensi.update');
     Route::get('/absensi/hari-ini', [AdminAbsensiController::class, 'hariIni'])->name('absensi.hari-ini');
-    Route::get('/absensi/rekap', [AdminAbsensiController::class, 'rekap'])->name('absensi.rekap');
+    Route::get('/absensi/semua',    [AdminAbsensiController::class, 'index'])->name('absensi.semua');
+    Route::get('/absensi/rekap',    [AdminAbsensiController::class, 'rekap'])->name('absensi.rekap');
+    Route::get('/absensi/export',   [AdminAbsensiController::class, 'export'])->name('absensi.export');
+
+    Route::put('/absensi/{id}',    [AdminAbsensiController::class, 'update'])->whereNumber('id')->name('absensi.update');
+    Route::delete('/absensi/{id}', [AdminAbsensiController::class, 'destroy'])->whereNumber('id')->name('absensi.destroy');
 
     Route::get('/data-master/unit', [JenisUnitController::class, 'index'])->name('data-master.unit');
+    Route::get('/data-master/unit/create', [JenisUnitController::class, 'create'])->name('data-master.unit.create');
     Route::post('/data-master/unit', [JenisUnitController::class, 'store'])->name('data-master.unit.store');
+    Route::get('/data-master/unit/{unit}/edit', [JenisUnitController::class, 'edit'])->name('data-master.unit.edit');
     Route::put('/data-master/unit/{unit}', [JenisUnitController::class, 'update'])->name('data-master.unit.update');
     Route::delete('/data-master/unit/{unit}', [JenisUnitController::class, 'destroy'])->name('data-master.unit.destroy');
 
@@ -59,18 +62,19 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::delete('/data-master/jenis-izin/{jenisIzin}', [JenisIzinController::class, 'destroy'])->name('data-master.jenis-izin.destroy');
 
     Route::get('/data-master/jam-kerja', [JamKerjaController::class, 'index'])->name('data-master.jam-kerja');
-    Route::get('/data-master/jam-kerja/create', [JamKerjaController::class, 'create'])->name('data-master.jam-kerja.create');
     Route::post('/data-master/jam-kerja', [JamKerjaController::class, 'store'])->name('data-master.jam-kerja.store');
-    Route::get('/data-master/jam-kerja/{jamKerja}/edit', [JamKerjaController::class, 'edit'])->name('data-master.jam-kerja.edit');
     Route::put('/data-master/jam-kerja/{jamKerja}', [JamKerjaController::class, 'update'])->name('data-master.jam-kerja.update');
     Route::delete('/data-master/jam-kerja/{jamKerja}', [JamKerjaController::class, 'destroy'])->name('data-master.jam-kerja.destroy');
 
     Route::get('/izin', function () { return view('admin.izin.index'); })->name('izin');
     Route::get('/izin/semua', [PengajuanIzinController::class, 'semua'])->name('izin.semua');
     Route::get('/izin/menunggu', [PengajuanIzinController::class, 'menunggu'])->name('izin.menunggu');
+    Route::get('/izin/export', [PengajuanIzinController::class, 'export'])->name('izin.export');
+    
     Route::get('/izin/{id}', [PengajuanIzinController::class, 'show'])->name('izin.show');
     Route::post('/izin/{id}/approve', [PengajuanIzinController::class, 'approve'])->name('izin.approve');
     Route::post('/izin/{id}/reject', [PengajuanIzinController::class, 'reject'])->name('izin.reject');
+
 
     Route::get('/lokasi-kantor', [LokasiKantorController::class, 'index'])->name('lokasi-kantor');
     Route::get('/lokasi-kantor/create', [LokasiKantorController::class, 'create'])->name('lokasi-kantor.create');
@@ -83,6 +87,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::get('/manajemen/user', [UserController::class, 'index']) ->name('manajemen.user');
     Route::get('/manajemen/user/{id}/edit', [UserController::class, 'edit']) ->name('manajemen.user.edit');
     Route::put('/manajemen/user/{id}', [UserController::class, 'update']) ->name('manajemen.user.update');
+
+    Route::get('/manajemen/user', [UserController::class, 'index'])->name('manajemen.user');
+    Route::get('/manajemen/admin-ruangan', [UserController::class, 'adminRuangan'])->name('manajemen.admin-ruangan');
+    Route::get('/manajemen/user/{id}/edit', [UserController::class, 'edit'])->name('manajemen.user.edit');
+    Route::put('/manajemen/user/{id}', [UserController::class, 'update'])->name('manajemen.user.update');
 
     Route::get('/manajemen/admin', [AdminController::class, 'index']) ->name('manajemen.admin');
     Route::get('/manajemen/admin/create', [AdminController::class, 'create']) ->name('manajemen.admin.create');

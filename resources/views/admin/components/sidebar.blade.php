@@ -47,7 +47,7 @@
                 <a href="{{ route('admin.data-master.unit') }}"
                 class="block px-3 py-2 rounded-lg text-sm transition-colors duration-150
                 {{ request()->routeIs('admin.data-master.unit*') ? 'bg-sky-50 text-sky-700 font-medium' : 'text-gray-500 hover:bg-sky-50 hover:text-sky-700' }}">
-                    Unit
+                    Ruangan
                 </a>
 
                 {{-- Jenis Izin --}}
@@ -97,9 +97,6 @@
                 <a href="{{ route('admin.absensi.hari-ini') }}"
                    class="block px-3 py-2 rounded-lg text-sm transition-colors duration-150
                    {{ request()->routeIs('admin.absensi.hari-ini') ? 'bg-sky-50 text-sky-700 font-medium' : 'text-gray-500 hover:bg-sky-50 hover:text-sky-700' }}">Absensi Hari Ini</a>
-                <a href="{{ route('admin.absensi.rekap') }}"
-                   class="block px-3 py-2 rounded-lg text-sm transition-colors duration-150
-                   {{ request()->routeIs('admin.absensi.rekap') ? 'bg-sky-50 text-sky-700 font-medium' : 'text-gray-500 hover:bg-sky-50 hover:text-sky-700' }}">Rekap Absensi</a>
             </div>
         </div>
 
@@ -170,6 +167,10 @@
                 <a href="{{ route('admin.manajemen.user') }}"
                 class="block px-3 py-2 rounded-lg text-sm transition-colors duration-150
                 {{ request()->routeIs(['admin.manajemen.user', 'admin.manajemen.user.edit']) ? 'bg-sky-50 text-sky-700 font-medium' : 'text-gray-500 hover:bg-sky-50 hover:text-sky-700' }}">Peserta</a>
+                {{-- edit role admin ruangan lewat modal, jadi cukup satu route --}}
+                <a href="{{ route('admin.manajemen.admin-ruangan') }}"
+                class="block px-3 py-2 rounded-lg text-sm transition-colors duration-150
+                {{ request()->routeIs('admin.manajemen.admin-ruangan') ? 'bg-sky-50 text-sky-700 font-medium' : 'text-gray-500 hover:bg-sky-50 hover:text-sky-700' }}">Admin Ruangan</a>
                 {{-- create/edit admin ikut dihitung aktif di sub-menu Super Admin --}}
                 <a href="{{ route('admin.manajemen.admin') }}"
                 class="block px-3 py-2 rounded-lg text-sm transition-colors duration-150

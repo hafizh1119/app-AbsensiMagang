@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\JenisUnit;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class JenisUnitController extends Controller
@@ -26,11 +27,9 @@ class JenisUnitController extends Controller
 
         $unit = $jenisUnit->values()->map(function (JenisUnit $item, int $index) {
             return [
-                'id'        => $item->id,
-                'no'        => $index + 1,
-                'nama'      => $item->nama_unit,
-                'deskripsi' => $item->deskripsi,
-                'status'    => $item->status,
+                'id'   => $item->id,
+                'no'   => $index + 1,
+                'nama' => $item->nama_unit,
             ];
         });
 
@@ -40,8 +39,7 @@ class JenisUnitController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'nama_unit' => ['required', 'string', 'max:255'],
-            'deskripsi' => ['nullable', 'string'],
+            'nama_unit' => ['required', 'string', 'max:255', 'unique:jenis_unit,nama_unit'],
         ]);
 
         $validated['status'] = 'Aktif';
@@ -55,7 +53,12 @@ class JenisUnitController extends Controller
 
     public function update(Request $request, JenisUnit $unit): RedirectResponse
     {
-        $validated = $this->validateData($request);
+        $validated = $request->validate([
+            'nama_unit' => [
+                'required', 'string', 'max:255',
+                Rule::unique('jenis_unit', 'nama_unit')->ignore($unit->id),
+            ],
+        ]);
 
         $unit->update($validated);
 
@@ -71,14 +74,5 @@ class JenisUnitController extends Controller
         return redirect()
             ->route('admin.data-master.unit')
             ->with('success', 'Jenis unit berhasil dihapus.');
-    }
-
-    private function validateData(Request $request): array
-    {
-        return $request->validate([
-            'nama_unit' => ['required', 'string', 'max:255'],
-            'deskripsi' => ['nullable', 'string'],
-            'status'    => ['required', 'in:Aktif,Nonaktif'],
-        ]);
     }
 }

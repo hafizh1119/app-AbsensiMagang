@@ -1,7 +1,7 @@
 {{-- resources/views/admin/data-master/pegawai/create.blade.php --}}
 @extends('layouts.app')
 
-@section('title', 'Tambah Pegawai')
+@section('title', 'Tambah Peserta')
 
 @section('content')
 
@@ -12,21 +12,35 @@
 
     <div class="flex-1 min-w-0 flex flex-col min-h-screen">
 
-        @include('admin.components.header', ['title' => 'Tambah Pegawai'])
+        @include('admin.components.header', ['title' => 'Tambah Peserta'])
 
         <main class="p-6">
 
             {{-- Judul & Breadcrumb --}}
             <div class="flex items-center justify-between mb-5">
                 <div>
-                    <h2 class="text-2xl font-bold text-gray-900">Tambah Pegawai</h2>
-                    <p class="text-sm text-gray-400 mt-1">Lengkapi data pegawai baru di bawah ini</p>
+                    <h2 class="text-2xl font-bold text-gray-900">Tambah Peserta</h2>
+                    <p class="text-sm text-gray-400 mt-1">Lengkapi data peserta baru di bawah ini</p>
                 </div>
             </div>
 
             <form action="{{ route('admin.data-master.pegawai.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
+                                @csrf
+
+                {{-- Ringkasan error validasi --}}
+                @if ($errors->any())
+                    <div class="mb-4 bg-rose-50 border border-rose-100 text-rose-600 text-sm rounded-xl px-4 py-3">
+                        <p class="font-semibold mb-1">Data belum bisa disimpan:</p>
+                        <ul class="list-disc list-inside text-xs space-y-0.5">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                
                 {{-- Satu Card Gabungan --}}
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
 
@@ -63,9 +77,9 @@
 
                     <hr class="border-gray-100 mb-6">
 
-                    {{-- Data Pegawai --}}
+                    {{-- Data Peserta --}}
                     <div>
-                        <h3 class="text-sm font-bold text-gray-900 mb-4">Data Pegawai</h3>
+                        <h3 class="text-sm font-bold text-gray-900 mb-4">Data Peserta</h3>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
@@ -77,21 +91,21 @@
                                 @error('nama') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
 
-                            {{-- No. Identitas --}}
+                            {{-- No. Peserta --}}
                             <div>
                                 <label class="block text-xs font-medium text-gray-500 mb-1.5">No. Peserta</label>
-                                <input type="text" name="nip" value="{{ old('nip') }}" placeholder="Nomor Induk Pegawai"
+                                <input type="text" name="nip" value="{{ old('nip') }}" placeholder="Nomor Peserta"
                                        class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('nip') border-rose-400 @enderror">
                                 @error('nip') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
 
-                            {{-- Unit / Divisi --}}
+                            {{-- Ruangan --}}
                             <div>
-                                <label class="block text-xs font-medium text-gray-500 mb-1.5">Unit / Divisi</label>
+                                <label class="block text-xs font-medium text-gray-500 mb-1.5">Ruangan</label>
                                 <div class="relative">
                                     <select name="unit_id"
                                             class="appearance-none w-full bg-white border border-gray-200 rounded-lg pl-3 pr-8 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('unit_id') border-rose-400 @enderror">
-                                        <option value="">Pilih Unit / Divisi</option>
+                                        <option value="">Pilih Ruangan</option>
                                         @foreach ($units ?? [] as $unit)
                                             <option value="{{ $unit->id }}" {{ old('unit_id') == $unit->id ? 'selected' : '' }}>
                                                 {{ $unit->nama_unit }}
@@ -105,18 +119,10 @@
                                 @error('unit_id') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
 
-                            {{-- Jabatan --}}
-                            <div>
-                                <label class="block text-xs font-medium text-gray-500 mb-1.5">Jabatan</label>
-                                <input type="text" name="jabatan" value="{{ old('jabatan') }}" placeholder="Contoh: Staf Keuangan"
-                                       class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('jabatan') border-rose-400 @enderror">
-                                @error('jabatan') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
-                            </div>
-
                             {{-- Email --}}
                             <div>
                                 <label class="block text-xs font-medium text-gray-500 mb-1.5">Email</label>
-                                <input type="email" name="email" value="{{ old('email') }}" placeholder="nama@instansi.go.id"
+                                <input type="email" name="email" value="{{ old('email') }}" placeholder="contoh@gmail.com"
                                        class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('email') border-rose-400 @enderror">
                                 @error('email') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
@@ -183,7 +189,7 @@
                             </div>
 
                             {{-- No. HP --}}
-                            <div>
+                            <div class="md:col-span-2">
                                 <label class="block text-xs font-medium text-gray-500 mb-1.5">No. HP</label>
                                 <input type="tel" name="no_hp" value="{{ old('no_hp') }}" placeholder="Contoh: 08123456789"
                                        class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('no_hp') border-rose-400 @enderror">
@@ -211,7 +217,7 @@
                     </a>
                     <button type="submit"
                             class="text-sm font-semibold px-5 py-2.5 rounded-lg bg-sky-500 hover:bg-sky-600 text-white shadow-sm transition">
-                        Simpan Pegawai
+                        Simpan Peserta
                     </button>
                 </div>
 

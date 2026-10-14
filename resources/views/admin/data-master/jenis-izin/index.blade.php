@@ -5,12 +5,28 @@
 
 @section('content')
 
-<div class="flex h-screen overflow-hidden">
+<div class="flex h-screen overflow-hidden"
+     x-data="{
+        createOpen: {{ $errors->any() && old('_form') === 'create' ? 'true' : 'false' }},
+        editOpen: {{ $errors->any() && old('_form') === 'edit' ? 'true' : 'false' }},
+        form: {
+            id: {{ old('_form') === 'edit' ? (int) old('id') : 'null' }},
+            nama_izin: @js(old('nama_izin', ''))
+        },
+        openCreate() {
+            this.form = { id: null, nama_izin: '' };
+            this.createOpen = true;
+        },
+        openEdit(row) {
+            this.form = { id: row.id, nama_izin: row.nama_izin };
+            this.editOpen = true;
+        }
+     }">
 
     {{-- Sidebar tetap di kiri, tidak ikut scroll --}}
     @include('admin.components.sidebar')
 
-    <div class="flex-1 min-w-0 flex flex-col h-screen overflow-y-auto" x-data="{ createOpen: false }">
+    <div class="flex-1 min-w-0 flex flex-col h-screen overflow-y-auto">
 
         @include('admin.components.header', ['title' => 'Jenis Izin'])
 
@@ -29,47 +45,19 @@
             @endif
 
             {{-- Judul & Tombol Tambah --}}
-            <div class="flex items-center justify-between mb-1">
+            <div class="flex items-center justify-between mb-6">
                 <div>
                     <h2 class="text-2xl font-bold text-gray-900">Jenis Izin</h2>
-                    <p class="text-sm text-gray-400 mt-1">Kelola data jenis izin yang tersedia</p>
+                    <p class="text-sm text-gray-400 mt-1.5">Kelola data jenis izin yang tersedia</p>
                 </div>
-                <button type="button" @click="createOpen = true"
-                   class="flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow-sm transition">
+                <button type="button" @click="openCreate()"
+                        class="flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow-sm transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <line x1="12" y1="5" x2="12" y2="19"/>
                         <line x1="5" y1="12" x2="19" y2="12"/>
                     </svg>
                     Tambah Jenis Izin
                 </button>
-            </div>
-
-            {{-- Kartu Statistik --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-5">
-                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-full flex items-center justify-center shrink-0 bg-sky-50 text-sky-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-400">Total Jenis Izin</p>
-                        <p class="text-2xl font-bold text-gray-900 leading-tight">{{ $stats['total_jenis'] }}</p>
-                        <p class="text-xs text-gray-400">Jenis</p>
-                    </div>
-                </div>
-                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-full flex items-center justify-center shrink-0 bg-blue-50 text-blue-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-400">Total Pengajuan</p>
-                        <p class="text-2xl font-bold text-gray-900 leading-tight">{{ $stats['total_pengajuan'] }}</p>
-                        <p class="text-xs text-gray-400">Pengajuan</p>
-                    </div>
-                </div>
             </div>
 
             {{-- Card utama: filter + tabel --}}
@@ -105,45 +93,20 @@
                             <tr class="bg-gray-50 text-gray-400 text-xs">
                                 <th class="text-left font-medium px-4 py-3 w-10">No</th>
                                 <th class="text-left font-medium px-4 py-3">Nama Jenis Izin</th>
-                                <th class="text-left font-medium px-4 py-3">Deskripsi</th>
-                                <th class="text-left font-medium px-4 py-3">Kuota / Tahun</th>
-                                <th class="text-left font-medium px-4 py-3">Kategori Absensi</th>
-                                <th class="text-left font-medium px-4 py-3">Wajib Absen</th>
                                 <th class="text-center font-medium px-4 py-3">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
                             @forelse ($jenisIzin as $row)
-                                @php
-                                    $kategoriLabel = [
-                                        'izin'           => 'Izin',
-                                        'sakit'          => 'Sakit',
-                                        'cuti'           => 'Cuti',
-                                        'izin_terlambat' => 'Izin Terlambat',
-                                    ];
-                                @endphp
-                                <tr class="hover:bg-gray-50/60 transition-colors" x-data="{ confirmOpen: false, editOpen: false }">
+                                <tr class="hover:bg-gray-50/60 transition-colors" x-data="{ confirmOpen: false }">
                                     <td class="px-4 py-3 text-gray-500">{{ $loop->iteration }}</td>
                                     <td class="px-4 py-3 text-gray-700 font-medium">{{ $row->nama_izin }}</td>
-                                    <td class="px-4 py-3 text-gray-500">{{ $row->deskripsi ?: '-' }}</td>
-                                    <td class="px-4 py-3 text-gray-500">{{ $row->kuota }} Hari</td>
-                                    <td class="px-4 py-3 text-gray-500">
-                                        <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full bg-blue-50 text-blue-600">
-                                            {{ $kategoriLabel[$row->kategori] ?? $row->kategori }}
-                                        </span>
-                                    </td>
-                                    <td class="px-4 py-3 text-gray-500">
-                                        @if ($row->wajib_absen)
-                                            <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full bg-sky-50 text-sky-600">Ya</span>
-                                        @else
-                                            <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full bg-gray-100 text-gray-500">Tidak</span>
-                                        @endif
-                                    </td>
                                     <td class="px-4 py-3 text-center">
                                         <div class="flex items-center justify-center gap-2">
 
                                             {{-- Tombol Edit --}}
-                                            <button type="button" @click="editOpen = true"
+                                            <button type="button"
+                                                    @click="openEdit(@js(['id' => $row->id, 'nama_izin' => $row->nama_izin]))"
                                                     class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-600 text-white transition">
                                                 Edit
                                             </button>
@@ -154,93 +117,15 @@
                                                 Hapus
                                             </button>
 
-                                            {{-- Modal Edit --}}
-                                            <div x-show="editOpen" x-transition.opacity style="display: none;"
+                                            {{-- Modal Hapus --}}
+                                            <div x-show="confirmOpen" x-transition.opacity style="display: none;"
                                                  class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-                                                <div x-show="editOpen"
+                                                <div x-show="confirmOpen"
                                                      x-transition:enter="transition ease-out duration-200"
                                                      x-transition:enter-start="opacity-0 scale-95"
                                                      x-transition:enter-end="opacity-100 scale-100"
-                                                     @click.outside="editOpen = false"
-                                                     class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 text-left">
-
-                                                    <h3 class="text-base font-bold text-gray-900 mb-4">Edit Jenis Izin</h3>
-
-                                                    <form action="{{ route('admin.data-master.jenis-izin.update', $row->id) }}" method="POST" class="space-y-4">
-                                                        @csrf
-                                                        @method('PUT')
-
-                                                        <div>
-                                                            <label class="block text-xs font-medium text-gray-500 mb-1.5">Nama Jenis Izin</label>
-                                                            <input type="text" name="nama_izin" value="{{ $row->nama_izin }}" required
-                                                                   class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-sky-500">
-                                                        </div>
-
-                                                        <div>
-                                                            <label class="block text-xs font-medium text-gray-500 mb-1.5">Deskripsi</label>
-                                                            <textarea name="deskripsi" rows="2"
-                                                                      class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-sky-500">{{ $row->deskripsi }}</textarea>
-                                                        </div>
-
-                                                        <div>
-                                                            <label class="block text-xs font-medium text-gray-500 mb-1.5">Kuota per Tahun (Hari)</label>
-                                                            <input type="number" name="kuota" value="{{ $row->kuota }}" min="0" max="365" required
-                                                                   class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-sky-500">
-                                                        </div>
-
-                                                        <div>
-                                                            <label class="block text-xs font-medium text-gray-500 mb-1.5">Kategori Absensi</label>
-                                                            <select name="kategori" required
-                                                                    class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-sky-500">
-                                                                <option value="izin" @selected($row->kategori === 'izin')>Izin</option>
-                                                                <option value="sakit" @selected($row->kategori === 'sakit')>Sakit</option>
-                                                                <option value="cuti" @selected($row->kategori === 'cuti')>Cuti</option>
-                                                                <option value="izin_terlambat" @selected($row->kategori === 'izin_terlambat')>Izin Terlambat</option>
-                                                            </select>
-                                                            <p class="text-xs text-gray-400 mt-1">Menentukan status apa yang tercatat di absensi saat pengajuan jenis izin ini disetujui.</p>
-                                                        </div>
-
-                                                        <div>
-                                                            <label class="block text-xs font-medium text-gray-500 mb-1.5">Wajib Absen Fisik?</label>
-                                                            <select name="wajib_absen" required
-                                                                    class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-sky-500">
-                                                                <option value="1" @selected($row->wajib_absen)>Ya, tetap wajib absen masuk/pulang</option>
-                                                                <option value="0" @selected(!$row->wajib_absen)>Tidak, langsung dianggap izin penuh hari</option>
-                                                            </select>
-                                                        </div>
-
-                                                        <div>
-                                                            <label class="block text-xs font-medium text-gray-500 mb-1.5">Status</label>
-                                                            <select name="status" required
-                                                                    class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-sky-500">
-                                                                <option value="1" @selected($row->status)>Aktif</option>
-                                                                <option value="0" @selected(!$row->status)>Tidak Aktif</option>
-                                                            </select>
-                                                        </div>
-
-                                                        <div class="flex items-center gap-3 pt-2">
-                                                            <button type="button" @click="editOpen = false"
-                                                                    class="flex-1 text-sm font-semibold px-4 py-2.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition">
-                                                                Batal
-                                                            </button>
-                                                            <button type="submit"
-                                                                    class="flex-1 text-sm font-semibold px-4 py-2.5 rounded-lg bg-sky-500 hover:bg-sky-600 text-white transition">
-                                                                Simpan
-                                                            </button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-
-                                            {{-- Modal Hapus --}}
-                                            <div x-show="confirmOpen" x-transition.opacity style="display: none;"
-                                                class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-                                                <div x-show="confirmOpen"
-                                                    x-transition:enter="transition ease-out duration-200"
-                                                    x-transition:enter-start="opacity-0 scale-95"
-                                                    x-transition:enter-end="opacity-100 scale-100"
-                                                    @click.outside="confirmOpen = false"
-                                                    class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 text-center">
+                                                     @click.outside="confirmOpen = false"
+                                                     class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 text-center">
 
                                                     <div class="w-14 h-14 mx-auto rounded-full bg-rose-50 flex items-center justify-center mb-4">
                                                         <svg class="w-7 h-7 text-rose-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -274,7 +159,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="px-4 py-8 text-center text-sm text-gray-400">
+                                    <td colspan="3" class="px-4 py-8 text-center text-sm text-gray-400">
                                         Belum ada data jenis izin.
                                     </td>
                                 </tr>
@@ -290,87 +175,12 @@
 
             </div>
 
+            {{-- Modal tambah & edit (file terpisah) --}}
+            @include('admin.data-master.jenis-izin.create')
+            @include('admin.data-master.jenis-izin.edit')
+
         </main>
-    @include('admin.components.footer')
-        {{-- Modal Tambah Jenis Izin --}}
-        <div x-show="createOpen" x-transition.opacity style="display: none;"
-             class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-            <div x-show="createOpen"
-                 x-transition:enter="transition ease-out duration-200"
-                 x-transition:enter-start="opacity-0 scale-95"
-                 x-transition:enter-end="opacity-100 scale-100"
-                 @click.outside="createOpen = false"
-                 class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 text-left">
-
-                <h3 class="text-base font-bold text-gray-900 mb-4">Tambah Jenis Izin</h3>
-
-                <form action="{{ route('admin.data-master.jenis-izin.store') }}" method="POST" class="space-y-4">
-                    @csrf
-
-                    <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Nama Jenis Izin</label>
-                        <input type="text" name="nama_izin" placeholder="Contoh: Cuti Tahunan" required
-                               class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Deskripsi</label>
-                        <textarea name="deskripsi" rows="2" placeholder="Deskripsi singkat jenis izin"
-                                  class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500"></textarea>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Kuota per Tahun (Hari)</label>
-                        <input type="number" name="kuota" placeholder="Contoh: 12" min="0" max="365" required
-                               class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500">
-                        <p class="text-xs text-gray-400 mt-1">Jatah hari yang didapat tiap pegawai per tahun untuk jenis izin ini.</p>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Kategori Absensi</label>
-                        <select name="kategori" required
-                                class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-sky-500">
-                            <option value="izin">Izin</option>
-                            <option value="sakit">Sakit</option>
-                            <option value="cuti">Cuti</option>
-                            <option value="izin_terlambat">Izin Terlambat</option>
-                        </select>
-                        <p class="text-xs text-gray-400 mt-1">Menentukan status apa yang tercatat di absensi saat pengajuan jenis izin ini disetujui.</p>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Wajib Absen Fisik?</label>
-                        <select name="wajib_absen" required
-                                class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-sky-500">
-                            <option value="1">Ya, tetap wajib absen masuk/pulang</option>
-                            <option value="0" selected>Tidak, langsung dianggap izin penuh hari</option>
-                        </select>
-                        <p class="text-xs text-gray-400 mt-1">Contoh "Izin Terlambat" pilih Ya, contoh "Cuti"/"Sakit" pilih Tidak.</p>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Status</label>
-                        <select name="status" required
-                                class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-sky-500">
-                            <option value="1" selected>Aktif</option>
-                            <option value="0">Tidak Aktif</option>
-                        </select>
-                    </div>
-
-                    <div class="flex items-center gap-3 pt-2">
-                        <button type="button" @click="createOpen = false"
-                                class="flex-1 text-sm font-semibold px-4 py-2.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition">
-                            Batal
-                        </button>
-                        <button type="submit"
-                                class="flex-1 text-sm font-semibold px-4 py-2.5 rounded-lg bg-sky-500 hover:bg-sky-600 text-white transition">
-                            Simpan
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
+        @include('admin.components.footer')
     </div>
 
 </div>

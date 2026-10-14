@@ -1,7 +1,7 @@
 {{-- resources/views/admin/data-master/pegawai/edit.blade.php --}}
 @extends('layouts.app')
 
-@section('title', 'Edit Pegawai')
+@section('title', 'Edit Peserta')
 
 @section('content')
 
@@ -12,21 +12,33 @@
 
     <div class="flex-1 min-w-0 flex flex-col min-h-screen">
 
-        @include('admin.components.header', ['title' => 'Edit Pegawai'])
+        @include('admin.components.header', ['title' => 'Edit Peserta'])
 
         <main class="p-6">
 
             {{-- Judul & Breadcrumb --}}
             <div class="flex items-center justify-between mb-5">
                 <div>
-                    <h2 class="text-2xl font-bold text-gray-900">Edit Pegawai</h2>
-                    <p class="text-sm text-gray-400 mt-1">Perbarui data pegawai di bawah ini</p>
+                    <h2 class="text-2xl font-bold text-gray-900">Edit Peserta</h2>
+                    <p class="text-sm text-gray-400 mt-1">Perbarui data peserta di bawah ini</p>
                 </div>
             </div>
 
             <form action="{{ route('admin.data-master.pegawai.update', $pegawai->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
+
+                {{-- Ringkasan error validasi --}}
+                @if ($errors->any())
+                    <div class="mb-4 bg-rose-50 border border-rose-100 text-rose-600 text-sm rounded-xl px-4 py-3">
+                        <p class="font-semibold mb-1">Data belum bisa disimpan:</p>
+                        <ul class="list-disc list-inside text-xs space-y-0.5">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
 
                 {{-- Satu Card Gabungan --}}
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
@@ -64,9 +76,9 @@
 
                     <hr class="border-gray-100 mb-6">
 
-                    {{-- Data Pegawai --}}
+                    {{-- Data Peserta --}}
                     <div>
-                        <h3 class="text-sm font-bold text-gray-900 mb-4">Data Pegawai</h3>
+                        <h3 class="text-sm font-bold text-gray-900 mb-4">Data Peserta</h3>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
@@ -78,21 +90,21 @@
                                 @error('nama') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
 
-                            {{-- No. Identitas --}}
+                            {{-- No. Peserta --}}
                             <div>
                                 <label class="block text-xs font-medium text-gray-500 mb-1.5">No. Peserta</label>
-                                <input type="text" name="nip" value="{{ old('nip', $pegawai->nip) }}" placeholder="Nomor Induk Pegawai"
+                                <input type="text" name="nip" value="{{ old('nip', $pegawai->nip) }}" placeholder="Nomor Peserta"
                                        class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('nip') border-rose-400 @enderror">
                                 @error('nip') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
 
-                            {{-- Unit / Divisi --}}
+                            {{-- Ruangan --}}
                             <div>
-                                <label class="block text-xs font-medium text-gray-500 mb-1.5">Unit</label>
+                                <label class="block text-xs font-medium text-gray-500 mb-1.5">Ruangan</label>
                                 <div class="relative">
                                     <select name="unit_id"
                                             class="appearance-none w-full bg-white border border-gray-200 rounded-lg pl-3 pr-8 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('unit_id') border-rose-400 @enderror">
-                                        <option value="">Pilih Unit / Divisi</option>
+                                        <option value="">Pilih Ruangan</option>
                                         @foreach ($units ?? [] as $unit)
                                             <option value="{{ $unit->id }}" {{ old('unit_id', $pegawai->unit_id) == $unit->id ? 'selected' : '' }}>
                                                 {{ $unit->nama_unit }}
@@ -106,18 +118,10 @@
                                 @error('unit_id') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
 
-                            {{-- Jabatan --}}
-                            <div>
-                                <label class="block text-xs font-medium text-gray-500 mb-1.5">Jabatan</label>
-                                <input type="text" name="jabatan" value="{{ old('jabatan', $pegawai->jabatan) }}" placeholder="Contoh: Staf Keuangan"
-                                       class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('jabatan') border-rose-400 @enderror">
-                                @error('jabatan') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
-                            </div>
-
                             {{-- Email --}}
                             <div>
                                 <label class="block text-xs font-medium text-gray-500 mb-1.5">Email</label>
-                                <input type="email" name="email" value="{{ old('email', $pegawai->email) }}" placeholder="nama@instansi.go.id"
+                                <input type="email" name="email" value="{{ old('email', $pegawai->email) }}" placeholder="contoh@gmail.com"
                                        class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('email') border-rose-400 @enderror">
                                 @error('email') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
@@ -186,29 +190,11 @@
                             </div>
 
                             {{-- No. HP --}}
-                            <div>
+                            <div class="md:col-span-2">
                                 <label class="block text-xs font-medium text-gray-500 mb-1.5">No. HP</label>
                                 <input type="tel" name="no_hp" value="{{ old('no_hp', $pegawai->no_hp) }}" placeholder="Contoh: 08123456789"
                                        class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('no_hp') border-rose-400 @enderror">
                                 @error('no_hp') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
-                            </div>
-
-                            {{-- Status Kepegawaian --}}
-                            <div>
-                                <label class="block text-xs font-medium text-gray-500 mb-1.5">Status Kepegawaian</label>
-                                <div class="relative">
-                                    <select name="status_pegawai"
-                                            class="appearance-none w-full bg-white border border-gray-200 rounded-lg pl-3 pr-8 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('status_pegawai') border-rose-400 @enderror">
-                                        @php $statusPeg = old('status_pegawai', $pegawai->status_pegawai ?? null); @endphp
-                                        <option value="Aktif" {{ $statusPeg === 'Aktif' ? 'selected' : '' }}>Aktif</option>
-                                        <option value="Nonaktif" {{ $statusPeg === 'Nonaktif' ? 'selected' : '' }}>Nonaktif</option>
-                                        <option value="Cuti" {{ $statusPeg === 'Cuti' ? 'selected' : '' }}>Cuti</option>
-                                    </select>
-                                    <svg class="w-4 h-4 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
-                                    </svg>
-                                </div>
-                                @error('status_pegawai') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
 
                             {{-- Alamat --}}

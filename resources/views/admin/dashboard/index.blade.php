@@ -89,7 +89,7 @@
                 <div class="stat-card fade-up" style="--d:240ms">
                     <div class="flex items-center gap-3">
                         <div class="w-11 h-11 rounded-xl bg-sky-50 flex items-center justify-center text-sky-500 text-xl">🧑‍⚕️</div>
-                        <span class="text-sm text-gray-500">Izin / Sakit Hari Ini</span>
+                        <span class="text-sm text-gray-500">Izin Hari Ini</span>
                     </div>
                     <div class="mt-3 text-3xl font-bold text-gray-900 counter" data-value="{{ $izinSakitHariIni ?? 0 }}">0</div>
                     <div class="mt-2 text-xs text-sky-500 font-medium">{{ $persenIzinSakit ?? 0 }}% dari total pegawai</div>

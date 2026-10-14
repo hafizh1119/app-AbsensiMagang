@@ -11,16 +11,14 @@
         editOpen: {{ $errors->any() && old('_form') === 'edit' ? 'true' : 'false' }},
         form: {
             id: {{ old('_form') === 'edit' ? (int) old('id') : 'null' }},
-            nama_unit: @js(old('nama_unit', '')),
-            deskripsi: @js(old('deskripsi', '')),
-            status: @js(old('status', 'Aktif'))
+            nama_unit: @js(old('nama_unit', ''))
         },
         openCreate() {
-            this.form = { id: null, nama_unit: '', deskripsi: '', status: 'Aktif' };
+            this.form = { id: null, nama_unit: '' };
             this.createOpen = true;
         },
         openEdit(row) {
-            this.form = { id: row.id, nama_unit: row.nama, deskripsi: row.deskripsi ?? '', status: row.status };
+            this.form = { id: row.id, nama_unit: row.nama };
             this.editOpen = true;
         }
      }">
@@ -72,10 +70,10 @@
             @endif
 
             {{-- Judul & Tombol Tambah --}}
-            <div class="flex items-center justify-between mb-1">
+            <div class="flex items-center justify-between mb-6">
                 <div>
-                    <h2 class="text-2xl font-bold text-gray-900">Unit</h2>
-                    <p class="text-sm text-gray-400 mt-1">Kelola data jenis unit atau divisi di lingkungan dinas</p>
+                    <h2 class="text-2xl font-bold text-gray-900">Ruangan</h2>
+                    <p class="text-sm text-gray-400 mt-1.5">Kelola data jenis ruangan di lingkungan dinas</p>
                 </div>
                 <button type="button" @click="openCreate()"
                         class="flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow-sm transition">
@@ -83,45 +81,8 @@
                         <line x1="12" y1="5" x2="12" y2="19"/>
                         <line x1="5" y1="12" x2="19" y2="12"/>
                     </svg>
-                    Tambah Unit
+                    Tambah Ruangan
                 </button>
-            </div>
-
-            {{-- Kartu Statistik --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-5">
-                @foreach ($stats as $stat)
-                    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full flex items-center justify-center shrink-0
-                            {{ match($stat['color']) {
-                                'emerald' => 'bg-sky-50 text-sky-600',
-                                'blue'    => 'bg-blue-50 text-blue-600',
-                                'amber'   => 'bg-amber-50 text-amber-600',
-                                'rose'    => 'bg-rose-50 text-rose-500',
-                                default   => 'bg-gray-50 text-gray-500',
-                            } }}">
-                            @switch($stat['icon'])
-                                @case('building')
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                        <rect x="4" y="3" width="16" height="18" rx="1"/>
-                                        <path stroke-linecap="round" d="M9 7h1M14 7h1M9 11h1M14 11h1M9 15h1M14 15h1"/>
-                                    </svg>
-                                    @break
-                                @case('users')
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/>
-                                        <circle cx="10" cy="7" r="4"/>
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
-                                    </svg>
-                                    @break
-                            @endswitch
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-400">{{ $stat['label'] }}</p>
-                            <p class="text-2xl font-bold text-gray-900 leading-tight">{{ $stat['value'] }}</p>
-                            <p class="text-xs text-gray-400">{{ $stat['suffix'] }}</p>
-                        </div>
-                    </div>
-                @endforeach
             </div>
 
             {{-- Card utama: filter + tabel --}}
@@ -136,7 +97,7 @@
                                 <circle cx="11" cy="11" r="7"/>
                                 <line x1="21" y1="21" x2="16.65" y2="16.65"/>
                             </svg>
-                            <input type="text" placeholder="Cari nama unit atau kode..."
+                            <input type="text" placeholder="Cari nama unit..."
                                    class="w-full bg-white border border-gray-200 rounded-lg pl-9 pr-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500">
                         </div>
                     </div>
@@ -156,8 +117,7 @@
                         <thead>
                             <tr class="bg-gray-50 text-gray-400 text-xs">
                                 <th class="text-left font-medium px-4 py-3 w-10">No</th>
-                                <th class="text-left font-medium px-4 py-3">Nama Unit</th>
-                                <th class="text-left font-medium px-4 py-3">Deskripsi</th>
+                                <th class="text-left font-medium px-4 py-3">Nama Ruangan</th>
                                 <th class="text-center font-medium px-4 py-3">Aksi</th>
                             </tr>
                         </thead>
@@ -166,9 +126,6 @@
                                 <tr class="hover:bg-gray-50/60 transition-colors" x-data="{ confirmOpen: false }">
                                     <td class="px-4 py-3 text-gray-500">{{ $row['no'] }}</td>
                                     <td class="px-4 py-3 text-gray-700">{{ $row['nama'] }}</td>
-                                    <td class="px-4 py-3 text-gray-500 max-w-[280px] truncate" title="{{ $row['deskripsi'] }}">
-                                        {{ $row['deskripsi'] ?: '-' }}
-                                    </td>
                                     <td class="px-4 py-3 text-center">
                                         <div class="flex items-center justify-center gap-2">
                                             <button type="button"
@@ -184,16 +141,16 @@
 
                                             {{-- Modal Konfirmasi Hapus --}}
                                             <div x-show="confirmOpen"
-                                                x-transition.opacity
-                                                style="display: none;"
-                                                class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+                                                 x-transition.opacity
+                                                 style="display: none;"
+                                                 class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
 
                                                 <div x-show="confirmOpen"
-                                                    x-transition:enter="transition ease-out duration-200"
-                                                    x-transition:enter-start="opacity-0 scale-95"
-                                                    x-transition:enter-end="opacity-100 scale-100"
-                                                    @click.outside="confirmOpen = false"
-                                                    class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 text-center">
+                                                     x-transition:enter="transition ease-out duration-200"
+                                                     x-transition:enter-start="opacity-0 scale-95"
+                                                     x-transition:enter-end="opacity-100 scale-100"
+                                                     @click.outside="confirmOpen = false"
+                                                     class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 text-center">
 
                                                     <div class="w-14 h-14 mx-auto rounded-full bg-rose-50 flex items-center justify-center mb-4">
                                                         <svg class="w-7 h-7 text-rose-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -227,7 +184,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="px-4 py-8 text-center text-gray-400">Belum ada data jenis unit.</td>
+                                    <td colspan="3" class="px-4 py-8 text-center text-gray-400">Belum ada data jenis unit.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -254,112 +211,12 @@
 
             </div>
 
-            {{-- ============ MODAL TAMBAH UNIT ============ --}}
-            <div x-show="createOpen"
-                 x-transition.opacity
-                 style="display: none;"
-                 class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-
-                <div x-show="createOpen"
-                     x-transition:enter="transition ease-out duration-200"
-                     x-transition:enter-start="opacity-0 scale-95"
-                     x-transition:enter-end="opacity-100 scale-100"
-                     @click.outside="createOpen = false"
-                     class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
-
-                    <h3 class="text-base font-bold text-gray-900 mb-4">Tambah Unit</h3>
-
-                    <form action="{{ route('admin.data-master.unit.store') }}" method="POST" class="space-y-4 text-sm text-left">
-                        @csrf
-                        <input type="hidden" name="_form" value="create">
-
-                        <div>
-                            <label class="block text-xs text-gray-400 mb-1.5">Nama Unit <span class="text-rose-500">*</span></label>
-                            <input type="text" name="nama_unit" x-model="form.nama_unit" placeholder="Contoh: Struktural"
-                                   class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('nama_unit') border-rose-400 @enderror">
-                            @error('nama_unit')
-                                <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <div>
-                            <label class="block text-xs text-gray-400 mb-1.5">Deskripsi</label>
-                            <textarea name="deskripsi" x-model="form.deskripsi" rows="3" placeholder="Deskripsi singkat jenis unit ini"
-                                      class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-sky-500 resize-none @error('deskripsi') border-rose-400 @enderror"></textarea>
-                            @error('deskripsi')
-                                <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <div class="flex items-center gap-3 pt-2">
-                            <button type="button" @click="createOpen = false"
-                                    class="flex-1 text-sm font-semibold px-4 py-2.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition">
-                                Batal
-                            </button>
-                            <button type="submit"
-                                    class="flex-1 text-sm font-semibold px-4 py-2.5 rounded-lg bg-sky-500 hover:bg-sky-600 text-white transition">
-                                Simpan
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            {{-- ============ MODAL EDIT UNIT ============ --}}
-            <div x-show="editOpen"
-                 x-transition.opacity
-                 style="display: none;"
-                 class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-
-                <div x-show="editOpen"
-                     x-transition:enter="transition ease-out duration-200"
-                     x-transition:enter-start="opacity-0 scale-95"
-                     x-transition:enter-end="opacity-100 scale-100"
-                     @click.outside="editOpen = false"
-                     class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
-
-                    <h3 class="text-base font-bold text-gray-900 mb-4">Edit Unit</h3>
-
-                    <form :action="'{{ url('/admin/data-master/unit') }}/' + form.id" method="POST" class="space-y-4 text-sm text-left">
-                        @csrf
-                        @method('PUT')
-                        <input type="hidden" name="_form" value="edit">
-                        <input type="hidden" name="id" :value="form.id">
-
-                        <div>
-                            <label class="block text-xs text-gray-400 mb-1.5">Nama Unit <span class="text-rose-500">*</span></label>
-                            <input type="text" name="nama_unit" x-model="form.nama_unit" placeholder="Contoh: Struktural"
-                                   class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('nama_unit') border-rose-400 @enderror">
-                            @error('nama_unit')
-                                <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <div>
-                            <label class="block text-xs text-gray-400 mb-1.5">Deskripsi</label>
-                            <textarea name="deskripsi" x-model="form.deskripsi" rows="3" placeholder="Deskripsi singkat jenis unit ini"
-                                      class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-sky-500 resize-none @error('deskripsi') border-rose-400 @enderror"></textarea>
-                            @error('deskripsi')
-                                <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <div class="flex items-center gap-3 pt-2">
-                            <button type="button" @click="editOpen = false"
-                                    class="flex-1 text-sm font-semibold px-4 py-2.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition">
-                                Batal
-                            </button>
-                            <button type="submit"
-                                    class="flex-1 text-sm font-semibold px-4 py-2.5 rounded-lg bg-sky-500 hover:bg-sky-600 text-white transition">
-                                Simpan Perubahan
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+            {{-- Modal tambah & edit (file terpisah) --}}
+            @include('admin.data-master.unit.create')
+            @include('admin.data-master.unit.edit')
 
         </main>
-    @include('admin.components.footer')
+        @include('admin.components.footer')
     </div>
 
 </div>

@@ -52,7 +52,7 @@
                 </a>
             </div>
 
-            <form action="#" method="POST">
+            <form action="{{ route('admin.lokasi-kantor.update', $lokasi->id) }}" method="POST">
                 @csrf
                 @method('PUT')
 

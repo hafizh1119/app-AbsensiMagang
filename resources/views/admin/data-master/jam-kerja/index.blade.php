@@ -5,7 +5,46 @@
 
 @section('content')
 
-<div class="flex h-screen overflow-hidden">
+<div class="flex h-screen overflow-hidden"
+     x-data="{
+        createOpen: {{ $errors->any() && old('_form') === 'create' ? 'true' : 'false' }},
+        editOpen: {{ $errors->any() && old('_form') === 'edit' ? 'true' : 'false' }},
+        semuaHari: @js($semuaHari),
+        hariTersedia: @js($hariTersedia),
+        form: {
+            id: {{ old('_form') === 'edit' ? (int) old('id') : 'null' }},
+            hari: @js(old('hari', '')),
+            status: @js(old('status', 'aktif')),
+            jam_masuk: @js(old('jam_masuk', '08:00')),
+            jam_pulang: @js(old('jam_pulang', '16:00')),
+            toleransi_terlambat: @js(old('toleransi_terlambat', 15))
+        },
+        hariEdit() {
+            return this.semuaHari.filter(h => h === this.form.hari || this.hariTersedia.includes(h));
+        },
+        openCreate() {
+            this.form = {
+                id: null,
+                hari: this.hariTersedia[0] ?? '',
+                status: 'aktif',
+                jam_masuk: '08:00',
+                jam_pulang: '16:00',
+                toleransi_terlambat: 15
+            };
+            this.createOpen = true;
+        },
+        openEdit(row) {
+            this.form = {
+                id: row.id,
+                hari: row.hari,
+                status: row.status_val,
+                jam_masuk: row.jam_masuk_val ?? '08:00',
+                jam_pulang: row.jam_pulang_val ?? '16:00',
+                toleransi_terlambat: row.toleransi_val ?? 15
+            };
+            this.editOpen = true;
+        }
+     }">
 
     {{-- Sidebar tetap di kiri, tidak ikut scroll --}}
     @include('admin.components.sidebar')
@@ -50,17 +89,14 @@
                 </div>
 
                 <div class="flex flex-col items-end gap-2">
-                    <p class="text-xs text-gray-400">
-                        Dashboard / <span class="text-gray-600 font-medium">Jam Kerja</span>
-                    </p>
-                    <a href="{{ route('admin.data-master.jam-kerja.create') }}"
-                       class="flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow-sm transition">
+                    <button type="button" @click="openCreate()"
+                            class="flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow-sm transition">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <line x1="12" y1="5" x2="12" y2="19"/>
                             <line x1="5" y1="12" x2="19" y2="12"/>
                         </svg>
                         Tambah Jam Kerja
-                    </a>
+                    </button>
                 </div>
             </div>
 
@@ -117,25 +153,62 @@
                                         </span>
                                     </td>
                                     <td class="px-5 py-3">
-                                        <div class="flex items-center justify-center gap-3">
-                                            <a href="{{ route('admin.data-master.jam-kerja.edit', $row['id']) }}"
-                                               class="text-amber-500 hover:text-amber-700 transition" title="Edit">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/>
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25L15.75 4.5"/>
-                                                </svg>
-                                            </a>
+                                        <div class="flex items-center justify-center gap-1" x-data="{ confirmOpen: false }">
+
+                                            {{-- Tombol Edit --}}
+                                            <button type="button" @click="openEdit(@js($row))"
+                                                    class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-600 text-white transition">
+                                                Edit
+                                            </button>
+
                                             @if ($row['status'] === 'Aktif')
-                                                <form action="{{ route('admin.data-master.jam-kerja.destroy', $row['id']) }}" method="POST"
-                                                      onsubmit="return confirm('Hapus jadwal jam kerja hari {{ $row['hari'] }}?')">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="text-rose-500 hover:text-rose-700 transition" title="Hapus">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/>
-                                                        </svg>
-                                                    </button>
-                                                </form>
+                                                {{-- Tombol Hapus --}}
+                                                <button type="button" @click="confirmOpen = true"
+                                                        class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-rose-500 hover:bg-rose-600 text-white transition">
+                                                    Hapus
+                                                </button>
+
+                                                {{-- Overlay --}}
+                                                <div x-show="confirmOpen"
+                                                    x-transition.opacity
+                                                    style="display: none;"
+                                                    class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+
+                                                    {{-- Card konfirmasi --}}
+                                                    <div x-show="confirmOpen"
+                                                        x-transition:enter="transition ease-out duration-200"
+                                                        x-transition:enter-start="opacity-0 scale-95"
+                                                        x-transition:enter-end="opacity-100 scale-100"
+                                                        @click.outside="confirmOpen = false"
+                                                        class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 text-center">
+
+                                                        <div class="w-14 h-14 mx-auto rounded-full bg-rose-50 flex items-center justify-center mb-4">
+                                                            <svg class="w-7 h-7 text-rose-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/>
+                                                            </svg>
+                                                        </div>
+
+                                                        <h3 class="text-base font-bold text-gray-900 mb-1">Hapus Jam Kerja?</h3>
+                                                        <p class="text-sm text-gray-500 mb-6">
+                                                            Jadwal jam kerja hari {{ $row['hari'] }} akan dihapus dan tidak dapat dikembalikan. Pastikan kamu yakin sebelum melanjutkan.
+                                                        </p>
+
+                                                        <div class="flex items-center gap-3">
+                                                            <button type="button" @click="confirmOpen = false"
+                                                                    class="flex-1 text-sm font-semibold px-4 py-2.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition">
+                                                                Batal
+                                                            </button>
+                                                            <form action="{{ route('admin.data-master.jam-kerja.destroy', $row['id']) }}" method="POST" class="flex-1">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit"
+                                                                        class="w-full text-sm font-semibold px-4 py-2.5 rounded-lg bg-rose-500 hover:bg-rose-600 text-white transition">
+                                                                    Ya, Hapus
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             @endif
                                         </div>
                                     </td>
@@ -149,6 +222,10 @@
                     </table>
                 </div>
             </div>
+
+            {{-- Modal tambah & edit (file terpisah) --}}
+            @include('admin.data-master.jam-kerja.create')
+            @include('admin.data-master.jam-kerja.edit')
 
         </main>
     @include('admin.components.footer')
