@@ -1,10 +1,9 @@
 <?php
 
-// Vercel hanya bisa menulis di /tmp, jadi folder dibuat manual
+// Vercel hanya bisa menulis di /tmp, jadi folder storage dibuat manual
 foreach ([
-    '/tmp/views',
-    '/tmp/storage/app',
-    '/tmp/storage/framework/cache',
+    '/tmp/storage/app/public',
+    '/tmp/storage/framework/cache/data',
     '/tmp/storage/framework/sessions',
     '/tmp/storage/framework/views',
     '/tmp/storage/logs',
