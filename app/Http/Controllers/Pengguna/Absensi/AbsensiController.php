@@ -7,16 +7,34 @@ use App\Models\Absensi;
 use App\Models\JamKerja;
 use App\Models\LokasiAbsensi;
 use Carbon\Carbon;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\View\View;
 
 class AbsensiController extends Controller
 {
     /**
-     * Halaman utama absensi (riwayat / status hari ini).
+     * Disk penyimpanan foto absensi.
+     * Di Vercel filesystem bersifat read-only, jadi ganti ke disk eksternal (mis. 's3').
      */
-    public function index()
+    private const FOTO_DISK = 'public';
+
+    private const NAMA_HARI = [
+        0 => 'Minggu',
+        1 => 'Senin',
+        2 => 'Selasa',
+        3 => 'Rabu',
+        4 => 'Kamis',
+        5 => 'Jumat',
+        6 => 'Sabtu',
+    ];
+
+    /**
+     * Halaman utama absensi (status hari ini).
+     */
+    public function index(): View
     {
         $absensiHariIni = Absensi::where('user_id', Auth::id())
             ->whereDate('tanggal', now()->toDateString())
@@ -28,7 +46,7 @@ class AbsensiController extends Controller
     /**
      * Halaman kamera deteksi wajah (masuk/pulang otomatis).
      */
-    public function create()
+    public function create(): View
     {
         return view('pengguna.absensi.face-recognition');
     }
@@ -36,7 +54,7 @@ class AbsensiController extends Controller
     /**
      * Simpan hasil absen dari capture wajah.
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'photo'     => ['required', 'string'],
@@ -48,7 +66,7 @@ class AbsensiController extends Controller
         $now   = now();
         $today = $now->toDateString();
 
-        $lokasi = $this->cariLokasiSesuai($validated['latitude'], $validated['longitude']);
+        $lokasi = $this->cariLokasiSesuai((float) $validated['latitude'], (float) $validated['longitude']);
         if (! $lokasi) {
             return back()->with('error', 'Anda berada di luar radius lokasi absensi. Pastikan berada di area kerja saat absen.');
         }
@@ -64,10 +82,10 @@ class AbsensiController extends Controller
 
         // Kalau hari ini sudah ditandai izin/cuti/sakit yang tidak wajib absen, tolak.
         if ($absensi && $absensi->pengajuan_izin_id) {
-            $pengajuanIzin = $absensi->pengajuanIzin()->with('jenisIzin')->first();
+            $jenisIzin = $absensi->pengajuanIzin()->with('jenisIzin')->first()?->jenisIzin;
 
-            if ($pengajuanIzin && ! $pengajuanIzin->jenisIzin->wajib_absen) {
-                return back()->with('error', 'Anda tercatat ' . $pengajuanIzin->jenisIzin->nama_izin . ' pada tanggal ini, tidak perlu melakukan absen.');
+            if ($jenisIzin && ! $jenisIzin->wajib_absen) {
+                return back()->with('error', 'Anda tercatat ' . $jenisIzin->nama_izin . ' pada tanggal ini, tidak perlu melakukan absen.');
             }
         }
 
@@ -77,6 +95,10 @@ class AbsensiController extends Controller
 
         $tipe     = $absensi && $absensi->jam_masuk ? 'pulang' : 'masuk';
         $fotoPath = $this->simpanFoto($validated['photo'], $user->id, $tipe);
+
+        if (! $fotoPath) {
+            return back()->with('error', 'Foto absensi gagal disimpan. Silakan coba lagi.');
+        }
 
         if ($tipe === 'masuk') {
             $status = $this->tentukanStatusMasuk($now, $jamKerja);
@@ -120,45 +142,33 @@ class AbsensiController extends Controller
         return redirect()->route('pengguna.home')->with('success', 'Absen pulang berhasil dicatat pukul ' . $now->format('H:i'));
     }
 
-    public function show(string $id) {}
-    public function edit(string $id) {}
-    public function update(Request $request, string $id) {}
-    public function destroy(string $id) {}
-
     /**
      * Ambil data jam_kerja yang aktif untuk hari yang sesuai tanggal $now.
-     * Asumsi kolom `hari` berisi nama hari dalam Bahasa Indonesia: Senin, Selasa, ... Minggu.
+     * Kolom `status` bertipe boolean di PostgreSQL, jadi dibandingkan lewat SQL mentah
+     * (binding true menjadi integer 1 dan ditolak PostgreSQL).
      */
     private function getJamKerjaHariIni(Carbon $now): ?JamKerja
     {
-        $namaHariList = [
-            0 => 'Minggu',
-            1 => 'Senin',
-            2 => 'Selasa',
-            3 => 'Rabu',
-            4 => 'Kamis',
-            5 => 'Jumat',
-            6 => 'Sabtu',
-        ];
-
-        $namaHari = $namaHariList[$now->dayOfWeek];
-
-        return JamKerja::where('hari', $namaHari)
-            ->where('status', true)
+        return JamKerja::where('hari', self::NAMA_HARI[$now->dayOfWeek])
+            ->whereRaw('status = true')
             ->first();
     }
 
     /**
-     * Tentukan status kehadiran (Hadir / Terlambat) berdasarkan jam_masuk
+     * Tentukan status kehadiran (hadir / terlambat) berdasarkan jam_masuk
      * dan toleransi_terlambat (dalam menit) dari jam_kerja.
      */
     private function tentukanStatusMasuk(Carbon $now, JamKerja $jamKerja): string
     {
-        $batasMasuk = Carbon::createFromTimeString($jamKerja->jam_masuk->format('H:i:s'), $now->timezone)
-            ->setDateFrom($now)
+        if (! $jamKerja->jam_masuk) {
+            return 'hadir';
+        }
+
+        $batasMasuk = $now->copy()
+            ->setTimeFromTimeString(Carbon::parse($jamKerja->jam_masuk)->format('H:i:s'))
             ->addMinutes((int) $jamKerja->toleransi_terlambat);
 
-        return $now->greaterThan($batasMasuk) ? 'Terlambat' : 'Hadir';
+        return $now->greaterThan($batasMasuk) ? 'terlambat' : 'hadir';
     }
 
     /**
@@ -181,10 +191,10 @@ class AbsensiController extends Controller
     {
         $radiusBumi = 6371000;
 
-        $lat1Rad   = deg2rad($lat1);
-        $lat2Rad   = deg2rad($lat2);
-        $deltaLat  = deg2rad($lat2 - $lat1);
-        $deltaLng  = deg2rad($lng2 - $lng1);
+        $lat1Rad  = deg2rad($lat1);
+        $lat2Rad  = deg2rad($lat2);
+        $deltaLat = deg2rad($lat2 - $lat1);
+        $deltaLng = deg2rad($lng2 - $lng1);
 
         $a = sin($deltaLat / 2) ** 2
             + cos($lat1Rad) * cos($lat2Rad) * sin($deltaLng / 2) ** 2;
@@ -193,19 +203,28 @@ class AbsensiController extends Controller
         return $radiusBumi * $c;
     }
 
-    private function simpanFoto(string $base64, int $userId, string $tipe): string
+    /**
+     * Simpan foto base64 ke disk. Mengembalikan path file, atau null kalau gagal.
+     */
+    private function simpanFoto(string $base64, int $userId, string $tipe): ?string
     {
-        if (! str_contains($base64, ',')) {
-            $decoded = base64_decode($base64);
-        } else {
-            [, $data] = explode(',', $base64, 2);
-            $decoded  = base64_decode($data);
+        $data    = str_contains($base64, ',') ? explode(',', $base64, 2)[1] : $base64;
+        $decoded = base64_decode($data, true);
+
+        if ($decoded === false || $decoded === '') {
+            return null;
         }
 
         $filename = "absensi/{$userId}_" . now()->format('Ymd_His') . "_{$tipe}.jpg";
 
-        Storage::disk('public')->put($filename, $decoded);
+        try {
+            $berhasil = Storage::disk(self::FOTO_DISK)->put($filename, $decoded);
+        } catch (\Throwable $e) {
+            report($e);
 
-        return $filename;
+            return null;
+        }
+
+        return $berhasil ? $filename : null;
     }
 }
