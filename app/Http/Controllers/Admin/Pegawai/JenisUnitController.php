@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
+use App\Models\User;
 
 class JenisUnitController extends Controller
 {
@@ -65,6 +66,12 @@ class JenisUnitController extends Controller
 
     public function destroy(JenisUnit $unit): RedirectResponse
     {
+        if (User::where('unit_id', $unit->id)->exists()) {
+            return redirect()
+                ->route('admin.data-master.unit')
+                ->with('error', 'Unit tidak bisa dihapus karena masih dipakai peserta.');
+        }
+
         $unit->delete();
 
         return redirect()

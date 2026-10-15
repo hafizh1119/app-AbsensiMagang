@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
+use App\Models\Absensi;
 
 class PegawaiController extends Controller
 {
@@ -117,9 +118,14 @@ class PegawaiController extends Controller
 
     public function destroy(User $pegawai): RedirectResponse
     {
-        $this->hapusFoto($pegawai->foto);
+        if (Absensi::where('user_id', $pegawai->id)->exists()) {
+            return redirect()
+                ->route('admin.data-master.pegawai')
+                ->with('error', 'Peserta tidak bisa dihapus karena sudah memiliki data absensi.');
+        }
 
         $pegawai->delete();
+        $this->hapusFoto($pegawai->foto);
 
         return redirect()
             ->route('admin.data-master.pegawai')

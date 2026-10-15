@@ -90,7 +90,7 @@ class JamKerjaController extends Controller
 
     public function update(Request $request, JamKerja $jamKerja): RedirectResponse
     {
-        $jamKerja->update($this->validateData($request, $jamKerja->id));
+        JamKerja::whereKey($jamKerja->id)->update($this->validateData($request, $jamKerja->id));
 
         return redirect()
             ->route('admin.data-master.jam-kerja')

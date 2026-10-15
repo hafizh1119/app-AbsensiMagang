@@ -113,9 +113,9 @@ class AbsensiController extends Controller
         // Daftar peserta untuk tabel, dengan filter cari nama.
         $absensiHariIniByUser = $absensiHariIni->keyBy('user_id');
 
-        $users = User::whereIn('role', $rolesAbsensi)
+        $$users = User::whereIn('role', $rolesAbsensi)
             ->where('status', 'aktif')
-            ->when($cari, fn ($q) => $q->where('nama', 'like', "%{$cari}%"))
+            ->when($cari, fn ($q) => $q->where('nama', 'ilike', "%{$cari}%"))
             ->orderBy('nama')
             ->get();
 
@@ -311,8 +311,9 @@ class AbsensiController extends Controller
             ->when($periode['akhir'], fn ($q, $akhir) => $q->whereDate('tanggal', '<=', $akhir->toDateString()))
             ->when($search, function ($q) use ($search) {
                 $q->whereHas('user', function ($sub) use ($search) {
-                    $sub->where('nama', 'like', "%{$search}%")
-                        ->orWhere('nip', 'like', "%{$search}%");
+                    $sub->where('nama', 'ilike', "%{$search}%")
+                         ->orWhere('nip', 'ilike', "%{$search}%");
+                         
                 });
             })
             ->orderByDesc('tanggal')
