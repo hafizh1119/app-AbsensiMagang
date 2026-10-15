@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\JamKerja;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -16,9 +17,6 @@ class JamKerjaController extends Controller
      */
     private const URUTAN_HARI = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index(): View
     {
         $semua = JamKerja::all()
@@ -54,23 +52,21 @@ class JamKerjaController extends Controller
             ],
         ];
 
-        $jamKerja = $semua->values()->map(function (JamKerja $item, int $index) {
-            return [
-                'id'         => $item->id,
-                'no'         => $index + 1,
-                'hari'       => $item->hari,
-                'jam_masuk'  => $item->status ? optional($item->jam_masuk)->format('H:i') : null,
-                'jam_pulang' => $item->status ? optional($item->jam_pulang)->format('H:i') : null,
-                'toleransi'  => $item->status ? $item->toleransi_terlambat . ' Menit' : null,
-                'status'     => $item->status ? 'Aktif' : 'Libur',
+        $jamKerja = $semua->map(fn (JamKerja $item, int $index) => [
+            'id'         => $item->id,
+            'no'         => $index + 1,
+            'hari'       => $item->hari,
+            'jam_masuk'  => $item->status ? optional($item->jam_masuk)->format('H:i') : null,
+            'jam_pulang' => $item->status ? optional($item->jam_pulang)->format('H:i') : null,
+            'toleransi'  => $item->status ? $item->toleransi_terlambat . ' Menit' : null,
+            'status'     => $item->status ? 'Aktif' : 'Libur',
 
-                // Data mentah untuk mengisi modal edit
-                'status_val'     => $item->status ? 'aktif' : 'libur',
-                'jam_masuk_val'  => optional($item->jam_masuk)->format('H:i'),
-                'jam_pulang_val' => optional($item->jam_pulang)->format('H:i'),
-                'toleransi_val'  => $item->toleransi_terlambat,
-            ];
-        });
+            // Data mentah untuk mengisi modal edit
+            'status_val'     => $item->status ? 'aktif' : 'libur',
+            'jam_masuk_val'  => optional($item->jam_masuk)->format('H:i'),
+            'jam_pulang_val' => optional($item->jam_pulang)->format('H:i'),
+            'toleransi_val'  => $item->toleransi_terlambat,
+        ]);
 
         // Hari yang belum punya jadwal (untuk pilihan di modal tambah)
         $semuaHari    = self::URUTAN_HARI;
@@ -84,45 +80,24 @@ class JamKerjaController extends Controller
         ));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request): RedirectResponse
     {
-        $validated = $this->validateData($request);
-
-        JamKerja::create($validated);
+        JamKerja::create($this->validateData($request));
 
         return redirect()
             ->route('admin.data-master.jam-kerja')
             ->with('success', 'Jam kerja berhasil ditambahkan.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(JamKerja $jamKerja): View
-    {
-        return view('admin.data-master.jam-kerja.show', compact('jamKerja'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, JamKerja $jamKerja): RedirectResponse
     {
-        $validated = $this->validateData($request, $jamKerja->id);
-
-        $jamKerja->update($validated);
+        $jamKerja->update($this->validateData($request, $jamKerja->id));
 
         return redirect()
             ->route('admin.data-master.jam-kerja')
             ->with('success', 'Jam kerja berhasil diperbarui.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(JamKerja $jamKerja): RedirectResponse
     {
         if ($jamKerja->absensi()->exists()) {
@@ -141,7 +116,7 @@ class JamKerjaController extends Controller
     private function validateData(Request $request, ?int $ignoreId = null): array
     {
         $validated = $request->validate([
-            'hari'                => [
+            'hari' => [
                 'required',
                 'string',
                 Rule::in(self::URUTAN_HARI),
@@ -157,7 +132,8 @@ class JamKerjaController extends Controller
 
         return [
             'hari'                => $validated['hari'],
-            'status'              => $isAktif,
+            // Dikirim sebagai literal SQL agar PostgreSQL menerimanya sebagai boolean
+            'status'              => DB::raw($isAktif ? 'true' : 'false'),
             'jam_masuk'           => $isAktif ? $validated['jam_masuk'] : null,
             'jam_pulang'          => $isAktif ? $validated['jam_pulang'] : null,
             'toleransi_terlambat' => $isAktif ? $validated['toleransi_terlambat'] : null,

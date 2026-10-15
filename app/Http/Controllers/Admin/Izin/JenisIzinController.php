@@ -4,25 +4,27 @@ namespace App\Http\Controllers\Admin\Izin;
 
 use App\Http\Controllers\Controller;
 use App\Models\JenisIzin;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class JenisIzinController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $jenisIzin = JenisIzin::orderBy('nama_izin')->get();
 
         return view('admin.data-master.jenis-izin.index', compact('jenisIzin'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'nama_izin' => ['required', 'string', 'max:100', 'unique:jenis_izin,nama_izin'],
         ]);
 
-        $validated['status'] = true;
+        $validated['status'] = 'aktif';
 
         JenisIzin::create($validated);
 
@@ -31,7 +33,7 @@ class JenisIzinController extends Controller
             ->with('success', 'Jenis izin berhasil ditambahkan.');
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id): RedirectResponse
     {
         $jenisIzin = JenisIzin::findOrFail($id);
 
@@ -49,7 +51,7 @@ class JenisIzinController extends Controller
             ->with('success', 'Jenis izin berhasil diperbarui.');
     }
 
-    public function destroy(string $id)
+    public function destroy(string $id): RedirectResponse
     {
         $jenisIzin = JenisIzin::findOrFail($id);
 
