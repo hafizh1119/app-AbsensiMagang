@@ -104,10 +104,10 @@
             <div class="relative">
                 <select name="ditujukan_kepada" id="ditujukan_kepada" required
                         class="w-full appearance-none bg-white border border-gray-200 rounded-2xl shadow-sm pl-4 pr-9 py-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-sky-500">
-                    <option value="">Pilih atasan / penerima izin</option>
+                    <option value="">Pilih atasan</option>
                     @foreach($atasanList as $atasan)
                         <option value="{{ $atasan->id }}" @selected(old('ditujukan_kepada') == $atasan->id)>
-                            {{ $atasan->nama }} - {{ $atasan->jabatan ?? 'Staff' }}
+                            {{ $atasan->nama }}
                         </option>
                     @endforeach
                 </select>
