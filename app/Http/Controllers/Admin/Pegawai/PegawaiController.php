@@ -42,7 +42,7 @@ class PegawaiController extends Controller
 
     public function create(): View
     {
-        $units = JenisUnit::where('status', 'Aktif')->orderBy('nama_unit')->get();
+        $units = JenisUnit::orderBy('nama_unit')->get();
 
         return view('admin.data-master.pegawai.create', compact('units'));
     }
@@ -87,7 +87,7 @@ class PegawaiController extends Controller
 
     public function edit(User $pegawai): View
     {
-        $units = JenisUnit::where('status', 'Aktif')->orderBy('nama_unit')->get();
+        $units = JenisUnit::orderBy('nama_unit')->get();
 
         return view('admin.data-master.pegawai.edit', compact('pegawai', 'units'));
     }
