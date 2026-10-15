@@ -2,21 +2,23 @@
 
 namespace App\Http\Controllers\Admin\Izin;
 
+use App\Exports\IzinExport;
 use App\Http\Controllers\Controller;
-use App\Models\PengajuanIzin;
 use App\Models\JenisIzin;
 use App\Models\JenisUnit;
-use Illuminate\Http\Request;
-use App\Exports\IzinExport;
+use App\Models\PengajuanIzin;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class PengajuanIzinController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Status yang valid di database (check constraint pengajuan_izin_status_check).
      */
+    private const STATUS_VALID = ['menunggu', 'disetujui', 'ditolak'];
+
     public function index()
     {
         //
@@ -45,8 +47,12 @@ class PengajuanIzinController extends Controller
             });
         }
 
-        if ($request->filled('status') && $request->status !== 'Semua Status') {
-            $query->where('status', $request->status);
+        if ($request->filled('status')) {
+            $status = strtolower((string) $request->status);
+
+            if (in_array($status, self::STATUS_VALID, true)) {
+                $query->where('status', $status);
+            }
         }
 
         $pengajuan = $query->latest('tanggal_pengajuan')
@@ -54,24 +60,24 @@ class PengajuanIzinController extends Controller
             ->withQueryString();
 
         $jenisIzinList = JenisIzin::pluck('nama_izin');
-        $unitList = JenisUnit::pluck('nama_unit');
+        $unitList      = JenisUnit::pluck('nama_unit');
 
         return view('admin.izin.semua', compact('pengajuan', 'jenisIzinList', 'unitList'));
     }
 
-        /**
+    /**
      * Halaman "Menunggu Persetujuan".
      */
     public function menunggu(Request $request)
     {
         // Pengajuan yang masih menunggu persetujuan
-        $totalMenunggu = PengajuanIzin::where('status', 'Menunggu')->count();
+        $totalMenunggu = PengajuanIzin::where('status', 'menunggu')->count();
 
         // Seluruh pengajuan izin (semua status)
         $totalIzin = PengajuanIzin::count();
 
         $pengajuan = PengajuanIzin::with(['user.unit', 'jenisIzin'])
-            ->where('status', 'Menunggu')
+            ->where('status', 'menunggu')
             ->latest('tanggal_pengajuan')
             ->paginate(10)
             ->withQueryString();
@@ -90,8 +96,12 @@ class PengajuanIzinController extends Controller
     {
         $pengajuan = PengajuanIzin::findOrFail($id);
 
+        if (strtolower((string) $pengajuan->status) !== 'menunggu') {
+            return back()->with('error', 'Pengajuan ini sudah diproses sebelumnya.');
+        }
+
         $tanggalPersetujuan = $request->filled('tanggal_persetujuan')
-            ? \Carbon\Carbon::parse($request->input('tanggal_persetujuan'))
+            ? Carbon::parse($request->input('tanggal_persetujuan'))
             : now();
 
         $pengajuan->update([
@@ -110,12 +120,16 @@ class PengajuanIzinController extends Controller
     {
         $pengajuan = PengajuanIzin::findOrFail($id);
 
+        if (strtolower((string) $pengajuan->status) !== 'menunggu') {
+            return back()->with('error', 'Pengajuan ini sudah diproses sebelumnya.');
+        }
+
         $request->validate([
             'catatan' => ['required', 'string'],
         ]);
 
         $tanggalPersetujuan = $request->filled('tanggal_persetujuan')
-            ? \Carbon\Carbon::parse($request->input('tanggal_persetujuan'))
+            ? Carbon::parse($request->input('tanggal_persetujuan'))
             : now();
 
         $pengajuan->update([
@@ -138,10 +152,10 @@ class PengajuanIzinController extends Controller
             ->with(['user.unit', 'jenisIzin'])
             ->whereRaw('LOWER(status) = ?', ['disetujui'])
             ->when($tanggal, fn ($q) => $q->whereDate('tanggal_pengajuan', $tanggal))
-            ->when($unit && !in_array($unit, ['Semua Unit'], true), function ($q) use ($unit) {
+            ->when($unit && $unit !== 'Semua Unit', function ($q) use ($unit) {
                 $q->whereHas('user.unit', fn ($s) => $s->where('nama_unit', $unit));
             })
-            ->when($jenis && !in_array($jenis, ['Semua Jenis'], true), function ($q) use ($jenis) {
+            ->when($jenis && $jenis !== 'Semua Jenis', function ($q) use ($jenis) {
                 $q->whereHas('jenisIzin', fn ($s) => $s->where('nama_izin', $jenis));
             })
             ->orderByDesc('tanggal_pengajuan')
@@ -162,25 +176,16 @@ class PengajuanIzinController extends Controller
         return Excel::download(new IzinExport($data, $label, $tahun), $namaFile);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         $pengajuan = PengajuanIzin::with(['user.unit', 'jenisIzin'])
@@ -189,25 +194,16 @@ class PengajuanIzinController extends Controller
         return view('admin.izin.show', compact('pengajuan'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         //
