@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\JamKerja;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -132,8 +131,8 @@ class JamKerjaController extends Controller
 
         return [
             'hari'                => $validated['hari'],
-            // Dikirim sebagai literal SQL agar PostgreSQL menerimanya sebagai boolean
-            'status'              => DB::raw($isAktif ? 'true' : 'false'),
+            // String 'true'/'false' dikenali PostgreSQL sebagai boolean (bukan integer 1/0)
+            'status'              => $isAktif ? 'true' : 'false',
             'jam_masuk'           => $isAktif ? $validated['jam_masuk'] : null,
             'jam_pulang'          => $isAktif ? $validated['jam_pulang'] : null,
             'toleransi_terlambat' => $isAktif ? $validated['toleransi_terlambat'] : null,
