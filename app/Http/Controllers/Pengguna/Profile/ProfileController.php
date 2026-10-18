@@ -15,7 +15,7 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        $user = Auth::user();
+        $user = Auth::user()->load('unit');
 
         return view('pengguna.profil.index', compact('user'));
     }
@@ -26,8 +26,8 @@ class ProfileController extends Controller
     public function updatePassword(Request $request)
     {
         $request->validate([
-            'current_password'      => ['required', 'string'],
-            'password'               => ['required', 'string', 'min:8', 'confirmed'],
+            'current_password' => ['required', 'string'],
+            'password'         => ['required', 'string', 'min:8', 'confirmed'],
         ], [
             'current_password.required' => 'Password lama wajib diisi.',
             'password.required'         => 'Password baru wajib diisi.',

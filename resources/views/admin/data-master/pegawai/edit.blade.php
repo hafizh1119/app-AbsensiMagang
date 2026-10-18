@@ -40,8 +40,14 @@
                     </div>
                 @endif
 
+                @php
+                    $statusPesertaVal = old('status_peserta', $pegawai->status_peserta);
+                    $jenisKelaminVal  = old('jenis_kelamin', $pegawai->jenis_kelamin);
+                @endphp
+
                 {{-- Satu Card Gabungan --}}
-                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+                <div x-data="{ status: '{{ $statusPesertaVal }}' }"
+                     class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
 
                     {{-- Foto Profil --}}
                     <div class="mb-6">
@@ -76,9 +82,9 @@
 
                     <hr class="border-gray-100 mb-6">
 
-                    {{-- Data Peserta --}}
-                    <div>
-                        <h3 class="text-sm font-bold text-gray-900 mb-4">Data Peserta</h3>
+                    {{-- A. Identitas Diri --}}
+                    <div class="mb-6">
+                        <h3 class="text-sm font-bold text-gray-900 mb-4">A. Identitas Diri</h3>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
@@ -90,45 +96,59 @@
                                 @error('nama') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
 
-                            {{-- No. Peserta --}}
+                            {{-- Status Peserta --}}
                             <div>
-                                <label class="block text-xs font-medium text-gray-500 mb-1.5">No. Peserta</label>
-                                <input type="text" name="nip" value="{{ old('nip', $pegawai->nip) }}" placeholder="Nomor Peserta"
-                                       class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('nip') border-rose-400 @enderror">
-                                @error('nip') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
-                            </div>
-
-                            {{-- Ruangan --}}
-                            <div>
-                                <label class="block text-xs font-medium text-gray-500 mb-1.5">Ruangan</label>
+                                <label class="block text-xs font-medium text-gray-500 mb-1.5">Status Peserta</label>
                                 <div class="relative">
-                                    <select name="unit_id"
-                                            class="appearance-none w-full bg-white border border-gray-200 rounded-lg pl-3 pr-8 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('unit_id') border-rose-400 @enderror">
-                                        <option value="">Pilih Ruangan</option>
-                                        @foreach ($units ?? [] as $unit)
-                                            <option value="{{ $unit->id }}" {{ old('unit_id', $pegawai->unit_id) == $unit->id ? 'selected' : '' }}>
-                                                {{ $unit->nama_unit }}
-                                            </option>
-                                        @endforeach
+                                    <select name="status_peserta" x-model="status"
+                                            class="appearance-none w-full bg-white border border-gray-200 rounded-lg pl-3 pr-8 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('status_peserta') border-rose-400 @enderror">
+                                        <option value="">Pilih Status</option>
+                                        <option value="mahasiswa">Mahasiswa</option>
+                                        <option value="siswa">Siswa</option>
                                     </select>
                                     <svg class="w-4 h-4 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                                     </svg>
                                 </div>
-                                @error('unit_id') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
+                                @error('status_peserta') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
 
-                            {{-- Email --}}
+                            {{-- Jenis Kelamin --}}
                             <div>
-                                <label class="block text-xs font-medium text-gray-500 mb-1.5">Email</label>
+                                <label class="block text-xs font-medium text-gray-500 mb-1.5">Jenis Kelamin</label>
+                                <div class="relative">
+                                    <select name="jenis_kelamin"
+                                            class="appearance-none w-full bg-white border border-gray-200 rounded-lg pl-3 pr-8 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('jenis_kelamin') border-rose-400 @enderror">
+                                        <option value="">Pilih Jenis Kelamin</option>
+                                        <option value="L" {{ $jenisKelaminVal === 'L' ? 'selected' : '' }}>Laki-laki</option>
+                                        <option value="P" {{ $jenisKelaminVal === 'P' ? 'selected' : '' }}>Perempuan</option>
+                                    </select>
+                                    <svg class="w-4 h-4 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                                    </svg>
+                                </div>
+                                @error('jenis_kelamin') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
+                            </div>
+
+                            {{-- Email Aktif --}}
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1.5">Email Aktif</label>
                                 <input type="email" name="email" value="{{ old('email', $pegawai->email) }}" placeholder="contoh@gmail.com"
                                        class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('email') border-rose-400 @enderror">
                                 @error('email') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
 
-                            {{-- Password --}}
+                            {{-- No. HP --}}
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1.5">No. HP</label>
+                                <input type="tel" name="no_hp" value="{{ old('no_hp', $pegawai->no_hp) }}" placeholder="Contoh: 08123456789"
+                                       class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('no_hp') border-rose-400 @enderror">
+                                @error('no_hp') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
+                            </div>
+
+                            {{-- Password (akun login) --}}
                             <div x-data="{ show: false }">
-                                <label class="block text-xs font-medium text-gray-500 mb-1.5">Password</label>
+                                <label class="block text-xs font-medium text-gray-500 mb-1.5">Password Akun</label>
                                 <div class="relative">
                                     <input :type="show ? 'text' : 'password'" name="password" placeholder="Kosongkan jika tidak ingin mengubah"
                                            class="w-full bg-white border border-gray-200 rounded-lg px-3 pr-10 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('password') border-rose-400 @enderror">
@@ -146,63 +166,102 @@
                                 @error('password') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
 
-                            {{-- Tempat Lahir --}}
-                            <div>
-                                <label class="block text-xs font-medium text-gray-500 mb-1.5">Tempat Lahir</label>
-                                <input type="text" name="tempat_lahir" value="{{ old('tempat_lahir', $pegawai->tempat_lahir) }}" placeholder="Contoh: Semarang"
-                                       class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('tempat_lahir') border-rose-400 @enderror">
-                                @error('tempat_lahir') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
+                            {{-- Alamat Domisili --}}
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-medium text-gray-500 mb-1.5">Alamat Domisili</label>
+                                <textarea name="alamat" rows="3" placeholder="Masukkan alamat domisili lengkap"
+                                          class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 resize-none @error('alamat') border-rose-400 @enderror">{{ old('alamat', $pegawai->alamat) }}</textarea>
+                                @error('alamat') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
 
-                            {{-- Tanggal Lahir --}}
-                            <div>
-                                <label class="block text-xs font-medium text-gray-500 mb-1.5">Tanggal Lahir</label>
-                                <input type="date" name="tanggal_lahir"
-                                       value="{{ old('tanggal_lahir', optional($pegawai->tanggal_lahir)->format('Y-m-d')) }}"
-                                       class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('tanggal_lahir') border-rose-400 @enderror">
-                                @error('tanggal_lahir') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
+                        </div>
+                    </div>
+
+                    <hr class="border-gray-100 mb-6">
+
+                    {{-- B. Asal Pendidikan --}}
+                    <div class="mb-6">
+                        <h3 class="text-sm font-bold text-gray-900 mb-4">B. Asal Pendidikan</h3>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                            {{-- Asal Sekolah / Perguruan Tinggi --}}
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-medium text-gray-500 mb-1.5"
+                                       x-text="status === 'mahasiswa' ? 'Asal Perguruan Tinggi' : (status === 'siswa' ? 'Asal Sekolah' : 'Asal Sekolah / Perguruan Tinggi')"></label>
+                                <input type="text" name="asal_instansi" value="{{ old('asal_instansi', $pegawai->asal_instansi) }}"
+                                       :placeholder="status === 'mahasiswa' ? 'Contoh: Universitas Diponegoro' : 'Contoh: SMK Negeri 1 Semarang'"
+                                       class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('asal_instansi') border-rose-400 @enderror">
+                                @error('asal_instansi') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
 
-                            {{-- Kewarganegaraan --}}
+                            {{-- Jurusan / Program Studi --}}
                             <div>
-                                <label class="block text-xs font-medium text-gray-500 mb-1.5">Kewarganegaraan</label>
-                                <input type="text" name="kewarganegaraan" value="{{ old('kewarganegaraan', $pegawai->kewarganegaraan) }}" placeholder="Contoh: Indonesia"
-                                       class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('kewarganegaraan') border-rose-400 @enderror">
-                                @error('kewarganegaraan') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
+                                <label class="block text-xs font-medium text-gray-500 mb-1.5"
+                                       x-text="status === 'mahasiswa' ? 'Program Studi' : (status === 'siswa' ? 'Jurusan' : 'Jurusan / Program Studi')"></label>
+                                <input type="text" name="jurusan" value="{{ old('jurusan', $pegawai->jurusan) }}"
+                                       :placeholder="status === 'mahasiswa' ? 'Contoh: Teknik Informatika' : 'Contoh: Rekayasa Perangkat Lunak'"
+                                       class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('jurusan') border-rose-400 @enderror">
+                                @error('jurusan') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
 
-                            {{-- Status Kewarganegaraan --}}
+                            {{-- Kelas / Semester --}}
                             <div>
-                                <label class="block text-xs font-medium text-gray-500 mb-1.5">Status Kewarganegaraan</label>
+                                <label class="block text-xs font-medium text-gray-500 mb-1.5"
+                                       x-text="status === 'mahasiswa' ? 'Semester' : (status === 'siswa' ? 'Kelas' : 'Kelas / Semester')"></label>
+                                <input type="text" name="kelas_semester" value="{{ old('kelas_semester', $pegawai->kelas_semester) }}"
+                                       :placeholder="status === 'mahasiswa' ? 'Contoh: 6' : 'Contoh: XII'"
+                                       class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('kelas_semester') border-rose-400 @enderror">
+                                @error('kelas_semester') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <hr class="border-gray-100 mb-6">
+
+                    {{-- C. Penempatan Magang --}}
+                    <div>
+                        <h3 class="text-sm font-bold text-gray-900 mb-4">C. Penempatan Magang</h3>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                            {{-- Ruangan Penempatan --}}
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-medium text-gray-500 mb-1.5">Ruangan Penempatan</label>
                                 <div class="relative">
-                                    <select name="status_kewarganegaraan"
-                                            class="appearance-none w-full bg-white border border-gray-200 rounded-lg pl-3 pr-8 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('status_kewarganegaraan') border-rose-400 @enderror">
-                                        @php $statusKn = old('status_kewarganegaraan', $pegawai->status_kewarganegaraan); @endphp
-                                        <option value="">Pilih Status</option>
-                                        <option value="WNI" {{ $statusKn === 'WNI' ? 'selected' : '' }}>WNI</option>
-                                        <option value="WNA" {{ $statusKn === 'WNA' ? 'selected' : '' }}>WNA</option>
+                                    <select name="unit_id"
+                                            class="appearance-none w-full bg-white border border-gray-200 rounded-lg pl-3 pr-8 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('unit_id') border-rose-400 @enderror">
+                                        <option value="">Pilih Ruangan</option>
+                                        @foreach ($units ?? [] as $unit)
+                                            <option value="{{ $unit->id }}" {{ old('unit_id', $pegawai->unit_id) == $unit->id ? 'selected' : '' }}>
+                                                {{ $unit->nama_unit }}
+                                            </option>
+                                        @endforeach
                                     </select>
                                     <svg class="w-4 h-4 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                                     </svg>
                                 </div>
-                                @error('status_kewarganegaraan') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
+                                @error('unit_id') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
 
-                            {{-- No. HP --}}
-                            <div class="md:col-span-2">
-                                <label class="block text-xs font-medium text-gray-500 mb-1.5">No. HP</label>
-                                <input type="tel" name="no_hp" value="{{ old('no_hp', $pegawai->no_hp) }}" placeholder="Contoh: 08123456789"
-                                       class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('no_hp') border-rose-400 @enderror">
-                                @error('no_hp') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
+                            {{-- Tanggal Mulai --}}
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1.5">Tanggal Mulai Magang</label>
+                                <input type="date" name="tanggal_mulai_magang"
+                                       value="{{ old('tanggal_mulai_magang', optional($pegawai->tanggal_mulai_magang)->format('Y-m-d')) }}"
+                                       class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('tanggal_mulai_magang') border-rose-400 @enderror">
+                                @error('tanggal_mulai_magang') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
 
-                            {{-- Alamat --}}
-                            <div class="md:col-span-2">
-                                <label class="block text-xs font-medium text-gray-500 mb-1.5">Alamat</label>
-                                <textarea name="alamat" rows="3" placeholder="Masukkan alamat lengkap"
-                                          class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 resize-none @error('alamat') border-rose-400 @enderror">{{ old('alamat', $pegawai->alamat) }}</textarea>
-                                @error('alamat') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
+                            {{-- Tanggal Selesai --}}
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1.5">Tanggal Selesai Magang</label>
+                                <input type="date" name="tanggal_selesai_magang"
+                                       value="{{ old('tanggal_selesai_magang', optional($pegawai->tanggal_selesai_magang)->format('Y-m-d')) }}"
+                                       class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-sky-500 @error('tanggal_selesai_magang') border-rose-400 @enderror">
+                                @error('tanggal_selesai_magang') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                             </div>
 
                         </div>

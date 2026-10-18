@@ -42,7 +42,7 @@
                     Selamat Datang, {{ auth()->user()->nama ?? 'Administrator' }}
                     <span class="inline-block animate-wave origin-[70%_70%]">👋</span>
                 </h1>
-                <p class="text-gray-500 mt-1">Berikut ringkasan aktivitas absensi hari ini.</p>
+                <p class="text-gray-500 mt-1">Berikut ringkasan aktivitas presensi hari ini.</p>
             </div>
 
             {{-- ================= STAT CARDS ================= --}}
@@ -177,7 +177,7 @@
                 {{-- Absensi hari ini --}}
                 <div class="stat-card xl:col-span-2 fade-up h-full flex flex-col" style="--d:420ms">
                     <div class="flex items-center justify-between mb-4">
-                        <h2 class="font-semibold text-gray-900">Absensi Hari Ini</h2>
+                        <h2 class="font-semibold text-gray-900">Presensi Hari Ini</h2>
                         <a href="{{ $safeRoute('admin.absensi.index') }}" class="pill-btn">Lihat Semua</a>
                     </div>
                     <div class="overflow-x-auto flex-1 min-h-[220px]">
@@ -221,7 +221,7 @@
                                     <td colspan="5" class="py-10 text-center text-gray-400">
                                         <div class="flex flex-col items-center gap-2">
                                             <span class="text-2xl">📭</span>
-                                            <span>Belum ada absensi hari ini.</span>
+                                            <span>Belum ada presensi hari ini.</span>
                                         </div>
                                     </td>
                                 </tr>

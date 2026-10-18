@@ -32,6 +32,14 @@ class User extends Authenticatable
         'foto',
         'status',
         'last_login',
+        // data peserta magang
+        'status_peserta',
+        'jenis_kelamin',
+        'asal_instansi',
+        'jurusan',
+        'kelas_semester',
+        'tanggal_mulai_magang',
+        'tanggal_selesai_magang',
     ];
 
     /**
@@ -52,9 +60,11 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'tanggal_lahir' => 'date',
-            'last_login' => 'datetime',
-            'password' => 'hashed',
+            'tanggal_lahir'          => 'date',
+            'tanggal_mulai_magang'   => 'date',
+            'tanggal_selesai_magang' => 'date',
+            'last_login'             => 'datetime',
+            'password'               => 'hashed',
         ];
     }
 

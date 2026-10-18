@@ -27,7 +27,7 @@
                         </svg>
                     </div>
                     <div>
-                        <p class="text-sky-800 font-bold text-sm">Absensi Peserta Magang</p>
+                        <p class="text-sky-800 font-bold text-sm">Presensi Peserta Magang</p>
                         <p class="text-sky-700/80 text-[10px] font-medium">Dinas Koperasi Prov Jawa Tengah</p>
                     </div>
                 </div>

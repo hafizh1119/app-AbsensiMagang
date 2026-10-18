@@ -3,14 +3,15 @@
 namespace App\Http\Controllers\Admin\Pegawai;
 
 use App\Http\Controllers\Controller;
+use App\Models\Absensi;
 use App\Models\JenisUnit;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
-use App\Models\Absensi;
 
 class PegawaiController extends Controller
 {
@@ -28,13 +29,14 @@ class PegawaiController extends Controller
 
         $pegawai = $users->values()->map(function (User $user, int $index) {
             return [
-                'id'     => $user->id,
-                'no'     => $index + 1,
-                'nama'   => $user->nama,
-                'nip'    => $user->nip,
-                'unit'   => $user->unit->nama_unit ?? '-',
-                'role'   => $user->role,
-                'status' => $user->status,
+                'id'             => $user->id,
+                'no'             => $index + 1,
+                'nama'           => $user->nama,
+                'status_peserta' => $user->status_peserta ? ucfirst($user->status_peserta) : '-',
+                'asal_instansi'  => $user->asal_instansi ?? '-',
+                'unit'           => $user->unit->nama_unit ?? '-',
+                'role'           => $user->role,
+                'status'         => $user->status,
             ];
         });
 
@@ -58,20 +60,29 @@ class PegawaiController extends Controller
         }
 
         User::create([
-            'nama'                   => $validated['nama'],
-            'nip'                    => $validated['nip'],
+            // A. Identitas diri
+            'nama'           => $validated['nama'],
+            'status_peserta' => $validated['status_peserta'],
+            'jenis_kelamin'  => $validated['jenis_kelamin'],
+            'alamat'         => $validated['alamat'],
+            'no_hp'          => $validated['no_hp'],
+            'email'          => $validated['email'],
+            'password'       => $validated['password'],
+
+            // B. Asal pendidikan
+            'asal_instansi'  => $validated['asal_instansi'],
+            'jurusan'        => $validated['jurusan'],
+            'kelas_semester' => $validated['kelas_semester'],
+
+            // C. Penempatan magang
             'unit_id'                => $validated['unit_id'],
-            'email'                  => $validated['email'],
-            'password'               => $validated['password'],
-            'role'                   => 'pegawai',
-            'tempat_lahir'           => $validated['tempat_lahir'],
-            'tanggal_lahir'          => $validated['tanggal_lahir'],
-            'kewarganegaraan'        => $validated['kewarganegaraan'],
-            'status_kewarganegaraan' => $validated['status_kewarganegaraan'],
-            'no_hp'                  => $validated['no_hp'] ?? null,
-            'alamat'                 => $validated['alamat'] ?? null,
-            'foto'                   => $fotoName,
-            'status'                 => 'aktif',
+            'tanggal_mulai_magang'   => $validated['tanggal_mulai_magang'],
+            'tanggal_selesai_magang' => $validated['tanggal_selesai_magang'],
+
+            // Lainnya
+            'role'   => 'pegawai',
+            'foto'   => $fotoName,
+            'status' => 'aktif',
         ]);
 
         return redirect()
@@ -105,6 +116,7 @@ class PegawaiController extends Controller
             unset($validated['foto']);
         }
 
+        // Password kosong = tidak diganti.
         if (empty($validated['password'])) {
             unset($validated['password']);
         }
@@ -169,18 +181,31 @@ class PegawaiController extends Controller
         $isCreate = is_null($ignoreUserId);
 
         $validated = $request->validate([
-            'nama'                   => ['required', 'string', 'max:255'],
-            'nip'                    => ['required', 'string', 'max:50', 'unique:users,nip' . ($ignoreUserId ? ",{$ignoreUserId}" : '')],
+            // A. Identitas diri
+            'nama'           => ['required', 'string', 'max:255'],
+            'status_peserta' => ['required', Rule::in(['mahasiswa', 'siswa'])],
+            'jenis_kelamin'  => ['required', Rule::in(['L', 'P'])],
+            'alamat'         => ['required', 'string'],
+            'no_hp'          => ['required', 'string', 'max:20'],
+            'email'          => [
+                'required', 'email', 'max:255',
+                Rule::unique('users', 'email')->ignore($ignoreUserId),
+            ],
+            'password'       => [$isCreate ? 'required' : 'nullable', 'string', 'min:8'],
+
+            // B. Asal pendidikan
+            'asal_instansi'  => ['required', 'string', 'max:255'],
+            'jurusan'        => ['required', 'string', 'max:255'],
+            'kelas_semester' => ['required', 'string', 'max:20'],
+
+            // C. Penempatan magang
             'unit_id'                => ['required', 'exists:jenis_unit,id'],
-            'email'                  => ['required', 'email', 'max:255', 'unique:users,email' . ($ignoreUserId ? ",{$ignoreUserId}" : '')],
-            'password'               => [$isCreate ? 'required' : 'nullable', 'string', 'min:8'],
-            'tempat_lahir'           => ['required', 'string', 'max:255'],
-            'tanggal_lahir'          => ['required', 'date'],
-            'kewarganegaraan'        => ['required', 'string', 'max:255'],
-            'status_kewarganegaraan' => ['required', 'in:WNI,WNA'],
-            'no_hp'                  => ['nullable', 'string', 'max:20'],
-            'alamat'                 => ['nullable', 'string'],
-            'foto'                   => ['nullable', 'image', 'max:2048'],
+            'tanggal_mulai_magang'   => ['required', 'date'],
+            'tanggal_selesai_magang' => ['required', 'date', 'after_or_equal:tanggal_mulai_magang'],
+
+            'foto'           => ['nullable', 'image', 'max:2048'],
+        ], [
+            'tanggal_selesai_magang.after_or_equal' => 'Tanggal selesai tidak boleh sebelum tanggal mulai.',
         ]);
 
         if (!empty($validated['password'])) {

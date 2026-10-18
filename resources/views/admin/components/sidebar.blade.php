@@ -6,7 +6,7 @@
             {{-- Logo polos, tanpa lingkaran/background di belakangnya --}}
             <img src="{{ asset('icon/diskop.svg') }}" alt="Logo" class="shrink-0 w-10 h-10 object-contain">
             <div class="min-w-0">
-                <p class="text-white font-bold text-xs tracking-tight leading-tight whitespace-nowrap">ABSENSI PESERTA MAGANG</p>
+                <p class="text-white font-bold text-xs tracking-tight leading-tight whitespace-nowrap">PRESENSI PESERTA MAGANG</p>
                 <p class="text-white/80 text-[11px] leading-snug">Dinas Koperasi UKM</p>
                 <p class="text-white/80 text-[11px] leading-snug">Provinsi Jawa Tengah</p>
             </div>
@@ -82,7 +82,7 @@
                     <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
                     </svg>
-                    <span>Data Absensi</span>
+                    <span>Data Presensi</span>
                 </span>
                 <svg class="w-4 h-4 text-gray-400 transition-transform duration-200" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
@@ -93,10 +93,10 @@
                 {{-- "edit" & "destroy" adalah aksi milik daftar Semua Absensi, jadi ikut dihitung aktif di sini --}}
                 <a href="{{ route('admin.absensi.semua') }}"
                    class="block px-3 py-2 rounded-lg text-sm transition-colors duration-150
-                   {{ request()->routeIs(['admin.absensi.semua', 'admin.absensi.edit']) ? 'bg-sky-50 text-sky-700 font-medium' : 'text-gray-500 hover:bg-sky-50 hover:text-sky-700' }}">Semua Absensi</a>
+                   {{ request()->routeIs(['admin.absensi.semua', 'admin.absensi.edit']) ? 'bg-sky-50 text-sky-700 font-medium' : 'text-gray-500 hover:bg-sky-50 hover:text-sky-700' }}">Semua Presensi</a>
                 <a href="{{ route('admin.absensi.hari-ini') }}"
                    class="block px-3 py-2 rounded-lg text-sm transition-colors duration-150
-                   {{ request()->routeIs('admin.absensi.hari-ini') ? 'bg-sky-50 text-sky-700 font-medium' : 'text-gray-500 hover:bg-sky-50 hover:text-sky-700' }}">Absensi Hari Ini</a>
+                   {{ request()->routeIs('admin.absensi.hari-ini') ? 'bg-sky-50 text-sky-700 font-medium' : 'text-gray-500 hover:bg-sky-50 hover:text-sky-700' }}">Presensi Hari Ini</a>
             </div>
         </div>
 

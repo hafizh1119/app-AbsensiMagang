@@ -28,9 +28,9 @@
             {{-- Header Card --}}
             <div class="flex items-center gap-3 mb-4">
                 <div>
-                    <h2 class="font-bold text-gray-800">Absensi Peserta Magang</h2>
+                    <h2 class="font-bold text-gray-800">Presensi Peserta Magang</h2>
                     <p class="text-xs text-gray-400">
-                        Silakan masuk untuk melakukan absensi peserta magang
+                        Silakan masuk untuk melakukan presensi peserta magang
                     </p>
                 </div>
             </div>

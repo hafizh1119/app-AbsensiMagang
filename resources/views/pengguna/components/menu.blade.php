@@ -94,7 +94,7 @@
             </div>
 
             <p class="text-center text-[11px] font-semibold text-blue-600 mt-1">
-                Absensi
+                Presensi
             </p>
 
         </a>

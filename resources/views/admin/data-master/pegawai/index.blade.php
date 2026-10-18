@@ -58,7 +58,8 @@
                             <tr class="bg-gray-50 text-gray-400 text-xs">
                                 <th class="text-left font-medium px-4 py-3 w-10">No.</th>
                                 <th class="text-left font-medium px-4 py-3">Nama</th>
-                                <th class="text-left font-medium px-4 py-3">No. Peserta</th>
+                                <th class="text-left font-medium px-4 py-3">Status</th>
+                                <th class="text-left font-medium px-4 py-3">Asal Pendidikan</th>
                                 <th class="text-left font-medium px-4 py-3">Ruangan</th>
                                 <th class="text-center font-medium px-4 py-3">Aksi</th>
                             </tr>
@@ -68,7 +69,8 @@
                                 <tr class="hover:bg-gray-50/60 transition-colors">
                                     <td class="px-4 py-3 text-gray-500">{{ $row['no'] }}</td>
                                     <td class="px-4 py-3 font-medium text-gray-800">{{ $row['nama'] }}</td>
-                                    <td class="px-4 py-3 text-gray-500">{{ $row['nip'] }}</td>
+                                    <td class="px-4 py-3 text-gray-500">{{ $row['status_peserta'] }}</td>
+                                    <td class="px-4 py-3 text-gray-500">{{ $row['asal_instansi'] }}</td>
                                     <td class="px-4 py-3 text-gray-500">{{ $row['unit'] }}</td>
                                     <td class="px-4 py-3 text-center">
                                         <div class="flex items-center justify-center gap-1">
@@ -82,54 +84,54 @@
                                             </a>
                                             <div x-data="{ confirmOpen: false }" class="inline">
 
-                                            {{-- Tombol Hapus --}}
-                                            <button type="button" @click="confirmOpen = true"
-                                                    class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-rose-500 hover:bg-rose-600 text-white transition">
-                                                Hapus
-                                            </button>
+                                                {{-- Tombol Hapus --}}
+                                                <button type="button" @click="confirmOpen = true"
+                                                        class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-rose-500 hover:bg-rose-600 text-white transition">
+                                                    Hapus
+                                                </button>
 
-                                            {{-- Overlay --}}
-                                            <div x-show="confirmOpen"
-                                                x-transition.opacity
-                                                style="display: none;"
-                                                class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-
-                                                {{-- Card konfirmasi --}}
+                                                {{-- Overlay --}}
                                                 <div x-show="confirmOpen"
-                                                    x-transition:enter="transition ease-out duration-200"
-                                                    x-transition:enter-start="opacity-0 scale-95"
-                                                    x-transition:enter-end="opacity-100 scale-100"
-                                                    @click.outside="confirmOpen = false"
-                                                    class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 text-center">
+                                                    x-transition.opacity
+                                                    style="display: none;"
+                                                    class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
 
-                                                    <div class="w-14 h-14 mx-auto rounded-full bg-rose-50 flex items-center justify-center mb-4">
-                                                        <svg class="w-7 h-7 text-rose-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/>
-                                                        </svg>
-                                                    </div>
+                                                    {{-- Card konfirmasi --}}
+                                                    <div x-show="confirmOpen"
+                                                        x-transition:enter="transition ease-out duration-200"
+                                                        x-transition:enter-start="opacity-0 scale-95"
+                                                        x-transition:enter-end="opacity-100 scale-100"
+                                                        @click.outside="confirmOpen = false"
+                                                        class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 text-center">
 
-                                                    <h3 class="text-base font-bold text-gray-900 mb-1">Hapus Data Peserta?</h3>
-                                                    <p class="text-sm text-gray-500 mb-6">
-                                                        Data yang sudah dihapus tidak dapat dikembalikan. Pastikan kamu yakin sebelum melanjutkan.
-                                                    </p>
+                                                        <div class="w-14 h-14 mx-auto rounded-full bg-rose-50 flex items-center justify-center mb-4">
+                                                            <svg class="w-7 h-7 text-rose-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/>
+                                                            </svg>
+                                                        </div>
 
-                                                    <div class="flex items-center gap-3">
-                                                        <button type="button" @click="confirmOpen = false"
-                                                                class="flex-1 text-sm font-semibold px-4 py-2.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition">
-                                                            Batal
-                                                        </button>
-                                                        <form action="{{ route('admin.data-master.pegawai.destroy', $row['id']) }}" method="POST" class="flex-1">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit"
-                                                                    class="w-full text-sm font-semibold px-4 py-2.5 rounded-lg bg-rose-500 hover:bg-rose-600 text-white transition">
-                                                                Ya, Hapus
+                                                        <h3 class="text-base font-bold text-gray-900 mb-1">Hapus Data Peserta?</h3>
+                                                        <p class="text-sm text-gray-500 mb-6">
+                                                            Data yang sudah dihapus tidak dapat dikembalikan. Pastikan kamu yakin sebelum melanjutkan.
+                                                        </p>
+
+                                                        <div class="flex items-center gap-3">
+                                                            <button type="button" @click="confirmOpen = false"
+                                                                    class="flex-1 text-sm font-semibold px-4 py-2.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition">
+                                                                Batal
                                                             </button>
-                                                        </form>
+                                                            <form action="{{ route('admin.data-master.pegawai.destroy', $row['id']) }}" method="POST" class="flex-1">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit"
+                                                                        class="w-full text-sm font-semibold px-4 py-2.5 rounded-lg bg-rose-500 hover:bg-rose-600 text-white transition">
+                                                                    Ya, Hapus
+                                                                </button>
+                                                            </form>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
                                         </div>
                                     </td>
                                 </tr>

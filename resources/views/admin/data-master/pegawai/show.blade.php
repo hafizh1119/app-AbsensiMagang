@@ -1,7 +1,7 @@
 {{-- resources/views/admin/data-master/pegawai/show.blade.php --}}
 @extends('layouts.app')
 
-@section('title', 'Detail Pegawai')
+@section('title', 'Detail Peserta')
 
 @section('content')
 
@@ -12,14 +12,22 @@
 
     <div class="flex-1 min-w-0 flex flex-col h-screen overflow-y-auto">
 
-        @include('admin.components.header', ['title' => 'Detail Pegawai'])
+        @include('admin.components.header', ['title' => 'Detail Peserta'])
 
         <main class="p-6">
 
             @php
                 $unit = $pegawai->unit;
-                $tanggalBergabung = optional($pegawai->created_at)->translatedFormat('d F Y') ?? '-';
                 $statusLabel = ucfirst($pegawai->status ?? '-');
+                $statusPeserta = $pegawai->status_peserta ? ucfirst($pegawai->status_peserta) : '-';
+                $jenisKelamin = match ($pegawai->jenis_kelamin) {
+                    'L' => 'Laki-laki',
+                    'P' => 'Perempuan',
+                    default => '-',
+                };
+                $labelJurusan = $pegawai->status_peserta === 'mahasiswa' ? 'Program Studi' : ($pegawai->status_peserta === 'siswa' ? 'Jurusan' : 'Jurusan / Prodi');
+                $labelKelas = $pegawai->status_peserta === 'mahasiswa' ? 'Semester' : ($pegawai->status_peserta === 'siswa' ? 'Kelas' : 'Kelas / Semester');
+                $labelAsal = $pegawai->status_peserta === 'mahasiswa' ? 'Perguruan Tinggi' : ($pegawai->status_peserta === 'siswa' ? 'Sekolah' : 'Sekolah / Perguruan Tinggi');
             @endphp
 
             {{-- Judul & Breadcrumb --}}
@@ -30,12 +38,12 @@
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
                         </svg>
-                        Detail Pegawai
+                        Detail Peserta
                     </a>
                     <p class="text-xs text-gray-400 mt-1">
-                        <a href="{{ route('admin.data-master.pegawai') }}" class="hover:text-sky-600">Data Pegawai</a>
+                        <a href="{{ route('admin.data-master.pegawai') }}" class="hover:text-sky-600">Data Peserta</a>
                         <span class="mx-1">›</span>
-                        Detail Pegawai
+                        Detail Peserta
                     </p>
                 </div>
             </div>
@@ -56,7 +64,7 @@
                         </div>
                         <div>
                             <h2 class="text-lg font-bold text-gray-900">{{ $pegawai->nama }}</h2>
-                            <p class="text-sm text-gray-400">{{ $pegawai->jabatan }}</p>
+                            <p class="text-sm text-gray-400">{{ $pegawai->asal_instansi ?: '-' }}</p>
                             <span class="inline-block mt-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full
                                 {{ $pegawai->status === 'aktif' ? 'bg-sky-50 text-sky-600' : 'bg-rose-50 text-rose-500' }}">
                                 {{ $statusLabel }}
@@ -66,62 +74,78 @@
                 </div>
             </div>
 
-            {{-- Informasi Pribadi --}}
+            {{-- A. Identitas Diri --}}
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 mb-5">
-                <h3 class="text-sm font-bold text-gray-900 mb-4">Informasi Pribadi</h3>
+                <h3 class="text-sm font-bold text-gray-900 mb-4">A. Identitas Diri</h3>
 
                 <dl class="space-y-4">
                     <div class="flex items-start gap-4">
-                        <dt class="text-xs text-gray-400 w-36 flex-shrink-0">No. Peserta</dt>
-                        <dd class="text-sm text-gray-700 font-medium">{{ $pegawai->nip }}</dd>
+                        <dt class="text-xs text-gray-400 w-36 flex-shrink-0">Nama Lengkap</dt>
+                        <dd class="text-sm text-gray-700 font-medium">{{ $pegawai->nama }}</dd>
                     </div>
                     <div class="flex items-start gap-4">
-                        <dt class="text-xs text-gray-400 w-36 flex-shrink-0">Tempat, Tgl Lahir</dt>
-                        <dd class="text-sm text-gray-700 font-medium">
-                            {{ $pegawai->tempat_lahir }}, {{ optional($pegawai->tanggal_lahir)->translatedFormat('d F Y') }}
-                        </dd>
+                        <dt class="text-xs text-gray-400 w-36 flex-shrink-0">Status Peserta</dt>
+                        <dd class="text-sm text-gray-700 font-medium">{{ $statusPeserta }}</dd>
                     </div>
                     <div class="flex items-start gap-4">
-                        <dt class="text-xs text-gray-400 w-36 flex-shrink-0">Kewarganegaraan</dt>
-                        <dd class="text-sm text-gray-700 font-medium">
-                            {{ $pegawai->kewarganegaraan }} ({{ $pegawai->status_kewarganegaraan }})
-                        </dd>
+                        <dt class="text-xs text-gray-400 w-36 flex-shrink-0">Jenis Kelamin</dt>
+                        <dd class="text-sm text-gray-700 font-medium">{{ $jenisKelamin }}</dd>
                     </div>
                     <div class="flex items-start gap-4">
-                        <dt class="text-xs text-gray-400 w-36 flex-shrink-0">No. Telepon</dt>
+                        <dt class="text-xs text-gray-400 w-36 flex-shrink-0">Alamat Domisili</dt>
+                        <dd class="text-sm text-gray-700 font-medium">{{ $pegawai->alamat ?: '-' }}</dd>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <dt class="text-xs text-gray-400 w-36 flex-shrink-0">No. HP</dt>
                         <dd class="text-sm text-gray-700 font-medium">{{ $pegawai->no_hp ?: '-' }}</dd>
                     </div>
                     <div class="flex items-start gap-4">
-                        <dt class="text-xs text-gray-400 w-36 flex-shrink-0">Email</dt>
+                        <dt class="text-xs text-gray-400 w-36 flex-shrink-0">Email Aktif</dt>
                         <dd class="text-sm text-gray-700 font-medium">{{ $pegawai->email }}</dd>
-                    </div>
-                    <div class="flex items-start gap-4">
-                        <dt class="text-xs text-gray-400 w-36 flex-shrink-0">Alamat</dt>
-                        <dd class="text-sm text-gray-700 font-medium">{{ $pegawai->alamat ?: '-' }}</dd>
                     </div>
                 </dl>
             </div>
 
-            {{-- Informasi Pekerjaan --}}
-            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-                <h3 class="text-sm font-bold text-gray-900 mb-4">Informasi Pekerjaan</h3>
+            {{-- B. Asal Pendidikan --}}
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 mb-5">
+                <h3 class="text-sm font-bold text-gray-900 mb-4">B. Asal Pendidikan</h3>
 
                 <dl class="space-y-4">
                     <div class="flex items-start gap-4">
-                        <dt class="text-xs text-gray-400 w-36 flex-shrink-0">Unit</dt>
+                        <dt class="text-xs text-gray-400 w-36 flex-shrink-0">{{ $labelAsal }}</dt>
+                        <dd class="text-sm text-gray-700 font-medium">{{ $pegawai->asal_instansi ?: '-' }}</dd>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <dt class="text-xs text-gray-400 w-36 flex-shrink-0">{{ $labelJurusan }}</dt>
+                        <dd class="text-sm text-gray-700 font-medium">{{ $pegawai->jurusan ?: '-' }}</dd>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <dt class="text-xs text-gray-400 w-36 flex-shrink-0">{{ $labelKelas }}</dt>
+                        <dd class="text-sm text-gray-700 font-medium">{{ $pegawai->kelas_semester ?: '-' }}</dd>
+                    </div>
+                </dl>
+            </div>
+
+            {{-- C. Penempatan Magang --}}
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+                <h3 class="text-sm font-bold text-gray-900 mb-4">C. Penempatan Magang</h3>
+
+                <dl class="space-y-4">
+                    <div class="flex items-start gap-4">
+                        <dt class="text-xs text-gray-400 w-36 flex-shrink-0">Ruangan Penempatan</dt>
                         <dd class="text-sm text-gray-700 font-medium">{{ $unit->nama_unit ?? '-' }}</dd>
                     </div>
                     <div class="flex items-start gap-4">
-                        <dt class="text-xs text-gray-400 w-36 flex-shrink-0">Jabatan</dt>
-                        <dd class="text-sm text-gray-700 font-medium">{{ $pegawai->jabatan }}</dd>
+                        <dt class="text-xs text-gray-400 w-36 flex-shrink-0">Tanggal Mulai</dt>
+                        <dd class="text-sm text-gray-700 font-medium">
+                            {{ optional($pegawai->tanggal_mulai_magang)->translatedFormat('d F Y') ?? '-' }}
+                        </dd>
                     </div>
                     <div class="flex items-start gap-4">
-                        <dt class="text-xs text-gray-400 w-36 flex-shrink-0">Tanggal Bergabung</dt>
-                        <dd class="text-sm text-gray-700 font-medium">{{ $tanggalBergabung }}</dd>
-                    </div>
-                    <div class="flex items-start gap-4">
-                        <dt class="text-xs text-gray-400 w-36 flex-shrink-0">Status</dt>
-                        <dd class="text-sm text-gray-700 font-medium">{{ $statusLabel }}</dd>
+                        <dt class="text-xs text-gray-400 w-36 flex-shrink-0">Tanggal Selesai</dt>
+                        <dd class="text-sm text-gray-700 font-medium">
+                            {{ optional($pegawai->tanggal_selesai_magang)->translatedFormat('d F Y') ?? '-' }}
+                        </dd>
                     </div>
                 </dl>
             </div>

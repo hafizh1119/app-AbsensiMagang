@@ -48,7 +48,7 @@
             <div>
                 <p class="text-sky-100 text-sm">Selamat {{ $sapaan }},</p>
                 <h1 class="text-white text-xl font-bold leading-tight">{{ $user->nama }}</h1>
-                <p class="text-sky-100 text-xs">{{ $user->jabatan ?? '-' }}</p>
+                <p class="text-sky-100 text-xs">{{ $user->unit->nama_unit ?? '-' }}</p>
             </div>
         </div>
     </div>
@@ -62,7 +62,7 @@
                 <p class="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-sky-500 to-blue-600 mt-1 tabular-nums" id="live-clock">{{ $waktuSekarang->format('H:i:s') }}</p>
                 @if($statusBadge === 'belum_absen')
                     <span class="inline-block mt-2 text-xs font-semibold text-orange-600 bg-orange-50 px-3 py-1 rounded-full">
-                        Belum Absen Masuk
+                        Belum Presensi Masuk
                     </span>
                 @elseif($statusBadge === 'terlambat')
                     <span class="inline-block mt-2 text-xs font-semibold text-red-600 bg-red-50 px-3 py-1 rounded-full">
@@ -145,7 +145,7 @@
                 </div>
 
                 <span class="text-sm font-semibold text-gray-700 text-center">
-                    Riwayat Absensi
+                    Riwayat Presensi
                 </span>
             </a>
 
@@ -196,7 +196,7 @@
 
             @if(!$sudahAbsenMasuk)
                 <span class="px-3 py-1 rounded-full bg-amber-100 text-amber-700 text-[11px] font-semibold">
-                    Belum Absen
+                    Belum Presensi
                 </span>
             @elseif($terlambat)
                 <span class="px-3 py-1 rounded-full bg-red-100 text-red-700 text-[11px] font-semibold">
