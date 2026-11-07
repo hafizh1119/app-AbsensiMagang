@@ -23,6 +23,11 @@ use App\Http\Controllers\Pengguna\Jadwal\JadwalController;
 use App\Http\Controllers\Pengguna\Izin\PengajuanIzinController as PenggunaPengajuanIzinController;
 use App\Http\Controllers\Pengguna\VerifikasiIzin\VerifikasiIzinController as PenggunaVerifikasiIzinController;
 
+use App\Http\Controllers\Pembimbing\DashboardController as PembimbingDashboardController;
+use App\Http\Controllers\Pembimbing\PesertaController;
+use App\Http\Controllers\Pembimbing\VerifikasiIzinController as PembimbingVerifikasiIzinController;
+use App\Http\Controllers\Pembimbing\ProfilController as PembimbingProfilController;
+
 Route::get('/', function () { return view('auth.pengguna.login');});
 
 Route::get('/admin/login', [AdminLoginController::class, 'showLoginForm']) ->name('admin.login');
@@ -132,4 +137,28 @@ Route::prefix('pengguna')->name('pengguna.')->middleware(['auth', 'role:pegawai,
     Route::get('/profil', [ProfileController::class, 'index'])->name('profil');
     Route::put('/profil/password', [ProfileController::class, 'updatePassword'])->name('profil.password.update');
 
+});
+
+Route::prefix('pembimbing')->name('pembimbing.')->group(function () {
+
+    Route::get('/dashboard', [PembimbingDashboardController::class, 'index'])
+        ->name('dashboard');
+
+    // Peserta
+    Route::prefix('peserta')->name('peserta.')->group(function () {
+        Route::get('/', [PesertaController::class, 'index'])->name('index');
+        Route::get('/{id}', [PesertaController::class, 'show'])->name('detail');
+    });
+
+    // Verifikasi Izin
+    Route::prefix('verifikasi-izin')->name('verifikasi-izin.')->group(function () {
+        Route::get('/', [PembimbingVerifikasiIzinController::class, 'index'])->name('index');
+        Route::get('/{id}', [PembimbingVerifikasiIzinController::class, 'show'])->name('detail');
+        Route::post('/{id}/approve', [PembimbingVerifikasiIzinController::class, 'approve'])->name('approve');
+        Route::post('/{id}/reject', [PembimbingVerifikasiIzinController::class, 'reject'])->name('reject');
+    });
+
+    // Profil
+    Route::get('/profil', [PembimbingProfilController::class, 'index'])->name('profil');
+    Route::put('/profil/password', [PembimbingProfilController::class, 'updatePassword'])->name('profil.password.update');
 });

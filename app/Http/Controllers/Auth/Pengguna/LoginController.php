@@ -64,6 +64,11 @@ class LoginController extends Controller
 
         $request->session()->regenerate();
 
+        // Arahkan sesuai role
+        if ($user->role === 'admin_unit') {
+            return redirect()->route('pembimbing.dashboard');
+        }
+
         return redirect()->intended(route('pengguna.home'));
     }
 
