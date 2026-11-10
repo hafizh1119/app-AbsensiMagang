@@ -25,7 +25,7 @@ class UserController extends Controller
      */
     private const ROLE_LABELS = [
         'admin'      => 'Admin',
-        'admin_unit' => 'Admin Ruangan',
+        'admin_unit' => 'Pembimbing',
         'pegawai'    => 'Peserta',
     ];
 
