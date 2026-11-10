@@ -12,7 +12,7 @@
          @click.outside="createOpen = false"
          class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
 
-        <h3 class="text-base font-bold text-gray-900 mb-4">Tambah Unit</h3>
+        <h3 class="text-base font-bold text-gray-900 mb-4">Tambah Ruangan</h3>
 
         <form action="{{ route('admin.data-master.unit.store') }}" method="POST" class="space-y-4 text-sm text-left">
             @csrf
