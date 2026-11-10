@@ -170,7 +170,7 @@
                 {{-- edit role admin ruangan lewat modal, jadi cukup satu route --}}
                 <a href="{{ route('admin.manajemen.admin-ruangan') }}"
                 class="block px-3 py-2 rounded-lg text-sm transition-colors duration-150
-                {{ request()->routeIs('admin.manajemen.admin-ruangan') ? 'bg-sky-50 text-sky-700 font-medium' : 'text-gray-500 hover:bg-sky-50 hover:text-sky-700' }}">Admin Ruangan</a>
+                {{ request()->routeIs('admin.manajemen.admin-ruangan') ? 'bg-sky-50 text-sky-700 font-medium' : 'text-gray-500 hover:bg-sky-50 hover:text-sky-700' }}">Pembimbing</a>
                 {{-- create/edit admin ikut dihitung aktif di sub-menu Super Admin --}}
                 <a href="{{ route('admin.manajemen.admin') }}"
                 class="block px-3 py-2 rounded-lg text-sm transition-colors duration-150
